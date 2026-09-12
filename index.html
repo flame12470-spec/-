@@ -36,7 +36,7 @@ html,body{width:100%;overflow-x:hidden}
 body{min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);
   font-family:"Kanit",sans-serif;font-weight:var(--font-weight);padding-bottom:30px;transition:background .2s,color .2s}
 /* Make the selected system weight effective on normal UI text. */
-body :where(p,span,div,li,label,a,button,input,textarea,select,option,td,th,small){font-family:"Kanit",sans-serif;font-weight:var(--font-weight);}
+body :where(p,span,div,li,label,a,button,input,textarea,select,option,td,th,small){font-family:"Kanit",sans-serif;}
 body :where(.material-symbols-outlined,[class*="fa-"]){font-family:initial;font-weight:initial;}
 button,input,textarea,select{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -730,9 +730,13 @@ main{
   --shadow:0 6px 24px rgba(45,83,120,.08);
   --shadow-lg:0 18px 55px rgba(45,83,120,.16);
   --ease:cubic-bezier(.2,.75,.25,1);
+  --font-size-base:16px;
+  --font-size-menu:14px;
+  --font-size-content:16px;
 }
 
 body{
+  font-size:var(--font-size-base);
   background:
     radial-gradient(circle at 8% 0%,rgba(255,255,255,.95),transparent 28%),
     radial-gradient(circle at 92% 12%,rgba(101,147,199,.16),transparent 30%),
@@ -791,6 +795,7 @@ header{
 }
 
 nav.menu-bar{
+  font-size:var(--font-size-menu);
   top:64px;
   background:rgba(255,255,255,.76);
   border-bottom:1px solid rgba(101,147,199,.12);
@@ -840,6 +845,10 @@ main{
 
 .page-card.home .hello-title{
   text-shadow:0 4px 18px rgba(35,65,95,.18);
+}
+
+.content-block.text-block{
+  font-size:var(--font-size-content);
 }
 
 .content-block,
@@ -1092,7 +1101,34 @@ main{
   #builderTextModal{padding:12px;}
   #builderTextModal .modal{width:100%;max-height:90vh;padding:18px;}
 }
-</style></head>
+</style>
+<style id="np404-typography-fix">
+/* =========================================================
+   NP-404 TYPOGRAPHY FIX
+   แก้ปัญหาตัวอักษรทุกส่วนถูกบังคับให้หนาเท่ากัน
+   และเพิ่มการควบคุม "ขนาด" + "ความหนา" แยกกัน
+   ========================================================= */
+body{
+  font-size:var(--font-size-base,16px);
+  font-weight:var(--font-weight,400);
+}
+body h1,body h2,body h3,body h4,body h5,body h6{
+  font-family:"Kanit",sans-serif;
+}
+.content-block.text-block{
+  font-size:var(--font-size-content,16px);
+}
+.menu-card{
+  font-size:var(--font-size-menu,14px);
+  font-weight:var(--font-weight-menu,500);
+}
+@media(max-width:650px){
+  body{font-size:var(--font-size-base,16px);}
+  .content-block.text-block{font-size:var(--font-size-content,16px);}
+  .menu-card{font-size:var(--font-size-menu,14px);}
+}
+</style>
+</head>
 <body>
 <header>
   <div class="brand-wrap"><img id="siteLogo" class="logo hidden" alt="logo"><div class="brand" id="siteName">กำลังโหลด...</div></div>
@@ -1213,6 +1249,9 @@ function applySettings(){
   if(settings.accentColor)document.documentElement.style.setProperty("--accent",settings.accentColor);
   document.documentElement.style.setProperty("--font-weight",String(settings.fontWeight||400));
   document.documentElement.style.setProperty("--font-weight-menu",String(settings.menuFontWeight||500));
+  document.documentElement.style.setProperty("--font-size-base",String(settings.fontSize||16)+"px");
+  document.documentElement.style.setProperty("--font-size-menu",String(settings.menuFontSize||14)+"px");
+  document.documentElement.style.setProperty("--font-size-content",String(settings.fontSize||16)+"px");
   const saved=localStorage.getItem("np404_theme")||settings.themeMode||"light";applyTheme(saved);
 }
 function renderAuth(){
@@ -1330,20 +1369,31 @@ if(p){
    * to do nothing.
    */
   const embedWeight=Math.max(100,Math.min(900,parseInt(settings.fontWeight,10)||400));
+  const embedSize=Math.max(12,Math.min(24,parseFloat(settings.fontSize)||16));
+  const embedMenuSize=Math.max(10,Math.min(22,parseFloat(settings.menuFontSize)||14));
   const kanitEmbedPatch=`<link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style id="np-kanit-embed-patch">
-    :root{--np-kanit-weight:${embedWeight};}
-    html,body{font-family:"Kanit",sans-serif!important;}
-    body,body p,body span,body div,body li,body label,body a,body button,body input,body textarea,body select,body option,body td,body th,body small,body strong,body b,body h1,body h2,body h3,body h4,body h5,body h6{
+    :root{--np-kanit-weight:${embedWeight};--np-kanit-size:${embedSize}px;--np-kanit-menu-size:${embedMenuSize}px;}
+    html,body{font-family:"Kanit",sans-serif!important;font-size:${embedSize}px!important;}
+    /* Base text only — do NOT force headings/strong/b to the same weight. */
+    body p,body span,body div,body li,body label,body a,body button,body input,body textarea,body select,body option,body td,body th,body small{
       font-family:"Kanit",sans-serif!important;
+      font-size:${embedSize}px!important;
       font-weight:${embedWeight}!important;
     }
+    body h1{font-family:"Kanit",sans-serif!important;font-size:1.75em!important;font-weight:700!important;}
+    body h2{font-family:"Kanit",sans-serif!important;font-size:1.5em!important;font-weight:600!important;}
+    body h3{font-family:"Kanit",sans-serif!important;font-size:1.3em!important;font-weight:600!important;}
+    body h4{font-family:"Kanit",sans-serif!important;font-size:1.15em!important;font-weight:600!important;}
+    body h5,body h6{font-family:"Kanit",sans-serif!important;font-size:1.05em!important;font-weight:600!important;}
+    body strong,body b{font-family:"Kanit",sans-serif!important;font-weight:700!important;}
     /* Never alter icon fonts. */
     body .material-symbols-outlined,body [class*="material-symbols"],body [class*="fa-"]{
       font-family:initial!important;
       font-weight:initial!important;
+      font-size:initial!important;
     }
     body .material-symbols-outlined,body [class*="material-symbols"]{
       font-family:"Material Symbols Outlined"!important;
@@ -1370,6 +1420,10 @@ if(p){
     }
     img,video,canvas,iframe{max-width:100%;}
     @media(max-width:650px){
+      body{font-size:${Math.max(12, Math.min(20, embedSize-1))}px!important;}
+      body p,body span,body div,body li,body label,body a,body button,body input,body textarea,body select,body option,body td,body th,body small{
+        font-size:${Math.max(12, Math.min(20, embedSize-1))}px!important;
+      }
       body>main,body>section,body>.app,body>.app-container,body>.container,
       body>.attendance-container,body>.checkin-container,body>.attendance-app,
       body>.main-container,body>.wrapper,#app,#root,.app,.app-container,.container,
@@ -1378,7 +1432,8 @@ if(p){
       }
     }
   </style>`;
-  let src=p.content||"";
+
+let src=p.content||"";
   const embedPatch=kanitEmbedPatch+responsivePatch;
   if(/<\/head>/i.test(src)) src=src.replace(/<\/head>/i,embedPatch+"</head>");
   else src=embedPatch+src;
@@ -1408,9 +1463,9 @@ function renderSystem(){$("adminSystem").innerHTML=
 '<div class="setting-card"><div class="setting-head"><div><b>ชื่อเว็บไซต์ / โลโก้</b><small>เปลี่ยนชื่อและ URL รูปโลโก้</small></div></div><div class="field"><label>ชื่อเว็บไซต์</label><input id="setSiteName" value="'+esc(settings.siteName||"")+'"></div><div class="field"><label>URL โลโก้</label><input id="setLogoUrl" value="'+esc(settings.logoUrl||"")+'"></div><button class="pill solid" onclick="saveBrand()">บันทึกชื่อและโลโก้</button></div>'+
 '<div class="setting-card"><div class="setting-head"><div><b>หน้าแรก</b><small>แก้หัวข้อ คำอธิบาย ชื่อปุ่ม และไอคอนของเมนูหน้าแรกได้ทั้งหมด</small></div></div><div class="field"><label>หัวข้อหน้าแรก</label><input id="setHomeTitle" value="'+esc(settings.homeTitle||"")+'"></div><div class="text-style-grid"><div class="field"><label>รูปแบบหัวข้อ</label><select id="setHomeTitleWeight">'+[100,200,300,400,500,600,700,800,900].map(function(w){return '<option value="'+w+'" '+(String(settings.homeTitleWeight||700)===String(w)?'selected':'')+'>'+w+'</option>'}).join('')+'</select></div><div class="field"><label>จัดหัวข้อ</label><select id="setHomeTitleAlign"><option value="left" '+(popupAlign(settings.homeTitleAlign)==="left"?"selected":"")+'>ชิดซ้าย</option><option value="center" '+(popupAlign(settings.homeTitleAlign)==="center"?"selected":"")+'>กึ่งกลาง</option><option value="right" '+(popupAlign(settings.homeTitleAlign)==="right"?"selected":"")+'>ชิดขวา</option></select></div></div><div class="field"><label>รายละเอียดหน้าแรก</label><textarea id="setHomeSubtitle">'+esc(settings.homeSubtitle||"")+'</textarea></div><div class="text-style-grid"><div class="field"><label>รูปแบบรายละเอียด</label><select id="setHomeDetailWeight">'+[100,200,300,400,500,600,700,800,900].map(function(w){return '<option value="'+w+'" '+(String(settings.homeDetailWeight||400)===String(w)?'selected':'')+'>'+w+'</option>'}).join('')+'</select></div><div class="field"><label>จัดรายละเอียด</label><select id="setHomeDetailAlign"><option value="left" '+(popupAlign(settings.homeDetailAlign)==="left"?"selected":"")+'>ชิดซ้าย</option><option value="center" '+(popupAlign(settings.homeDetailAlign)==="center"?"selected":"")+'>กึ่งกลาง</option><option value="right" '+(popupAlign(settings.homeDetailAlign)==="right"?"selected":"")+'>ชิดขวา</option></select></div></div><div class="grid2"><div class="field"><label>ชื่อปุ่มเมนูหน้าแรก</label><input id="setHomeMenuLabel" value="'+esc(settings.homeMenuLabel||"หน้าแรก")+'"></div><div class="field"><label>ไอคอนหน้าแรก — Material Symbols</label><div class="icon-row"><div class="icon-preview" id="setHomeMenuIconPreview"><span class="material-symbols-outlined">home</span></div><input id="setHomeMenuIcon" value="'+esc(settings.homeMenuIcon||"home")+'" placeholder="เช่น home, school, dashboard" oninput="previewMaterialIcon(this.id,&quot;setHomeMenuIconPreview&quot;,&quot;home&quot;)"></div></div></div><button class="pill solid" onclick="saveHome()">บันทึกหน้าแรก</button></div>'+
 '<div class="setting-card"><div class="setting-head"><div><b>ข้อความประกาศวิ่ง</b><small>แสดงบนแถบด้านบนและวิ่งอัตโนมัติ</small></div></div><div class="field"><input id="setAnnouncement" value="'+esc(settings.announcement||"")+'"></div><button class="pill solid" onclick="saveAnnouncement()">บันทึกประกาศวิ่ง</button></div>'+
-'<div class="setting-card"><div class="setting-head"><div><b>ฟอนต์และความหนาตัวอักษร</b><small>ใช้ Kanit ทั้งระบบ และกำหนดความหนาเมนูได้ตั้งแต่ 100–900</small></div></div><div class="text-style-grid"><div class="field"><label>ความหนาตัวอักษรทั่วไป</label><select id="setFontWeight"><option value="100">100</option><option value="200">200</option><option value="300">300</option><option value="400">400</option><option value="500">500</option><option value="600">600</option><option value="700">700</option><option value="800">800</option><option value="900">900</option></select></div><div class="field"><label>ความหนาตัวอักษรเมนู</label><select id="setMenuFontWeight"><option value="100">100</option><option value="200">200</option><option value="300">300</option><option value="400">400</option><option value="500">500</option><option value="600">600</option><option value="700">700</option><option value="800">800</option><option value="900">900</option></select></div></div><button class="pill solid" onclick="saveTypography()">บันทึกฟอนต์</button></div><div class="setting-card"><div class="setting-head"><div><b>ธีมสี</b><small>เลือกโหมดเริ่มต้นและสีหลักของระบบ</small></div></div><div class="grid2"><div class="field"><label>โหมดเริ่มต้น</label><select id="setThemeMode"><option value="light" '+(settings.themeMode!=="dark"?"selected":"")+'>สว่าง (Light)</option><option value="dark" '+(settings.themeMode==="dark"?"selected":"")+'>มืด (Dark)</option></select></div><div class="field"><label>สีหลักของระบบ</label><div class="color-row"><input type="color" id="setAccentColor" value="'+esc(settings.accentColor||"#d6455a")+'"></div></div></div><button class="pill solid" onclick="saveTheme()">บันทึกธีมสี</button></div>'+
+'<div class="setting-card"><div class="setting-head"><div><b>ฟอนต์และความหนาตัวอักษร</b><small>ใช้ Kanit ทั้งระบบ และกำหนดความหนาเมนูได้ตั้งแต่ 100–900</small></div></div><div class="text-style-grid"><div class="field"><label>ความหนาตัวอักษรทั่วไป</label><select id="setFontWeight"><option value="100">100</option><option value="200">200</option><option value="300">300</option><option value="400">400</option><option value="500">500</option><option value="600">600</option><option value="700">700</option><option value="800">800</option><option value="900">900</option></select></div><div class="field"><label>ความหนาตัวอักษรเมนู</label><select id="setMenuFontWeight"><option value="100">100</option><option value="200">200</option><option value="300">300</option><option value="400">400</option><option value="500">500</option><option value="600">600</option><option value="700">700</option><option value="800">800</option><option value="900">900</option></select></div></div><div class="text-style-grid"><div class="field"><label>ขนาดตัวอักษรทั่วไป</label><select id="setFontSize"><option value="13">13 px — เล็ก</option><option value="14">14 px</option><option value="15">15 px</option><option value="16">16 px — ปกติ</option><option value="17">17 px</option><option value="18">18 px</option><option value="19">19 px</option><option value="20">20 px — ใหญ่</option></select></div><div class="field"><label>ขนาดตัวอักษรเมนู</label><select id="setMenuFontSize"><option value="11">11 px</option><option value="12">12 px</option><option value="13">13 px</option><option value="14">14 px — ปกติ</option><option value="15">15 px</option><option value="16">16 px</option><option value="17">17 px</option></select></div></div><button class="pill solid" onclick="saveTypography()">บันทึกฟอนต์</button></div><div class="setting-card"><div class="setting-head"><div><b>ธีมสี</b><small>เลือกโหมดเริ่มต้นและสีหลักของระบบ</small></div></div><div class="grid2"><div class="field"><label>โหมดเริ่มต้น</label><select id="setThemeMode"><option value="light" '+(settings.themeMode!=="dark"?"selected":"")+'>สว่าง (Light)</option><option value="dark" '+(settings.themeMode==="dark"?"selected":"")+'>มืด (Dark)</option></select></div><div class="field"><label>สีหลักของระบบ</label><div class="color-row"><input type="color" id="setAccentColor" value="'+esc(settings.accentColor||"#d6455a")+'"></div></div></div><button class="pill solid" onclick="saveTheme()">บันทึกธีมสี</button></div>'+
 '<div class="setting-card"><div class="setting-head"><div><b>ผู้ช่วย AI ในแชท</b><small>ให้ AI ตอบคำถามผู้ใช้อัตโนมัติในเมนูแชท (แอดมินยังตอบเองเพิ่มเติมได้เสมอ)</small></div><label class="switch"><input id="aiEnabledInput" type="checkbox" '+(settings.aiEnabled==="true"?"checked":"")+'><span class="slider"></span></label></div><div class="grid2"><div class="field"><label>ผู้ให้บริการ AI</label><select id="aiProviderInput"><option value="openai" '+(settings.aiProvider!=="gemini"?"selected":"")+'>OpenAI</option><option value="gemini" '+(settings.aiProvider==="gemini"?"selected":"")+'>Google Gemini</option></select></div><div class="field"><label>โมเดล</label><input id="aiModelInput" value="'+esc(settings.aiModel||"gpt-4o-mini")+'"></div></div><div class="field"><label>API Key</label><input id="aiApiKeyInput" type="password" value="'+esc(settings.aiApiKey||"")+'" placeholder="วาง API Key ของผู้ให้บริการ AI"></div><div class="field"><label>System Prompt (บุคลิก/ขอบเขตการตอบของ AI)</label><textarea id="aiSystemPromptInput">'+esc(settings.aiSystemPrompt||"")+'</textarea></div><button class="pill solid" onclick="saveAI()">บันทึกการตั้งค่า AI</button></div>';
-  const fw=$("setFontWeight"),mw=$("setMenuFontWeight");if(fw)fw.value=String(settings.fontWeight||400);if(mw)mw.value=String(settings.menuFontWeight||500);
+  const fw=$("setFontWeight"),mw=$("setMenuFontWeight"),fs=$("setFontSize"),mfs=$("setMenuFontSize");if(fw)fw.value=String(settings.fontWeight||400);if(mw)mw.value=String(settings.menuFontWeight||500);if(fs)fs.value=String(settings.fontSize||16);if(mfs)mfs.value=String(settings.menuFontSize||14);
 }
 async function saveSettings(o){await apiPost({action:"saveSettings",settings:o});Object.assign(settings,o);applySettings();renderMenu();renderActivePage();renderAdmin()}
 function syncMaintenanceEditor(){const x=$("setMaintenanceCode");if(x)x.value=settings.maintenanceCode||""}
@@ -1422,7 +1477,7 @@ async function toggleMaintenance(v){try{await saveSettings({maintenance:v?"true"
 async function saveBrand(){try{await saveSettings({siteName:$("setSiteName").value.trim(),logoUrl:$("setLogoUrl").value.trim()});toast("บันทึกชื่อและโลโก้แล้ว")}catch(e){toast(e.message,false)}}window.saveBrand=saveBrand;
 async function saveHome(){try{await saveSettings({homeTitle:$("setHomeTitle").value.trim(),homeTitleWeight:$("setHomeTitleWeight").value,homeTitleAlign:$("setHomeTitleAlign").value,homeSubtitle:$("setHomeSubtitle").value,homeDetailWeight:$("setHomeDetailWeight").value,homeDetailAlign:$("setHomeDetailAlign").value,homeMenuLabel:$("setHomeMenuLabel").value.trim()||"หน้าแรก",homeMenuIcon:$("setHomeMenuIcon").value.trim()||"home"});toast("บันทึกหน้าแรกแล้ว")}catch(e){toast(e.message,false)}}window.saveHome=saveHome;
 async function saveAnnouncement(){try{await saveSettings({announcement:$("setAnnouncement").value});toast("บันทึกข้อความประกาศแล้ว")}catch(e){toast(e.message,false)}}window.saveAnnouncement=saveAnnouncement;
-async function saveTypography(){try{await saveSettings({fontWeight:$("setFontWeight").value,menuFontWeight:$("setMenuFontWeight").value});toast("บันทึกฟอนต์แล้ว")}catch(e){toast(e.message,false)}}window.saveTypography=saveTypography;
+async function saveTypography(){try{await saveSettings({fontWeight:$("setFontWeight").value,menuFontWeight:$("setMenuFontWeight").value,fontSize:$("setFontSize").value,menuFontSize:$("setMenuFontSize").value});toast("บันทึกฟอนต์และขนาดตัวอักษรแล้ว")}catch(e){toast(e.message,false)}}window.saveTypography=saveTypography;
 async function saveTheme(){try{await saveSettings({themeMode:$("setThemeMode").value,accentColor:$("setAccentColor").value});localStorage.setItem("np404_theme",$("setThemeMode").value);toast("บันทึกธีมสีแล้ว")}catch(e){toast(e.message,false)}}window.saveTheme=saveTheme;
 async function saveAI(){try{await saveSettings({aiEnabled:$("aiEnabledInput").checked?"true":"false",aiProvider:$("aiProviderInput").value,aiModel:$("aiModelInput").value.trim(),aiApiKey:$("aiApiKeyInput").value.trim(),aiSystemPrompt:$("aiSystemPromptInput").value});toast("บันทึกการตั้งค่า AI แล้ว")}catch(e){toast(e.message,false)}}window.saveAI=saveAI;
 
