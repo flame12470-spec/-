@@ -1218,7 +1218,36 @@ async function apiPost(d){
 }
 function closeOverlay(id){$(id).classList.remove("show")}window.closeOverlay=closeOverlay;
 function toast(m,ok=true){$("notificationTitle").innerText=ok?"สำเร็จ":"แจ้งเตือน";$("notificationText").innerText=m||"";$("notificationModal").classList.add("show")}
-function fmtDate(s){if(!s)return"-";try{return new Date(s).toLocaleString("th-TH")}catch(e){return s}}
+function fmtDate(value){
+  if(value===null||value===undefined||value===""||value==="-"||value==="null"||value==="undefined") return "-";
+  try{
+    let d=null;
+    if(value && typeof value==="object"){
+      if(typeof value.toDate==="function") d=value.toDate();
+      else if(typeof value.seconds==="number") d=new Date(value.seconds*1000);
+      else if(typeof value._seconds==="number") d=new Date(value._seconds*1000);
+      else if(value instanceof Date) d=value;
+    }
+    if(!d && typeof value==="number") d=new Date(value<10000000000?value*1000:value);
+    if(!d && typeof value==="string"){
+      let text=value.trim().replace(/\//g,"-");
+      d=new Date(text);
+      if(isNaN(d.getTime())){
+        const m=text.match(/^(\d{1,2})-(\d{1,2})-(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+        if(m){
+          let year=Number(m[3]);
+          if(year>2400) year-=543;
+          d=new Date(year,Number(m[2])-1,Number(m[1]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0));
+        }
+      }
+    }
+    if(!d || isNaN(d.getTime())) return "-";
+    return d.toLocaleString("th-TH",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
+  }catch(err){
+    console.warn("fmtDate error:",value,err);
+    return "-";
+  }
+}
 
 /* ---------------- Theme ---------------- */
 function applyTheme(mode){document.documentElement.setAttribute("data-theme",mode==="dark"?"dark":"light");localStorage.setItem("np404_theme",mode);let b=$("themeBtn");if(b)b.innerHTML=mode==="dark"?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>'}
