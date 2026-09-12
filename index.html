@@ -1607,12 +1607,52 @@ function snoozePopup(){localStorage.setItem("np404_popup_snooze",String(Date.now
 window.snoozePopup=snoozePopup;
 
 /* ---------------- Admin: บัญชีผู้ใช้ ---------------- */
-async function loadUsers(){try{usersList=await apiGetAuth("getUsers");renderUsers()}catch(e){$("adminUsers").innerHTML='<div class="empty">'+esc(e.message)+'</div>'}}
-function renderUsers(){let b=$("adminUsers");if(!usersList.length){b.innerHTML='<div class="empty">ยังไม่มีผู้ใช้ลงทะเบียนในระบบ</div>';return}
-  b.innerHTML='<div style="margin-bottom:10px;color:var(--muted);font-size:12px">ทั้งหมด '+usersList.length+' บัญชี</div>'+usersList.map(u=>
-  '<div class="admin-row"><div class="admin-info"><b>'+esc(u.username||u.name||u.email||"ผู้ใช้")+' '+(u.role==="admin"?'<span class="badge on">ADMIN</span>':"")+'</b><small>'+esc(u.email)+' · สมัคร '+fmtDate(u.createdAt)+' · เข้าระบบล่าสุด '+fmtDate(u.lastSeen)+'</small></div><div class="admin-actions"><span class="badge '+(u.banned?"off":"on")+'">'+(u.banned?"ถูกระงับ":"ปกติ")+'</span>'+(u.role==="admin"?"":'<label class="switch"><input type="checkbox" '+(u.banned?"":"checked")+' onchange="toggleBan(\''+u.uid+'\',!this.checked)"><span class="slider"></span></label>')+'</div></div>'
-  ).join("")}
-async function toggleBan(uid,banned){try{await apiPost({action:"setUserBan",uid,banned});toast(banned?"ระงับผู้ใช้แล้ว":"ยกเลิกการระงับแล้ว");loadUsers()}catch(e){toast(e.message,false)}}window.toggleBan=toggleBan;
+async function loadUsers(){
+  const box=$("adminUsers");
+  if(box) box.innerHTML='<div class="empty">กำลังโหลดรายชื่อบัญชี...</div>';
+  try{
+    usersList=await apiGetAuth("getUsers");
+    if(!Array.isArray(usersList)) usersList=[];
+    renderUsers();
+  }catch(e){
+    if(box) box.innerHTML='<div class="empty">โหลดบัญชีไม่สำเร็จ: '+esc(e.message||e)+'</div>';
+  }
+}
+function userRoleLabel(role){return role==="admin"?"แอดมิน":role==="teacher"?"ครู":"นักเรียน"}
+function renderUsers(){
+  let b=$("adminUsers");
+  if(!b)return;
+  if(!usersList.length){b.innerHTML='<div class="empty">ยังไม่มีผู้ใช้ลงทะเบียนในระบบ</div>';return}
+  b.innerHTML='<div style="margin-bottom:10px;color:var(--muted);font-size:12px">ทั้งหมด '+usersList.length+' บัญชี</div>'+usersList.map(u=>{
+    const uid=esc(u.uid||u.id||"");
+    const role=u.role||"student";
+    const pw=u.password||u.pass||u.plainPassword||"";
+    return '<div class="admin-row" style="align-items:flex-start;gap:12px">'+
+      '<div class="admin-info" style="flex:1;min-width:0">'+
+        '<b>'+esc(u.username||u.name||((u.firstName||"")+" "+(u.lastName||"")).trim()||u.email||"ผู้ใช้")+' <span class="badge '+(role==="admin"?"on":role==="teacher"?"on":"off")+'">'+userRoleLabel(role)+'</span>'+(u.banned?'<span class="badge off">ระงับ</span>':'')+'</b>'+
+        '<small>'+esc(u.email||"ไม่มีอีเมล")+' · สมัคร '+fmtDate(u.createdAt)+' · เข้าระบบล่าสุด '+fmtDate(u.lastSeen)+'</small>'+
+        '<div style="margin-top:8px;display:flex;gap:7px;flex-wrap:wrap;align-items:center">'+
+          '<label style="font-size:12px;color:var(--muted)">สถานะ/สิทธิ์</label>'+
+          '<select onchange="changeUserRole(\''+uid+'\',this.value)" style="min-width:125px"><option value="student" '+(role==="student"||role==="user"||!role?"selected":"")+'>นักเรียน</option><option value="teacher" '+(role==="teacher"?"selected":"")+'>ครู</option><option value="admin" '+(role==="admin"?"selected":"")+'>แอดมิน</option></select>'+
+          '<button class="pill" type="button" onclick="toggleBan(\''+uid+'\','+(u.banned?"false":"true")+')">'+(u.banned?"ยกเลิกระงับ":"ระงับการใช้งาน")+'</button>'+
+          '<button class="pill" type="button" onclick="deleteUserAccount(\''+uid+'\')" style="color:#d33">ลบบัญชี</button>'+
+          '<button class="pill" type="button" onclick="showUserPassword(\''+esc(String(pw).replace(/\\/g,"\\\\").replace(/'/g,"\\'")+"\' )">ดูรหัสผ่าน</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join("");
+}
+async function toggleBan(uid,banned){try{await apiPost({action:"setUserBan",uid,banned});toast(banned?"ระงับผู้ใช้แล้ว":"ยกเลิกการระงับแล้ว");await loadUsers()}catch(e){toast(e.message,false)}}
+async function changeUserRole(uid,role){try{await apiPost({action:"setUserRole",uid,role});toast("เปลี่ยนสิทธิ์เป็น "+userRoleLabel(role)+" แล้ว");await loadUsers()}catch(e){toast(e.message,false);await loadUsers()}}
+async function deleteUserAccount(uid){
+  if(!confirm("ยืนยันลบบัญชีนี้หรือไม่? การลบบัญชีอาจไม่สามารถกู้คืนได้"))return;
+  try{await apiPost({action:"deleteUser",uid});toast("ลบบัญชีแล้ว");await loadUsers()}catch(e){toast(e.message,false)}
+}
+function showUserPassword(password){
+  if(password){alert("รหัสผ่านที่บันทึกไว้: "+password);return}
+  alert("บัญชีนี้ไม่มีรหัสผ่านแบบข้อความให้แสดง\n\nถ้าใช้ Firebase Authentication ระบบจะไม่สามารถดึงรหัสผ่านจริงกลับมาแสดงได้ เพราะ Firebase เก็บรหัสผ่านแบบเข้ารหัส/แฮชเพื่อความปลอดภัย");
+}
+window.toggleBan=toggleBan;window.changeUserRole=changeUserRole;window.deleteUserAccount=deleteUserAccount;window.showUserPassword=showUserPassword;
 
 /* ---------------- Admin: แชท (ตอบผู้ใช้) ---------------- */
 async function loadConversations(){try{conversations=await apiGetAuth("getConversations");renderConversationList()}catch(e){$("adminChat").innerHTML='<div class="empty">'+esc(e.message)+'</div>'}}
