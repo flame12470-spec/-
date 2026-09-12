@@ -4,7 +4,8 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>NP-404 System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 /* =========================================================
@@ -13,6 +14,8 @@
    hero banner on home, boxed white cards for content.
    ========================================================= */
 :root{
+  --font-weight:400;
+  --font-weight-menu:500;
   --bg:#f6f7f9; --surface:#ffffff; --surface-2:#fafafa;
   --line:#eef0f2; --ink:#333333; --muted:#888888;
   --accent:#e91e63; --accent-ink:#ffffff; --accent-soft:#fce4ec; --accent-dark:#c2185b;
@@ -31,11 +34,31 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:100%;overflow-x:hidden}
 body{min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);
-  font-family:Kanit,sans-serif;padding-bottom:30px;transition:background .2s,color .2s}
+  font-family:"Kanit",sans-serif;font-weight:var(--font-weight);padding-bottom:30px;transition:background .2s,color .2s}
 button,input,textarea,select{font:inherit;color:inherit}
 button{cursor:pointer}
 img,video,iframe{max-width:100%;height:auto}
 .hidden{display:none!important}
+.material-symbols-outlined{
+  font-family:'Material Symbols Outlined';
+  font-weight:400;
+  font-style:normal;
+  font-size:1em;
+  line-height:1;
+  letter-spacing:normal;
+  text-transform:none;
+  display:inline-block;
+  white-space:nowrap;
+  word-wrap:normal;
+  direction:ltr;
+  -webkit-font-feature-settings:'liga';
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:'liga';
+  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+}
+.icon-code-help{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.5}
+.icon-preview .material-symbols-outlined{font-size:22px}
+.menu-icon .material-symbols-outlined{font-size:18px;font-variation-settings:'FILL' 0,'wght' var(--icon-weight,500),'GRAD' 0,'opsz' 24}
 
 /* ---------- Header / navbar ---------- */
 header{position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;gap:14px;
@@ -300,6 +323,8 @@ nav.menu-bar{
 }
 .menu-card{
   min-height:44px;
+  font-family:"Kanit",sans-serif;
+  font-weight:var(--font-weight-menu);
   padding:9px 15px;
   border:1px solid transparent;
   border-bottom:0;
@@ -483,6 +508,7 @@ main{
 
 /* Modal */
 .overlay{
+  z-index:2000;
   padding:clamp(10px,3vw,24px);
   background:rgba(10,10,18,.52);
   backdrop-filter:blur(5px);
@@ -1046,6 +1072,7 @@ main{
 .popup-dot{width:7px;height:7px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.55);cursor:pointer}
 .popup-dot.active{background:#fff;transform:scale(1.25)}
 @media(max-width:600px){.popup-image-wrap img#popupImage{max-height:320px;border-radius:14px}.popup-nav{width:34px;height:34px;font-size:26px}}
+</style>
 <style id="maintenance-editor-style">
 .maintenance-custom{width:100%;min-height:60vh;display:flex;align-items:center;justify-content:center}
 .text-style-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.text-style-grid .field{margin-bottom:0}
@@ -1054,14 +1081,14 @@ main{
 </style><style id="builder-text-modal-fix">
 /* แก้ปัญหาหน้าต่าง "เพิ่มข้อความ" ถูก pageModal บัง */
 #builderTextModal{z-index:3100;}
-#builderTextModal .modal{position:relative;z-index:3101;}
+#builderTextModal{z-index:5000!important;inset:0;padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));}
+#builderTextModal .modal{position:relative;z-index:5001;}
 /* ให้กล่องเพิ่มข้อความอยู่กึ่งกลางและไม่ถูกบีบในมือถือ */
 #builderTextModal .modal{width:min(520px,calc(100vw - 24px));max-height:min(90vh,720px);overflow-y:auto;}
 @media(max-width:650px){
   #builderTextModal{padding:12px;}
   #builderTextModal .modal{width:100%;max-height:90vh;padding:18px;}
 }
-</style>
 </style></head>
 <body>
 <header>
@@ -1099,14 +1126,16 @@ main{
 <div class="overlay" id="builderTextModal"><div class="modal"><h3 id="builderTextModalTitle">ข้อความ</h3>
 <div class="field"><label>ข้อความ</label><textarea id="builderTextInput" placeholder="พิมพ์ข้อความ..."></textarea></div>
 <div class="text-style-grid">
-<div class="field"><label>น้ำหนักข้อความ</label><select id="builderTextWeight"><option value="700">ตัวหนา</option><option value="400">ตัวบาง</option></select></div>
+<div class="field"><label>ความหนาฟอนต์ Kanit</label><select id="builderTextWeight">
+<option value="100">100 — บางมาก</option><option value="200">200 — บางพิเศษ</option><option value="300">300 — บาง</option><option value="400">400 — ปกติ</option><option value="500">500 — กลาง</option><option value="600">600 — กึ่งหนา</option><option value="700">700 — หนา</option><option value="800">800 — หนามาก</option><option value="900">900 — หนาที่สุด</option>
+</select></div>
 <div class="field"><label>การจัดข้อความ</label><select id="builderTextAlign"><option value="left">ชิดซ้าย</option><option value="center">กึ่งกลาง</option><option value="right">ชิดขวา</option></select></div>
 </div>
 <div class="modal-actions"><button class="pill" onclick="closeOverlay('builderTextModal')">ยกเลิก</button><button class="pill solid" onclick="saveBuilderText()">บันทึก</button></div></div></div>
 
 <div class="overlay" id="pageModal"><div class="modal"><h3 id="pageModalTitle">เพิ่มหน้าใหม่</h3>
 <div class="field"><label>ชื่อหัวข้อเมนู</label><input id="pageNameInput"></div>
-<div class="field"><label>ไอคอนเมนู (อิโมจิ)</label><div class="icon-row"><div class="icon-preview" id="pageIconPreview">📄</div><input id="pageIconInput" placeholder="พิมพ์อิโมจิเอง หรือเลือกด้านล่าง" oninput="$('pageIconPreview').innerText=this.value||'📄'"></div><div class="icon-palette" id="pageIconPalette"></div></div>
+<div class="field"><label>ไอคอนเมนู — Material Symbols</label><div class="icon-row"><div class="icon-preview" id="pageIconPreview"><span class="material-symbols-outlined">description</span></div><input id="pageIconInput" placeholder="เช่น release_alert หรือวางโค้ด &lt;link ... icon_names=release_alert /&gt;" oninput="previewMaterialIcon('pageIconInput','pageIconPreview','description')"></div><div class="icon-code-help">รองรับทั้ง <b>ชื่อไอคอน</b> และ <b>โค้ด Google Fonts Material Symbols</b> เช่น <code>&lt;link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=release_alert" /&gt;</code></div><div class="text-style-grid" style="margin-top:8px"><div class="field"><label>ความหนาไอคอน</label><select id="pageIconWeight"><option value="100">100</option><option value="200">200</option><option value="300">300</option><option value="400" selected>400</option><option value="500">500</option><option value="600">600</option><option value="700">700</option></select></div><div class="field"><label>การเติมไอคอน</label><select id="pageIconFill"><option value="0" selected>เส้น (Outline)</option><option value="1">เต็ม (Filled)</option></select></div></div></div>
 <div class="field"><label>หมวดหมู่</label><input id="pageCategoryInput"></div>
 <div class="field"><label>ประเภทหน้า</label><select id="pageTypeInput" onchange="togglePageType()"><option value="builder">สร้างหน้าแบบลากจัดเรียง (ข้อความ/ภาพ)</option><option value="code">โค้ด HTML / เนื้อหา</option><option value="link">ลิงก์ภายนอก</option></select></div>
 <div class="setting-card" style="margin-bottom:13px"><div class="setting-head"><div><b>บังคับเข้าสู่ระบบ</b><small>ถ้าเปิด ผู้ใช้ต้องเข้าสู่ระบบก่อนใช้งานเมนูนี้</small></div><label class="switch"><input id="pageRequireLoginInput" type="checkbox"><span class="slider"></span></label></div></div>
@@ -1117,7 +1146,7 @@ main{
 
 <div class="overlay" id="linkModal"><div class="modal"><h3 id="linkModalTitle">เพิ่มลิงก์</h3>
 <div class="field"><label>ชื่อหัวข้อ</label><input id="linkNameInput"></div>
-<div class="field"><label>ไอคอนเมนู (อิโมจิ)</label><div class="icon-row"><div class="icon-preview" id="linkIconPreview">🔗</div><input id="linkIconInput" placeholder="พิมพ์อิโมจิเอง หรือเลือกด้านล่าง" oninput="$('linkIconPreview').innerText=this.value||'🔗'"></div><div class="icon-palette" id="linkIconPalette"></div></div>
+<div class="field"><label>ไอคอนลิงก์ — Material Symbols</label><div class="icon-row"><div class="icon-preview" id="linkIconPreview"><span class="material-symbols-outlined">link</span></div><input id="linkIconInput" placeholder="เช่น link หรือวางโค้ด Material Symbols" oninput="previewMaterialIcon('linkIconInput','linkIconPreview','link')"></div><div class="icon-code-help">รองรับชื่อไอคอน หรือวางโค้ด <code>&lt;link ... icon_names=link /&gt;</code></div><div class="text-style-grid" style="margin-top:8px"><div class="field"><label>ความหนาไอคอน</label><select id="linkIconWeight"><option value="100">100</option><option value="200">200</option><option value="300">300</option><option value="400" selected>400</option><option value="500">500</option><option value="600">600</option><option value="700">700</option></select></div><div class="field"><label>การเติมไอคอน</label><select id="linkIconFill"><option value="0" selected>เส้น (Outline)</option><option value="1">เต็ม (Filled)</option></select></div></div></div>
 <div class="field"><label>URL</label><input id="linkUrlInput" type="url"></div><div class="field"><label>หมวดหมู่</label><input id="linkCategoryInput"></div>
 <div class="modal-actions"><button class="pill" onclick="closeOverlay('linkModal')">ยกเลิก</button><button class="pill solid" onclick="saveLink()">บันทึก</button></div></div></div>
 
@@ -1179,6 +1208,8 @@ function applySettings(){
   let l=$("siteLogo");if(settings.logoUrl){l.src=settings.logoUrl;l.classList.remove("hidden")}else{l.classList.add("hidden")}
   $("announcementText").innerText=settings.announcement||"";$("announcementBar").classList.toggle("hidden",!settings.announcement);
   if(settings.accentColor)document.documentElement.style.setProperty("--accent",settings.accentColor);
+  document.documentElement.style.setProperty("--font-weight",String(settings.fontWeight||400));
+  document.documentElement.style.setProperty("--font-weight-menu",String(settings.menuFontWeight||500));
   const saved=localStorage.getItem("np404_theme")||settings.themeMode||"light";applyTheme(saved);
 }
 function renderAuth(){
@@ -1194,27 +1225,53 @@ async function logout(){if(window.__isAdmin){confirmAction("ออกจาก A
 /* ---------------- Menu (การ์ดไอคอน) ---------------- */
 function menuIconClass(icon,isHome,type){
   const v=String(icon||"").trim();
-  if(isHome || v.includes("🏠") || v.toLowerCase()==="home") return "fa-house";
-  if(v.includes("🔗") || type==="link") return "fa-link";
-  if(v.includes("📄")) return "fa-file-lines";
-  if(v.includes("👤") || v.includes("บัญชี")) return "fa-user";
-  if(v.includes("⚙") || v.includes("ตั้งค่า")) return "fa-gear";
-  if(v.includes("📢")) return "fa-bullhorn";
-  if(v.includes("💬")) return "fa-comments";
-  if(v.includes("🔔")) return "fa-bell";
-  if(v.includes("📅")) return "fa-calendar-days";
-  if(v.includes("📚")) return "fa-book";
-  if(v.includes("📝")) return "fa-pen-to-square";
-  if(v.includes("📊")) return "fa-chart-column";
-  if(v.includes("🔍")) return "fa-magnifying-glass";
-  if(v.includes("🔒")) return "fa-lock";
-  return "fa-layer-group";
+  if(isHome || v.includes("🏠") || v.toLowerCase()==="home") return "home";
+  if(v.includes("🔗") || type==="link") return "link";
+  if(v.includes("📄")) return "description";
+  if(v.includes("👤") || v.includes("บัญชี")) return "person";
+  if(v.includes("⚙") || v.includes("ตั้งค่า")) return "settings";
+  if(v.includes("📢")) return "campaign";
+  if(v.includes("💬")) return "chat";
+  if(v.includes("🔔")) return "notifications";
+  if(v.includes("📅")) return "calendar_month";
+  if(v.includes("📚")) return "menu_book";
+  if(v.includes("📝")) return "edit_note";
+  if(v.includes("📊")) return "bar_chart";
+  if(v.includes("🔍")) return "search";
+  if(v.includes("🔒")) return "lock";
+  return v || "layers";
 }
-function renderMenu(){let b=$("menuBar");b.innerHTML="";b.appendChild(menu({id:HOME_ID,name:settings.homeMenuLabel||"หน้าแรก",icon:settings.homeMenuIcon||"🏠",active:true},true));pages.forEach(p=>b.appendChild(menu(p,false,"📄")));links.forEach(l=>b.appendChild(menu(l,false,"🔗")))}
+function normalizeMaterialIconInput(value,fallback){
+  let v=String(value||'').trim();
+  if(!v)return fallback||'description';
+  const q=v.match(/icon_names\s*=\s*([^&\s\"'>]+)/i);
+  if(q&&q[1])return decodeURIComponent(q[1]).split(',')[0].trim()||fallback;
+  const span=v.match(/<span[^>]*material-symbols-outlined[^>]*>\s*([^<]+?)\s*<\/span>/i);
+  if(span&&span[1])return span[1].trim()||fallback;
+  if(v.startsWith('<')&&v.includes('Material+Symbols'))return fallback||'description';
+  return v.replace(/[^a-zA-Z0-9_\-]/g,'').trim()||fallback||'description';
+}
+function materialIconName(icon,isHome,type){
+  const v=normalizeMaterialIconInput(icon,isHome?'home':(type==='link'?'link':'description'));
+  const legacy={"🏠":"home","📄":"description","🔗":"link","👤":"person","⚙️":"settings","⚙":"settings","📢":"campaign","💬":"chat","🔔":"notifications","📅":"calendar_month","📚":"menu_book","📝":"edit_note","📊":"bar_chart","🔍":"search","🔒":"lock"};
+  return legacy[v]||v;
+}
+function iconVariation(weight,fill){return "'FILL' "+(fill?1:0)+",'wght' "+Math.max(100,Math.min(700,Number(weight)||400))+",'GRAD' 0,'opsz' 24";}
+function materialIconHtml(icon,isHome,type,weight,fill){
+  const name=materialIconName(icon,isHome,type);
+  return '<span class="material-symbols-outlined" style="font-variation-settings:'+iconVariation(weight,fill)+'" aria-hidden="true">'+esc(name)+'</span>';
+}
+function previewMaterialIcon(inputId,previewId,fallback){
+  const v=$(inputId)?.value.trim()||fallback;
+  const w=inputId==='pageIconInput'?($("pageIconWeight")?.value||400):inputId==='linkIconInput'?($("linkIconWeight")?.value||400):400;
+  const f=inputId==='pageIconInput'?($("pageIconFill")?.value||0):inputId==='linkIconInput'?($("linkIconFill")?.value||0):0;
+  $(previewId).innerHTML=materialIconHtml(v,false,null,w,Number(f));
+}
+function renderMenu(){let b=$("menuBar");b.innerHTML="";b.appendChild(menu({id:HOME_ID,name:settings.homeMenuLabel||"หน้าแรก",icon:settings.homeMenuIcon||"home",active:true},true));pages.forEach(p=>b.appendChild(menu(p,false,"description")));links.forEach(l=>b.appendChild(menu(l,false,"link")))}
 function menu(x,isHome,fallbackIcon){
-  let e=document.createElement("div"),key=x.id||x.rowIndex,on=x.active!==false,icon=x.icon||fallbackIcon||"🏠",iconClass=menuIconClass(icon,isHome,x.type);
+  let e=document.createElement("div"),key=x.id||x.rowIndex,on=x.active!==false,icon=x.icon||fallbackIcon||"home";
   e.className="menu-card "+(key===activeId?"active ":"")+(!on?"disabled":"");
-  e.innerHTML='<span class="menu-icon"><i class="fa-solid '+iconClass+'" aria-hidden="true"></i></span><span class="menu-label">'+esc(x.name)+'</span>'+(on?"":'<span class="menu-lock"><i class="fa-solid fa-lock" aria-hidden="true"></i></span>');
+  e.innerHTML='<span class="menu-icon">'+materialIconHtml(icon,isHome,x.type,x.iconWeight||settings.menuIconWeight||500,x.iconFill||settings.menuIconFill||0)+'</span><span class="menu-label">'+esc(x.name)+'</span>'+(on?"":'<span class="menu-lock"><span class="material-symbols-outlined">lock</span></span>');
   e.onclick=()=>{if(!on&&!window.__isAdmin)return toast("เมนูนี้ปิดปรับปรุงอยู่",false);if(x.url||x.type==="link"){window.open(x.url||x.content,"_blank");return}activeId=key;renderMenu();renderActivePage()};
   return e;
 }
@@ -1265,14 +1322,21 @@ if(p){
    */
   const responsivePatch=`<style id="np-responsive-embed-patch">
     html,body{width:100%!important;min-width:0!important;margin:0!important;padding:0!important;}
-    body{overflow-x:hidden!important;}
+    body{overflow-x:hidden!important;display:block!important;}
     body>main,body>section,body>.app,body>.app-container,body>.container,
     body>.attendance-container,body>.checkin-container,body>.attendance-app,
     body>.main-container,body>.wrapper,#app,#root,.app,.app-container,.container,
     .attendance-container,.checkin-container,.attendance-app,.main-container,.wrapper{
       width:100%!important;max-width:none!important;min-width:0!important;
-      margin-left:auto!important;margin-right:auto!important;
+      margin-left:0!important;margin-right:0!important;
       box-sizing:border-box!important;
+    }
+    [class*="attendance"],[class*="checkin"],[class*="check-in"],[class*="student-care"],
+    [id*="attendance"],[id*="checkin"],[id*="check-in"],[id*="student-care"],
+    [class*="app-container"],[class*="main-container"],[class*="wrapper"],
+    [id*="app-container"],[id*="main-container"],[id*="wrapper"]{
+      max-width:none!important;width:100%!important;min-width:0!important;
+      margin-left:0!important;margin-right:0!important;box-sizing:border-box!important;
     }
     img,video,canvas,iframe{max-width:100%;}
     @media(max-width:650px){
@@ -1311,10 +1375,11 @@ function renderAdmin(){if(!window.__isAdmin)return;renderSystem();renderPages();
 function renderSystem(){$("adminSystem").innerHTML=
 '<div class="setting-card"><div class="setting-head"><div><b>Maintenance Mode</b><small>เปิด/ปิดหน้า 503 สำหรับผู้ใช้ทั่วไป (แอดมินยังเข้าใช้งานได้ตามปกติ)</small></div><label class="switch"><input type="checkbox" '+(settings.maintenance==="true"?"checked":"")+' onchange="toggleMaintenance(this.checked)"><span class="slider"></span></label></div><div class="field"><label>โค้ดหน้า 503 แบบกำหนดเอง</label><textarea id="setMaintenanceCode" placeholder="ใส่ HTML/CSS/JS สำหรับหน้า 503 ได้ทั้งหน้า เช่น &lt;!doctype html&gt;..."></textarea></div><div class="modal-actions" style="margin-top:8px"><button class="pill" onclick="previewMaintenance()">👁️ ดูตัวอย่าง</button><button class="pill solid" onclick="saveMaintenanceCode()">บันทึกหน้า 503</button></div></div>'+
 '<div class="setting-card"><div class="setting-head"><div><b>ชื่อเว็บไซต์ / โลโก้</b><small>เปลี่ยนชื่อและ URL รูปโลโก้</small></div></div><div class="field"><label>ชื่อเว็บไซต์</label><input id="setSiteName" value="'+esc(settings.siteName||"")+'"></div><div class="field"><label>URL โลโก้</label><input id="setLogoUrl" value="'+esc(settings.logoUrl||"")+'"></div><button class="pill solid" onclick="saveBrand()">บันทึกชื่อและโลโก้</button></div>'+
-'<div class="setting-card"><div class="setting-head"><div><b>หน้าแรก</b><small>แก้หัวข้อ คำอธิบาย ชื่อปุ่ม และไอคอนของเมนูหน้าแรกได้ทั้งหมด</small></div></div><div class="field"><label>หัวข้อหน้าแรก</label><input id="setHomeTitle" value="'+esc(settings.homeTitle||"")+'"></div><div class="text-style-grid"><div class="field"><label>รูปแบบหัวข้อ</label><select id="setHomeTitleWeight"><option value="700" '+(settings.homeTitleWeight!=="400"?"selected":"")+'>ตัวหนา</option><option value="400" '+(settings.homeTitleWeight==="400"?"selected":"")+'>ตัวบาง</option></select></div><div class="field"><label>จัดหัวข้อ</label><select id="setHomeTitleAlign"><option value="left" '+(popupAlign(settings.homeTitleAlign)==="left"?"selected":"")+'>ชิดซ้าย</option><option value="center" '+(popupAlign(settings.homeTitleAlign)==="center"?"selected":"")+'>กึ่งกลาง</option><option value="right" '+(popupAlign(settings.homeTitleAlign)==="right"?"selected":"")+'>ชิดขวา</option></select></div></div><div class="field"><label>รายละเอียดหน้าแรก</label><textarea id="setHomeSubtitle">'+esc(settings.homeSubtitle||"")+'</textarea></div><div class="text-style-grid"><div class="field"><label>รูปแบบรายละเอียด</label><select id="setHomeDetailWeight"><option value="700" '+(settings.homeDetailWeight==="700"?"selected":"")+'>ตัวหนา</option><option value="400" '+(settings.homeDetailWeight!=="700"?"selected":"")+'>ตัวบาง</option></select></div><div class="field"><label>จัดรายละเอียด</label><select id="setHomeDetailAlign"><option value="left" '+(popupAlign(settings.homeDetailAlign)==="left"?"selected":"")+'>ชิดซ้าย</option><option value="center" '+(popupAlign(settings.homeDetailAlign)==="center"?"selected":"")+'>กึ่งกลาง</option><option value="right" '+(popupAlign(settings.homeDetailAlign)==="right"?"selected":"")+'>ชิดขวา</option></select></div></div><div class="grid2"><div class="field"><label>ชื่อปุ่มเมนูหน้าแรก</label><input id="setHomeMenuLabel" value="'+esc(settings.homeMenuLabel||"หน้าแรก")+'"></div><div class="field"><label>ไอคอนปุ่มเมนูหน้าแรก</label><input id="setHomeMenuIcon" value="'+esc(settings.homeMenuIcon||"🏠")+'"></div></div><button class="pill solid" onclick="saveHome()">บันทึกหน้าแรก</button></div>'+
+'<div class="setting-card"><div class="setting-head"><div><b>หน้าแรก</b><small>แก้หัวข้อ คำอธิบาย ชื่อปุ่ม และไอคอนของเมนูหน้าแรกได้ทั้งหมด</small></div></div><div class="field"><label>หัวข้อหน้าแรก</label><input id="setHomeTitle" value="'+esc(settings.homeTitle||"")+'"></div><div class="text-style-grid"><div class="field"><label>รูปแบบหัวข้อ</label><select id="setHomeTitleWeight">'+[100,200,300,400,500,600,700,800,900].map(function(w){return '<option value="'+w+'" '+(String(settings.homeTitleWeight||700)===String(w)?'selected':'')+'>'+w+'</option>'}).join('')+'</select></div><div class="field"><label>จัดหัวข้อ</label><select id="setHomeTitleAlign"><option value="left" '+(popupAlign(settings.homeTitleAlign)==="left"?"selected":"")+'>ชิดซ้าย</option><option value="center" '+(popupAlign(settings.homeTitleAlign)==="center"?"selected":"")+'>กึ่งกลาง</option><option value="right" '+(popupAlign(settings.homeTitleAlign)==="right"?"selected":"")+'>ชิดขวา</option></select></div></div><div class="field"><label>รายละเอียดหน้าแรก</label><textarea id="setHomeSubtitle">'+esc(settings.homeSubtitle||"")+'</textarea></div><div class="text-style-grid"><div class="field"><label>รูปแบบรายละเอียด</label><select id="setHomeDetailWeight">'+[100,200,300,400,500,600,700,800,900].map(function(w){return '<option value="'+w+'" '+(String(settings.homeDetailWeight||400)===String(w)?'selected':'')+'>'+w+'</option>'}).join('')+'</select></div><div class="field"><label>จัดรายละเอียด</label><select id="setHomeDetailAlign"><option value="left" '+(popupAlign(settings.homeDetailAlign)==="left"?"selected":"")+'>ชิดซ้าย</option><option value="center" '+(popupAlign(settings.homeDetailAlign)==="center"?"selected":"")+'>กึ่งกลาง</option><option value="right" '+(popupAlign(settings.homeDetailAlign)==="right"?"selected":"")+'>ชิดขวา</option></select></div></div><div class="grid2"><div class="field"><label>ชื่อปุ่มเมนูหน้าแรก</label><input id="setHomeMenuLabel" value="'+esc(settings.homeMenuLabel||"หน้าแรก")+'"></div><div class="field"><label>ไอคอนหน้าแรก — Material Symbols</label><div class="icon-row"><div class="icon-preview" id="setHomeMenuIconPreview"><span class="material-symbols-outlined">home</span></div><input id="setHomeMenuIcon" value="'+esc(settings.homeMenuIcon||"home")+'" placeholder="เช่น home, school, dashboard" oninput="previewMaterialIcon(this.id,&quot;setHomeMenuIconPreview&quot;,&quot;home&quot;)"></div></div></div><button class="pill solid" onclick="saveHome()">บันทึกหน้าแรก</button></div>'+
 '<div class="setting-card"><div class="setting-head"><div><b>ข้อความประกาศวิ่ง</b><small>แสดงบนแถบด้านบนและวิ่งอัตโนมัติ</small></div></div><div class="field"><input id="setAnnouncement" value="'+esc(settings.announcement||"")+'"></div><button class="pill solid" onclick="saveAnnouncement()">บันทึกประกาศวิ่ง</button></div>'+
-'<div class="setting-card"><div class="setting-head"><div><b>ธีมสี</b><small>เลือกโหมดเริ่มต้นและสีหลักของระบบ</small></div></div><div class="grid2"><div class="field"><label>โหมดเริ่มต้น</label><select id="setThemeMode"><option value="light" '+(settings.themeMode!=="dark"?"selected":"")+'>สว่าง (Light)</option><option value="dark" '+(settings.themeMode==="dark"?"selected":"")+'>มืด (Dark)</option></select></div><div class="field"><label>สีหลักของระบบ</label><div class="color-row"><input type="color" id="setAccentColor" value="'+esc(settings.accentColor||"#d6455a")+'"></div></div></div><button class="pill solid" onclick="saveTheme()">บันทึกธีมสี</button></div>'+
+'<div class="setting-card"><div class="setting-head"><div><b>ฟอนต์และความหนาตัวอักษร</b><small>ใช้ Kanit ทั้งระบบ และกำหนดความหนาเมนูได้ตั้งแต่ 100–900</small></div></div><div class="text-style-grid"><div class="field"><label>ความหนาตัวอักษรทั่วไป</label><select id="setFontWeight"><option value="100">100</option><option value="200">200</option><option value="300">300</option><option value="400">400</option><option value="500">500</option><option value="600">600</option><option value="700">700</option><option value="800">800</option><option value="900">900</option></select></div><div class="field"><label>ความหนาตัวอักษรเมนู</label><select id="setMenuFontWeight"><option value="100">100</option><option value="200">200</option><option value="300">300</option><option value="400">400</option><option value="500">500</option><option value="600">600</option><option value="700">700</option><option value="800">800</option><option value="900">900</option></select></div></div><button class="pill solid" onclick="saveTypography()">บันทึกฟอนต์</button></div><div class="setting-card"><div class="setting-head"><div><b>ธีมสี</b><small>เลือกโหมดเริ่มต้นและสีหลักของระบบ</small></div></div><div class="grid2"><div class="field"><label>โหมดเริ่มต้น</label><select id="setThemeMode"><option value="light" '+(settings.themeMode!=="dark"?"selected":"")+'>สว่าง (Light)</option><option value="dark" '+(settings.themeMode==="dark"?"selected":"")+'>มืด (Dark)</option></select></div><div class="field"><label>สีหลักของระบบ</label><div class="color-row"><input type="color" id="setAccentColor" value="'+esc(settings.accentColor||"#d6455a")+'"></div></div></div><button class="pill solid" onclick="saveTheme()">บันทึกธีมสี</button></div>'+
 '<div class="setting-card"><div class="setting-head"><div><b>ผู้ช่วย AI ในแชท</b><small>ให้ AI ตอบคำถามผู้ใช้อัตโนมัติในเมนูแชท (แอดมินยังตอบเองเพิ่มเติมได้เสมอ)</small></div><label class="switch"><input id="aiEnabledInput" type="checkbox" '+(settings.aiEnabled==="true"?"checked":"")+'><span class="slider"></span></label></div><div class="grid2"><div class="field"><label>ผู้ให้บริการ AI</label><select id="aiProviderInput"><option value="openai" '+(settings.aiProvider!=="gemini"?"selected":"")+'>OpenAI</option><option value="gemini" '+(settings.aiProvider==="gemini"?"selected":"")+'>Google Gemini</option></select></div><div class="field"><label>โมเดล</label><input id="aiModelInput" value="'+esc(settings.aiModel||"gpt-4o-mini")+'"></div></div><div class="field"><label>API Key</label><input id="aiApiKeyInput" type="password" value="'+esc(settings.aiApiKey||"")+'" placeholder="วาง API Key ของผู้ให้บริการ AI"></div><div class="field"><label>System Prompt (บุคลิก/ขอบเขตการตอบของ AI)</label><textarea id="aiSystemPromptInput">'+esc(settings.aiSystemPrompt||"")+'</textarea></div><button class="pill solid" onclick="saveAI()">บันทึกการตั้งค่า AI</button></div>';
+  const fw=$("setFontWeight"),mw=$("setMenuFontWeight");if(fw)fw.value=String(settings.fontWeight||400);if(mw)mw.value=String(settings.menuFontWeight||500);
 }
 async function saveSettings(o){await apiPost({action:"saveSettings",settings:o});Object.assign(settings,o);applySettings();renderMenu();renderActivePage();renderAdmin()}
 function syncMaintenanceEditor(){const x=$("setMaintenanceCode");if(x)x.value=settings.maintenanceCode||""}
@@ -1324,17 +1389,18 @@ function saveMaintenanceCode(){saveSettings({maintenanceCode:$("setMaintenanceCo
 syncMaintenanceEditor();
 async function toggleMaintenance(v){try{await saveSettings({maintenance:v?"true":"false"});toast(v?"เปิด Maintenance Mode แล้ว":"ปิด Maintenance Mode แล้ว")}catch(e){toast(e.message,false)}}window.toggleMaintenance=toggleMaintenance;
 async function saveBrand(){try{await saveSettings({siteName:$("setSiteName").value.trim(),logoUrl:$("setLogoUrl").value.trim()});toast("บันทึกชื่อและโลโก้แล้ว")}catch(e){toast(e.message,false)}}window.saveBrand=saveBrand;
-async function saveHome(){try{await saveSettings({homeTitle:$("setHomeTitle").value.trim(),homeTitleWeight:$("setHomeTitleWeight").value,homeTitleAlign:$("setHomeTitleAlign").value,homeSubtitle:$("setHomeSubtitle").value,homeDetailWeight:$("setHomeDetailWeight").value,homeDetailAlign:$("setHomeDetailAlign").value,homeMenuLabel:$("setHomeMenuLabel").value.trim()||"หน้าแรก",homeMenuIcon:$("setHomeMenuIcon").value.trim()||"🏠"});toast("บันทึกหน้าแรกแล้ว")}catch(e){toast(e.message,false)}}window.saveHome=saveHome;
+async function saveHome(){try{await saveSettings({homeTitle:$("setHomeTitle").value.trim(),homeTitleWeight:$("setHomeTitleWeight").value,homeTitleAlign:$("setHomeTitleAlign").value,homeSubtitle:$("setHomeSubtitle").value,homeDetailWeight:$("setHomeDetailWeight").value,homeDetailAlign:$("setHomeDetailAlign").value,homeMenuLabel:$("setHomeMenuLabel").value.trim()||"หน้าแรก",homeMenuIcon:$("setHomeMenuIcon").value.trim()||"home"});toast("บันทึกหน้าแรกแล้ว")}catch(e){toast(e.message,false)}}window.saveHome=saveHome;
 async function saveAnnouncement(){try{await saveSettings({announcement:$("setAnnouncement").value});toast("บันทึกข้อความประกาศแล้ว")}catch(e){toast(e.message,false)}}window.saveAnnouncement=saveAnnouncement;
+async function saveTypography(){try{await saveSettings({fontWeight:$("setFontWeight").value,menuFontWeight:$("setMenuFontWeight").value});toast("บันทึกฟอนต์แล้ว")}catch(e){toast(e.message,false)}}window.saveTypography=saveTypography;
 async function saveTheme(){try{await saveSettings({themeMode:$("setThemeMode").value,accentColor:$("setAccentColor").value});localStorage.setItem("np404_theme",$("setThemeMode").value);toast("บันทึกธีมสีแล้ว")}catch(e){toast(e.message,false)}}window.saveTheme=saveTheme;
 async function saveAI(){try{await saveSettings({aiEnabled:$("aiEnabledInput").checked?"true":"false",aiProvider:$("aiProviderInput").value,aiModel:$("aiModelInput").value.trim(),aiApiKey:$("aiApiKeyInput").value.trim(),aiSystemPrompt:$("aiSystemPromptInput").value});toast("บันทึกการตั้งค่า AI แล้ว")}catch(e){toast(e.message,false)}}window.saveAI=saveAI;
 
 function iconPalette(targetInputId,previewId){return ICONS.map(ic=>'<button type="button" onclick="$(\''+targetInputId+'\').value=\''+ic+'\';$(\''+previewId+'\').innerText=\''+ic+'\'">'+ic+'</button>').join("")}
 
 function renderPages(){let b=$("adminPages");b.innerHTML='<button class="pill solid" style="width:100%;margin-bottom:12px" onclick="openPageEditor()">+ เพิ่มหน้าเมนู</button>';if(!pages.length){b.innerHTML+='<div class="empty">ยังไม่มีหน้าเมนู</div>';return}pages.forEach(p=>b.innerHTML+='<div class="admin-row"><div class="admin-info"><b>'+esc(p.icon||"📄")+' '+esc(p.name)+' '+(p.requireLogin?'🔐':'')+'</b><small>'+esc(p.category||"ไม่ระบุหมวดหมู่")+' · '+(p.type==="link"?"ลิงก์ภายนอก":p.type==="builder"?"ตัวสร้างหน้า":"โค้ด HTML")+(p.requireLogin?" · ต้องเข้าสู่ระบบ":"")+'</small></div><div class="admin-actions"><span class="badge '+(p.active?"on":"off")+'">'+(p.active?"เปิดใช้งาน":"ปิดปรับปรุง")+'</span><label class="switch"><input type="checkbox" '+(p.active?"checked":"")+' onchange="setPageStatus('+p.rowIndex+',this.checked)"><span class="slider"></span></label><button onclick="openPageEditor('+p.rowIndex+')">แก้ไข</button><button class="danger" onclick="deletePageConfirm('+p.rowIndex+')">ลบ</button></div></div>')}
-function openPageEditor(r){editingPageRow=r||null;let p=r?pages.find(x=>x.rowIndex===r):null;$("pageModalTitle").innerText=p?"แก้ไขเมนู":"เพิ่มหน้าใหม่";$("pageNameInput").value=p?.name||"";$("pageCategoryInput").value=p?.category||"";$("pageTypeInput").value=p?.type||"builder";$("pageRequireLoginInput").checked=!!p?.requireLogin;$("pageCodeInput").value=p?.type==="code"?p.content:"";$("pageLinkInput").value=p?.type==="link"?p.content:"";$("pageIconInput").value=p?.icon||"";$("pageIconPreview").innerText=p?.icon||"📄";$("pageIconPalette").innerHTML=iconPalette("pageIconInput","pageIconPreview");builderBlocks=[];if(p?.type==="builder"){try{builderBlocks=JSON.parse(p.blocks||p.content||"[]")}catch(e){builderBlocks=[]}}renderBuilder();togglePageType();$("pageModal").classList.add("show")}window.openPageEditor=openPageEditor;
+function openPageEditor(r){editingPageRow=r||null;let p=r?pages.find(x=>x.rowIndex===r):null;$("pageModalTitle").innerText=p?"แก้ไขเมนู":"เพิ่มหน้าใหม่";$("pageNameInput").value=p?.name||"";$("pageCategoryInput").value=p?.category||"";$("pageTypeInput").value=p?.type||"builder";$("pageRequireLoginInput").checked=!!p?.requireLogin;$("pageCodeInput").value=p?.type==="code"?p.content:"";$("pageLinkInput").value=p?.type==="link"?p.content:"";$("pageIconInput").value=p?.icon||"";if($("pageIconWeight"))$("pageIconWeight").value=String(p?.iconWeight||500);if($("pageIconFill"))$("pageIconFill").value=String(p?.iconFill||0);$("pageIconPreview").innerHTML=materialIconHtml(p?.icon||"description",false,p?.type,p?.iconWeight||500,p?.iconFill||0);builderBlocks=[];if(p?.type==="builder"){try{builderBlocks=JSON.parse(p.blocks||p.content||"[]")}catch(e){builderBlocks=[]}}renderBuilder();togglePageType();$("pageModal").classList.add("show")}window.openPageEditor=openPageEditor;
 function togglePageType(){let t=$("pageTypeInput").value;$("pageBuilderField").classList.toggle("hidden",t!=="builder");$("pageCodeField").classList.toggle("hidden",t!=="code");$("pageLinkField").classList.toggle("hidden",t!=="link")}window.togglePageType=togglePageType;
-function renderBuilder(){let box=$("builderList");box.innerHTML="";if(!builderBlocks.length){box.innerHTML='<div class="empty" style="padding:20px 0">ยังไม่มีเนื้อหา กด "＋ ข้อความ" หรือ "🖼️ ภาพ" เพื่อเพิ่ม</div>';return}builderBlocks.forEach((b,i)=>{let d=document.createElement("div");d.className="builder-item";d.innerHTML='<div class="builder-item-head"><b>'+(b.type==="image"?"🖼️ ภาพ":"📝 ข้อความ")+' #'+(i+1)+'</b><div class="builder-toolbar"><button onclick="moveBuilder('+i+',-1)">↑</button><button onclick="moveBuilder('+i+',1)">↓</button><button onclick="editBuilder('+i+')">แก้ไข</button><button onclick="removeBuilder('+i+')">ลบ</button></div></div><div class="builder-preview"></div>';let pv=d.querySelector(".builder-preview");if(b.type==="image"){let img=document.createElement("img");img.src=b.url||"";pv.appendChild(img);if(b.caption)pv.appendChild(document.createTextNode(b.caption))}else pv.innerText=b.text||"ข้อความว่าง";box.appendChild(d)})}window.renderBuilder=renderBuilder;
+function renderBuilder(){let box=$("builderList");box.innerHTML="";if(!builderBlocks.length){box.innerHTML='<div class="empty" style="padding:20px 0">ยังไม่มีเนื้อหา กด "＋ ข้อความ" หรือ "🖼️ ภาพ" เพื่อเพิ่ม</div>';return}builderBlocks.forEach((b,i)=>{let d=document.createElement("div");d.className="builder-item";d.innerHTML='<div class="builder-item-head"><b>'+(b.type==="image"?"🖼️ ภาพ":"📝 ข้อความ")+' #'+(i+1)+'</b><div class="builder-toolbar"><button onclick="moveBuilder('+i+',-1)">↑</button><button onclick="moveBuilder('+i+',1)">↓</button><button onclick="editBuilder('+i+')">แก้ไข</button><button onclick="removeBuilder('+i+')">ลบ</button></div></div><div class="builder-preview"></div>';let pv=d.querySelector(".builder-preview");if(b.type==="image"){let img=document.createElement("img");img.src=b.url||"";pv.appendChild(img);if(b.caption)pv.appendChild(document.createTextNode(b.caption))}else {pv.innerText=b.text||"ข้อความว่าง";pv.style.fontFamily="Kanit,sans-serif";pv.style.fontWeight=String(b.weight||400);pv.style.textAlign=b.align||"left";}box.appendChild(d)})}window.renderBuilder=renderBuilder;
 let editingBuilderTextIndex=null;
 function openBuilderTextEditor(i){editingBuilderTextIndex=(typeof i==="number"?i:null);const b=editingBuilderTextIndex!==null?builderBlocks[editingBuilderTextIndex]:null;$('builderTextModalTitle').innerText=b?'แก้ไขข้อความ':'เพิ่มข้อความ';$('builderTextInput').value=b?.text||'';$('builderTextWeight').value=b?.weight||'400';$('builderTextAlign').value=b?.align||'left';$('builderTextModal').classList.add('show');setTimeout(()=>$('builderTextInput').focus(),60)}
 function saveBuilderText(){const text=$('builderTextInput').value;if(!text.trim()){toast('กรุณากรอกข้อความ',false);return}const obj={type:'text',text,weight:$('builderTextWeight').value,align:$('builderTextAlign').value};if(editingBuilderTextIndex===null)builderBlocks.push(obj);else builderBlocks[editingBuilderTextIndex]=obj;editingBuilderTextIndex=null;closeOverlay('builderTextModal');renderBuilder()}window.openBuilderTextEditor=openBuilderTextEditor;window.saveBuilderText=saveBuilderText;
@@ -1342,13 +1408,13 @@ function addBuilderBlock(type){if(type==='text'){openBuilderTextEditor()}else{le
 function editBuilder(i){let b=builderBlocks[i];if(!b)return;if(b.type==='text'){openBuilderTextEditor(i)}else{let u=prompt('แก้ไข URL รูปภาพ:',b.url||'');if(u!==null&&u.trim()){b.url=u.trim();let c=prompt('แก้ไขคำอธิบายภาพ:',b.caption||'');if(c!==null)b.caption=c}}renderBuilder()}window.editBuilder=editBuilder;
 function removeBuilder(i){confirmAction("ยืนยันการลบ","ต้องการลบเนื้อหาชิ้นนี้ใช่หรือไม่?",async()=>{builderBlocks.splice(i,1);renderBuilder()})}window.removeBuilder=removeBuilder;
 function moveBuilder(i,dir){let j=i+dir;if(j<0||j>=builderBlocks.length)return;[builderBlocks[i],builderBlocks[j]]=[builderBlocks[j],builderBlocks[i]];renderBuilder()}window.moveBuilder=moveBuilder;
-async function savePage(){try{let n=$("pageNameInput").value.trim(),cat=$("pageCategoryInput").value.trim(),type=$("pageTypeInput").value,content="",blocks="",icon=$("pageIconInput").value.trim();if(!n)throw Error("กรุณากรอกชื่อเมนู");if(type==="builder"){if(!builderBlocks.length)throw Error("กรุณาเพิ่มข้อความหรือภาพอย่างน้อย 1 รายการ");blocks=JSON.stringify(builderBlocks);content=blocks}else if(type==="code"){content=$("pageCodeInput").value;if(!content)throw Error("กรุณากรอกโค้ด HTML")}else{content=$("pageLinkInput").value.trim();if(!content)throw Error("กรุณากรอก URL")}let d={action:editingPageRow?"updatePage":"addPage",name:n,category:cat,type,content,icon,requireLogin:$("pageRequireLoginInput").checked,active:true};if(editingPageRow)d.rowIndex=editingPageRow;await apiPost(d);closeOverlay("pageModal");await loadAll();toast("บันทึกเมนูแล้ว")}catch(e){toast(e.message,false)}}window.savePage=savePage;
+async function savePage(){try{let n=$("pageNameInput").value.trim(),cat=$("pageCategoryInput").value.trim(),type=$("pageTypeInput").value,content="",blocks="",icon=$("pageIconInput").value.trim();if(!n)throw Error("กรุณากรอกชื่อเมนู");if(type==="builder"){if(!builderBlocks.length)throw Error("กรุณาเพิ่มข้อความหรือภาพอย่างน้อย 1 รายการ");blocks=JSON.stringify(builderBlocks);content=blocks}else if(type==="code"){content=$("pageCodeInput").value;if(!content)throw Error("กรุณากรอกโค้ด HTML")}else{content=$("pageLinkInput").value.trim();if(!content)throw Error("กรุณากรอก URL")}let d={action:editingPageRow?"updatePage":"addPage",name:n,category:cat,type,content,icon:normalizeMaterialIconInput(icon,type==='link'?'link':'description'),iconWeight:Number($("pageIconWeight")?.value||500),iconFill:Number($("pageIconFill")?.value||0),requireLogin:$("pageRequireLoginInput").checked,active:true};if(editingPageRow)d.rowIndex=editingPageRow;await apiPost(d);closeOverlay("pageModal");await loadAll();toast("บันทึกเมนูแล้ว")}catch(e){toast(e.message,false)}}window.savePage=savePage;
 async function setPageStatus(r,v){try{await apiPost({action:"setPageActive",rowIndex:r,active:v});let p=pages.find(x=>x.rowIndex===r);if(p)p.active=v;renderMenu();renderPages();toast(v?"เปิดหน้าแล้ว":"ปิดปรับปรุงแล้ว")}catch(e){toast(e.message,false)}}window.setPageStatus=setPageStatus;
 function deletePageConfirm(r){let p=pages.find(x=>x.rowIndex===r);confirmAction("ยืนยันการลบ","ต้องการลบเมนู "+(p?.name||"นี้")+" ใช่หรือไม่?",async()=>{await apiPost({action:"deletePage",rowIndex:r});activeId=HOME_ID;await loadAll();toast("ลบเมนูแล้ว")})}window.deletePageConfirm=deletePageConfirm;
 
 function renderLinks(){let b=$("adminLinks");b.innerHTML='<button class="pill solid" style="width:100%;margin-bottom:12px" onclick="openLinkEditor()">+ เพิ่มลิงก์</button>';if(!links.length){b.innerHTML+='<div class="empty">ยังไม่มีลิงก์</div>';return}links.forEach(l=>b.innerHTML+='<div class="admin-row"><div class="admin-info"><b>'+esc(l.icon||"🔗")+' '+esc(l.name)+'</b><small>'+esc(l.category||"ไม่ระบุหมวดหมู่")+' · '+esc(l.url)+'</small></div><div class="admin-actions"><span class="badge '+(l.active?"on":"off")+'">'+(l.active?"เปิดใช้งาน":"ปิดปรับปรุง")+'</span><label class="switch"><input type="checkbox" '+(l.active?"checked":"")+' onchange="setLinkStatus('+l.rowIndex+',this.checked)"><span class="slider"></span></label><button onclick="openLinkEditor('+l.rowIndex+')">แก้ไข</button><button class="danger" onclick="deleteLinkConfirm('+l.rowIndex+')">ลบ</button></div></div>')}
-function openLinkEditor(r){editingLinkRow=r||null;let l=r?links.find(x=>x.rowIndex===r):null;$("linkModalTitle").innerText=l?"แก้ไขลิงก์":"เพิ่มลิงก์";$("linkNameInput").value=l?.name||"";$("linkUrlInput").value=l?.url||"";$("linkCategoryInput").value=l?.category||"";$("linkIconInput").value=l?.icon||"";$("linkIconPreview").innerText=l?.icon||"🔗";$("linkIconPalette").innerHTML=iconPalette("linkIconInput","linkIconPreview");$("linkModal").classList.add("show")}window.openLinkEditor=openLinkEditor;
-async function saveLink(){try{let n=$("linkNameInput").value.trim(),u=$("linkUrlInput").value.trim(),c=$("linkCategoryInput").value.trim(),icon=$("linkIconInput").value.trim();if(!n||!u)throw Error("กรุณากรอกชื่อและ URL");let d={action:editingLinkRow?"updateLink":"addLink",name:n,url:u,category:c,icon,active:true};if(editingLinkRow)d.rowIndex=editingLinkRow;await apiPost(d);closeOverlay("linkModal");await loadAll();toast("บันทึกลิงก์แล้ว")}catch(e){toast(e.message,false)}}window.saveLink=saveLink;
+function openLinkEditor(r){editingLinkRow=r||null;let l=r?links.find(x=>x.rowIndex===r):null;$("linkModalTitle").innerText=l?"แก้ไขลิงก์":"เพิ่มลิงก์";$("linkNameInput").value=l?.name||"";$("linkUrlInput").value=l?.url||"";$("linkCategoryInput").value=l?.category||"";$("linkIconInput").value=l?.icon||"";$("linkIconPreview").innerHTML=materialIconHtml(l?.icon||"link",false,"link");$("linkModal").classList.add("show")}window.openLinkEditor=openLinkEditor;
+async function saveLink(){try{let n=$("linkNameInput").value.trim(),u=$("linkUrlInput").value.trim(),c=$("linkCategoryInput").value.trim(),icon=$("linkIconInput").value.trim();if(!n||!u)throw Error("กรุณากรอกชื่อและ URL");let d={action:editingLinkRow?"updateLink":"addLink",name:n,url:u,category:c,icon:normalizeMaterialIconInput(icon,'link'),iconWeight:Number($("linkIconWeight")?.value||500),iconFill:Number($("linkIconFill")?.value||0),active:true};if(editingLinkRow)d.rowIndex=editingLinkRow;await apiPost(d);closeOverlay("linkModal");await loadAll();toast("บันทึกลิงก์แล้ว")}catch(e){toast(e.message,false)}}window.saveLink=saveLink;
 async function setLinkStatus(r,v){try{await apiPost({action:"setLinkActive",rowIndex:r,active:v});let l=links.find(x=>x.rowIndex===r);if(l)l.active=v;renderMenu();renderLinks();toast(v?"เปิดลิงก์แล้ว":"ปิดปรับปรุงแล้ว")}catch(e){toast(e.message,false)}}window.setLinkStatus=setLinkStatus;
 function deleteLinkConfirm(r){let l=links.find(x=>x.rowIndex===r);confirmAction("ยืนยันการลบ","ต้องการลบลิงก์ "+(l?.name||"นี้")+" ใช่หรือไม่?",async()=>{await apiPost({action:"deleteLink",rowIndex:r});activeId=HOME_ID;await loadAll();toast("ลบลิงก์แล้ว")})}window.deleteLinkConfirm=deleteLinkConfirm;
 
