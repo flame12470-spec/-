@@ -1388,8 +1388,28 @@ if(p){
         const cs=getComputedStyle(el);
         if(cs.fontWeight!=="normal" && parseInt(cs.fontWeight,10)>=600){el.style.setProperty("font-weight",String(W),"important");}
       });
+      fixContainerWidth();
+    }
+    /* หลายหน้าโค้ดถูกออกแบบมาเป็น "การ์ดแคบแบบมือถือ" อยู่กลาง/ชิดซ้ายของจอ
+     * มักมาจาก max-width แบบ inline หรือ class ที่คาดเดาชื่อไม่ได้
+     * เลยไล่เช็คจาก computed style แทนการเดาชื่อ class เพื่อขยายให้เต็มพื้นที่บนจอ iPad/desktop */
+    function fixContainerWidth(){
+      if(window.innerWidth<651) return;
+      var nodes=document.querySelectorAll("body>*, body>*>*, body>*>*>*");
+      nodes.forEach(function(el){
+        if(!el.style||el.tagName==="SCRIPT"||el.tagName==="STYLE") return;
+        var cs=getComputedStyle(el);
+        var mw=parseFloat(cs.maxWidth);
+        if(!isNaN(mw)&&mw>0&&mw<960&&cs.display!=="inline"){
+          el.style.setProperty("max-width","none","important");
+          el.style.setProperty("width","100%","important");
+          el.style.setProperty("margin-left","0","important");
+          el.style.setProperty("margin-right","0","important");
+        }
+      });
     }
     if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",apply);else apply();
+    window.addEventListener("resize",function(){fixContainerWidth()});
     let queued=false;
     new MutationObserver(function(){if(queued)return;queued=true;requestAnimationFrame(function(){queued=false;apply()});}).observe(document.documentElement,{childList:true,subtree:true});
   })();
@@ -1413,6 +1433,13 @@ if(p){
       margin-left:0!important;margin-right:0!important;box-sizing:border-box!important;
     }
     img,video,canvas,iframe{max-width:100%;}
+    @media(min-width:651px){
+      body>div[style*="max-width"],body>div>div[style*="max-width"],
+      body>main[style*="max-width"],body>section[style*="max-width"]{
+        max-width:none!important;width:100%!important;
+        margin-left:0!important;margin-right:0!important;
+      }
+    }
     @media(max-width:650px){
       body{font-size:${Math.max(12, Math.min(20, embedSize-1))}px!important;}
       body p,body span,body div,body li,body label,body a,body button,body input,body textarea,body select,body option,body td,body th,body small{
