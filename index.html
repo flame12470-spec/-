@@ -1209,45 +1209,16 @@ let pages=[],links=[],settings={},activeId=HOME_ID,authTab="login",editingPageRo
 let conversations=[],usersList=[],activeConvUserId=null,adminChatTimer=null,chatPollTimer=null;
 const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 function apiGet(a){return fetch(API_URL+"?action="+encodeURIComponent(a)).then(r=>r.json()).then(x=>{if(x.success===false)throw Error(x.error);return x.data!==undefined?x.data:x})}
-async function apiGetAuth(a,params){const token=window.__getIdToken?await window.__getIdToken():null;let qs="?action="+encodeURIComponent(a)+"&idToken="+encodeURIComponent(token||"");Object.keys(params||{}).forEach(k=>qs+="&"+k+"="+encodeURIComponent(params[k]));return fetch(API_URL+qs).then(r=>r.json()).then(x=>{if(x.success===false)throw Error(x.error);return x.data!==undefined?x.data:x})}
+async function apiGetAuth(a,params){const token=window.__getIdToken?await window.__getIdToken():null;let qs="?action="+encodeURIComponent(a)+"&idToken="+encodeURIComponent(token||"");if(window.__currentUser?.email)qs+="&email="+encodeURIComponent(window.__currentUser.email);Object.keys(params||{}).forEach(k=>qs+="&"+k+"="+encodeURIComponent(params[k]));return fetch(API_URL+qs).then(r=>r.json()).then(x=>{if(x.success===false)throw Error(x.error);return x.data!==undefined?x.data:x})}
 async function apiPost(d){
   const token=window.__getIdToken?await window.__getIdToken():null;
   if(!token)throw Error("กรุณาเข้าสู่ระบบก่อนทำรายการนี้");
-  return fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({...d,idToken:token})})
+  return fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({...d,idToken:token,email:window.__currentUser?.email||""})})
     .then(r=>r.json()).then(x=>{if(x.success===false)throw Error(x.error);return x.data!==undefined?x.data:x});
 }
 function closeOverlay(id){$(id).classList.remove("show")}window.closeOverlay=closeOverlay;
 function toast(m,ok=true){$("notificationTitle").innerText=ok?"สำเร็จ":"แจ้งเตือน";$("notificationText").innerText=m||"";$("notificationModal").classList.add("show")}
-function fmtDate(value){
-  if(value===null||value===undefined||value===""||value==="-"||value==="null"||value==="undefined") return "-";
-  try{
-    let d=null;
-    if(value && typeof value==="object"){
-      if(typeof value.toDate==="function") d=value.toDate();
-      else if(typeof value.seconds==="number") d=new Date(value.seconds*1000);
-      else if(typeof value._seconds==="number") d=new Date(value._seconds*1000);
-      else if(value instanceof Date) d=value;
-    }
-    if(!d && typeof value==="number") d=new Date(value<10000000000?value*1000:value);
-    if(!d && typeof value==="string"){
-      let text=value.trim().replace(/\//g,"-");
-      d=new Date(text);
-      if(isNaN(d.getTime())){
-        const m=text.match(/^(\d{1,2})-(\d{1,2})-(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
-        if(m){
-          let year=Number(m[3]);
-          if(year>2400) year-=543;
-          d=new Date(year,Number(m[2])-1,Number(m[1]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0));
-        }
-      }
-    }
-    if(!d || isNaN(d.getTime())) return "-";
-    return d.toLocaleString("th-TH",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});
-  }catch(err){
-    console.warn("fmtDate error:",value,err);
-    return "-";
-  }
-}
+function fmtDate(value){if(value===null||value===undefined||value===""||value==="-"||value==="null"||value==="undefined")return "-";try{let d=null;if(value instanceof Date)d=value;else if(typeof value==="object"){if(typeof value.toDate==="function")d=value.toDate();else if(typeof value.seconds==="number")d=new Date(value.seconds*1000);else if(typeof value._seconds==="number")d=new Date(value._seconds*1000)}if(!d&&typeof value==="number")d=new Date(value<10000000000?value*1000:value);if(!d&&typeof value==="string"){let t=value.trim().replace(/\//g,"-");d=new Date(t);if(isNaN(d.getTime())){const m=t.match(/^(\d{1,2})-(\d{1,2})-(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);if(m){let y=Number(m[3]);if(y>2400)y-=543;d=new Date(y,Number(m[2])-1,Number(m[1]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0))}}}if(!d||isNaN(d.getTime()))return "-";return d.toLocaleString("th-TH",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}catch(e){console.warn("fmtDate error",value,e);return "-"}}
 
 /* ---------------- Theme ---------------- */
 function applyTheme(mode){document.documentElement.setAttribute("data-theme",mode==="dark"?"dark":"light");localStorage.setItem("np404_theme",mode);let b=$("themeBtn");if(b)b.innerHTML=mode==="dark"?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>'}
@@ -1607,53 +1578,18 @@ function snoozePopup(){localStorage.setItem("np404_popup_snooze",String(Date.now
 window.snoozePopup=snoozePopup;
 
 /* ---------------- Admin: บัญชีผู้ใช้ ---------------- */
-async function loadUsers(){
-  const box=$("adminUsers");
-  if(box) box.innerHTML='<div class="empty">กำลังโหลดรายชื่อบัญชี...</div>';
-  try{
-    usersList=await apiGetAuth("getUsers");
-    if(!Array.isArray(usersList)) usersList=[];
-    renderUsers();
-  }catch(e){
-    if(box) box.innerHTML='<div class="empty">โหลดบัญชีไม่สำเร็จ: '+esc(e.message||e)+'</div>';
-  }
-}
-function userRoleLabel(role){return role==="admin"?"แอดมิน":role==="teacher"?"ครู":"นักเรียน"}
-function renderUsers(){
-  let b=$("adminUsers");
-  if(!b)return;
-  if(!usersList.length){b.innerHTML='<div class="empty">ยังไม่มีผู้ใช้ลงทะเบียนในระบบ</div>';return}
+async function loadUsers(){try{usersList=await apiGetAuth("getUsers");renderUsers()}catch(e){$("adminUsers").innerHTML='<div class="empty">โหลดบัญชีไม่สำเร็จ: '+esc(e.message)+'</div>'}}
+function roleLabel(role){return role==="admin"?"แอดมิน":role==="teacher"?"ครู":"นักเรียน"}
+function renderUsers(){let b=$("adminUsers");if(!usersList.length){b.innerHTML='<div class="empty">ยังไม่มีผู้ใช้ลงทะเบียนในระบบ</div>';return}
   b.innerHTML='<div style="margin-bottom:10px;color:var(--muted);font-size:12px">ทั้งหมด '+usersList.length+' บัญชี</div>'+usersList.map(u=>{
-    const uid=esc(u.uid||u.id||"");
-    const role=u.role||"student";
-    const pw=u.password||u.pass||u.plainPassword||"";
-    return '<div class="admin-row" style="align-items:flex-start;gap:12px">'+
-      '<div class="admin-info" style="flex:1;min-width:0">'+
-        '<b>'+esc(u.username||u.name||((u.firstName||"")+" "+(u.lastName||"")).trim()||u.email||"ผู้ใช้")+' <span class="badge '+(role==="admin"?"on":role==="teacher"?"on":"off")+'">'+userRoleLabel(role)+'</span>'+(u.banned?'<span class="badge off">ระงับ</span>':'')+'</b>'+
-        '<small>'+esc(u.email||"ไม่มีอีเมล")+' · สมัคร '+fmtDate(u.createdAt)+' · เข้าระบบล่าสุด '+fmtDate(u.lastSeen)+'</small>'+
-        '<div style="margin-top:8px;display:flex;gap:7px;flex-wrap:wrap;align-items:center">'+
-          '<label style="font-size:12px;color:var(--muted)">สถานะ/สิทธิ์</label>'+
-          '<select onchange="changeUserRole(\''+uid+'\',this.value)" style="min-width:125px"><option value="student" '+(role==="student"||role==="user"||!role?"selected":"")+'>นักเรียน</option><option value="teacher" '+(role==="teacher"?"selected":"")+'>ครู</option><option value="admin" '+(role==="admin"?"selected":"")+'>แอดมิน</option></select>'+
-          '<button class="pill" type="button" onclick="toggleBan(\''+uid+'\','+(u.banned?"false":"true")+')">'+(u.banned?"ยกเลิกระงับ":"ระงับการใช้งาน")+'</button>'+
-          '<button class="pill" type="button" onclick="deleteUserAccount(\''+uid+'\')" style="color:#d33">ลบบัญชี</button>'+
-          '<button class="pill" type="button" onclick="showUserPassword(\''+esc(String(pw).replace(/\\/g,"\\\\").replace(/'/g,"\\'")+"\' )">ดูรหัสผ่าน</button>'+
-        '</div>'+
-      '</div>'+
-    '</div>';
-  }).join("");
-}
+    const role=u.role||"student", name=u.name||u.username||u.email||"ผู้ใช้", safe=String(u.uid||"").replace(/'/g,"\\'");
+    return '<div class="admin-row" style="gap:12px"><div class="admin-info" style="flex:1;min-width:0"><b>'+esc(name)+'</b><small>'+esc(u.email||"-")+' · สมัคร '+fmtDate(u.createdAt)+' · เข้าระบบล่าสุด '+fmtDate(u.lastSeen)+'</small><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:7px"><span class="badge '+(u.banned?'off':'on')+'">'+(u.banned?'ถูกระงับ':'ปกติ')+'</span><span class="badge on">'+esc(roleLabel(role))+'</span></div></div><div class="admin-actions" style="display:flex;gap:7px;flex-wrap:wrap;align-items:center"><select class="pill" style="min-width:125px" onchange="changeUserRole(\''+safe+'\',this.value)"><option value="student" '+(role==="student"?'selected':'')+'>นักเรียน</option><option value="teacher" '+(role==="teacher"?'selected':'')+'>ครู</option><option value="admin" '+(role==="admin"?'selected':'')+'>แอดมิน</option></select><button class="pill" onclick="toggleBan(\''+safe+'\','+(u.banned?'false':'true')+')">'+(u.banned?'ปลดระงับ':'ระงับ')+'</button><button class="pill" onclick="showUserPasswordInfo()">ดูรหัสผ่าน</button><button class="pill" onclick="deleteUserAdmin(\''+safe+'\')">ลบบัญชี</button></div></div>'
+  }).join("")}
+async function changeUserRole(uid,role){try{await apiPost({action:"setUserRole",uid,role});toast("เปลี่ยนสถานะเป็น "+roleLabel(role)+" แล้ว");await loadUsers()}catch(e){toast(e.message,false);await loadUsers()}}
 async function toggleBan(uid,banned){try{await apiPost({action:"setUserBan",uid,banned});toast(banned?"ระงับผู้ใช้แล้ว":"ยกเลิกการระงับแล้ว");await loadUsers()}catch(e){toast(e.message,false)}}
-async function changeUserRole(uid,role){try{await apiPost({action:"setUserRole",uid,role});toast("เปลี่ยนสิทธิ์เป็น "+userRoleLabel(role)+" แล้ว");await loadUsers()}catch(e){toast(e.message,false);await loadUsers()}}
-async function deleteUserAccount(uid){
-  if(!confirm("ยืนยันลบบัญชีนี้หรือไม่? การลบบัญชีอาจไม่สามารถกู้คืนได้"))return;
-  try{await apiPost({action:"deleteUser",uid});toast("ลบบัญชีแล้ว");await loadUsers()}catch(e){toast(e.message,false)}
-}
-function showUserPassword(password){
-  if(password){alert("รหัสผ่านที่บันทึกไว้: "+password);return}
-  alert("บัญชีนี้ไม่มีรหัสผ่านแบบข้อความให้แสดง\n\nถ้าใช้ Firebase Authentication ระบบจะไม่สามารถดึงรหัสผ่านจริงกลับมาแสดงได้ เพราะ Firebase เก็บรหัสผ่านแบบเข้ารหัส/แฮชเพื่อความปลอดภัย");
-}
-window.toggleBan=toggleBan;window.changeUserRole=changeUserRole;window.deleteUserAccount=deleteUserAccount;window.showUserPassword=showUserPassword;
-
+function showUserPasswordInfo(){toast("Firebase Authentication ไม่อนุญาตให้แอดมินอ่านรหัสผ่านเดิมของผู้ใช้ หากลืมรหัสผ่านให้ใช้ระบบรีเซ็ตรหัสผ่าน",false)}
+async function deleteUserAdmin(uid){confirmAction("ลบบัญชีผู้ใช้","ต้องการลบบัญชีนี้ออกจากฐานข้อมูลหรือไม่? การลบจาก Firebase Authentication ต้องใช้ Firebase Admin SDK เพิ่มเติม",async()=>{try{await apiPost({action:"deleteUser",uid});toast("ลบบัญชีออกจากรายการแล้ว");await loadUsers()}catch(e){toast(e.message,false)}})}
+window.changeUserRole=changeUserRole;window.toggleBan=toggleBan;window.deleteUserAdmin=deleteUserAdmin;window.showUserPasswordInfo=showUserPasswordInfo;
 /* ---------------- Admin: แชท (ตอบผู้ใช้) ---------------- */
 async function loadConversations(){try{conversations=await apiGetAuth("getConversations");renderConversationList()}catch(e){$("adminChat").innerHTML='<div class="empty">'+esc(e.message)+'</div>'}}
 function renderConversationList(){
