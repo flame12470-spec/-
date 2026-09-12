@@ -1504,7 +1504,7 @@ function getPopupImages(){
 }
 let popupSlideIndex=0,popupSlideTimer=null;
 function popupAlign(v){return v==="left"?"left":v==="right"?"right":"center"}
-function popupWeight(v){return v==="normal"?"400":"700"}
+function popupWeight(v){const n=parseInt(v,10);return(!isNaN(n)&&n>=100&&n<=900)?String(n):"400"}
 function renderPopup(){
   const imgs=getPopupImages();
   $("adminPopup").innerHTML=
