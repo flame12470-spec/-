@@ -1051,7 +1051,18 @@ main{
 .text-style-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.text-style-grid .field{margin-bottom:0}
 .builder-text-editor{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--surface-2)}
 @media(max-width:650px){.text-style-grid{grid-template-columns:1fr}}
-</style></style></head>
+</style><style id="builder-text-modal-fix">
+/* แก้ปัญหาหน้าต่าง "เพิ่มข้อความ" ถูก pageModal บัง */
+#builderTextModal{z-index:3100;}
+#builderTextModal .modal{position:relative;z-index:3101;}
+/* ให้กล่องเพิ่มข้อความอยู่กึ่งกลางและไม่ถูกบีบในมือถือ */
+#builderTextModal .modal{width:min(520px,calc(100vw - 24px));max-height:min(90vh,720px);overflow-y:auto;}
+@media(max-width:650px){
+  #builderTextModal{padding:12px;}
+  #builderTextModal .modal{width:100%;max-height:90vh;padding:18px;}
+}
+</style>
+</style></head>
 <body>
 <header>
   <div class="brand-wrap"><img id="siteLogo" class="logo hidden" alt="logo"><div class="brand" id="siteName">กำลังโหลด...</div></div>
