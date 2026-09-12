@@ -35,6 +35,9 @@
 html,body{width:100%;overflow-x:hidden}
 body{min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);
   font-family:"Kanit",sans-serif;font-weight:var(--font-weight);padding-bottom:30px;transition:background .2s,color .2s}
+/* Make the selected system weight effective on normal UI text. */
+body :where(p,span,div,li,label,a,button,input,textarea,select,option,td,th,small){font-family:"Kanit",sans-serif;font-weight:var(--font-weight);}
+body :where(.material-symbols-outlined,[class*="fa-"]){font-family:initial;font-weight:initial;}
 button,input,textarea,select{font:inherit;color:inherit}
 button{cursor:pointer}
 img,video,iframe{max-width:100%;height:auto}
@@ -1320,6 +1323,33 @@ if(p){
    * The parent site is responsive, so the embedded page should use the
    * full available width on iPad/desktop while remaining 100% on mobile.
    */
+  /* Apply the system Kanit weight to HTML/code pages too.
+   * The previous version only changed the parent page CSS.
+   * Code pages run inside an iframe, so their own CSS could keep
+   * every paragraph at 600/700 and make the weight setting appear
+   * to do nothing.
+   */
+  const embedWeight=Math.max(100,Math.min(900,parseInt(settings.fontWeight,10)||400));
+  const kanitEmbedPatch=`<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style id="np-kanit-embed-patch">
+    :root{--np-kanit-weight:${embedWeight};}
+    html,body{font-family:"Kanit",sans-serif!important;}
+    body,body p,body span,body div,body li,body label,body a,body button,body input,body textarea,body select,body option,body td,body th,body small,body strong,body b,body h1,body h2,body h3,body h4,body h5,body h6{
+      font-family:"Kanit",sans-serif!important;
+      font-weight:${embedWeight}!important;
+    }
+    /* Never alter icon fonts. */
+    body .material-symbols-outlined,body [class*="material-symbols"],body [class*="fa-"]{
+      font-family:initial!important;
+      font-weight:initial!important;
+    }
+    body .material-symbols-outlined,body [class*="material-symbols"]{
+      font-family:"Material Symbols Outlined"!important;
+      font-variation-settings:"FILL" 0,"wght" 400,"GRAD" 0,"opsz" 24!important;
+    }
+  </style>`;
   const responsivePatch=`<style id="np-responsive-embed-patch">
     html,body{width:100%!important;min-width:0!important;margin:0!important;padding:0!important;}
     body{overflow-x:hidden!important;display:block!important;}
@@ -1349,8 +1379,9 @@ if(p){
     }
   </style>`;
   let src=p.content||"";
-  if(/<\/head>/i.test(src)) src=src.replace(/<\/head>/i,responsivePatch+"</head>");
-  else src=responsivePatch+src;
+  const embedPatch=kanitEmbedPatch+responsivePatch;
+  if(/<\/head>/i.test(src)) src=src.replace(/<\/head>/i,embedPatch+"</head>");
+  else src=embedPatch+src;
   frame.srcdoc=src;
   c.appendChild(frame);
   return
