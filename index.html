@@ -1216,7 +1216,7 @@ const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,
       เพื่อวินิจฉัยได้ตรงจุดว่าฝั่งไหนพังเพราะอะไร (CORS / permission / timeout ฯลฯ)
    2) มี testApiConnection() ไว้กดทดสอบจากในแอปได้เลย ไม่ต้องเปิด URL แยก
    ========================================================= */
-const API_TIMEOUT=8000;
+const API_TIMEOUT=25000; // เผื่อ Apps Script cold start / getAll ที่ไล่สร้าง-อ่านหลายชีต อาจช้ากว่า 8 วิ
 let __lastApiErrors={fetch:null,jsonp:null};
 function apiUrl(action,params){
   const u=new URL(API_URL);
