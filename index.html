@@ -1213,7 +1213,7 @@ const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,
    ใช้ JSONP สำหรับ GET เพื่อหลีกเลี่ยงปัญหา CORS/redirect ของ Safari
    และยังมี fetch เป็น fallback สำหรับเบราว์เซอร์ทั่วไป
    ========================================================= */
-const API_TIMEOUT=15000;
+const API_TIMEOUT=8000;
 function apiUrl(action,params){
   const u=new URL(API_URL);
   u.searchParams.set("action",action||"getAll");
@@ -1225,21 +1225,19 @@ function jsonp(url){
   return new Promise((resolve,reject)=>{
     const name="__np404_jsonp_"+Date.now()+"_"+Math.random().toString(36).slice(2);
     const script=document.createElement("script");
-    let done=false;
+    let done=false,timer;
     const cleanup=()=>{
-      done=true;
-      clearTimeout(timer);
+      done=true; clearTimeout(timer);
       try{delete window[name]}catch(e){window[name]=undefined}
       if(script.parentNode)script.parentNode.removeChild(script);
     };
-    const timer=setTimeout(()=>{cleanup();reject(new Error("JSONP timeout: Apps Script ไม่ตอบกลับ"))},API_TIMEOUT);
+    timer=setTimeout(()=>{cleanup();reject(new Error("JSONP timeout"))},API_TIMEOUT);
     window[name]=(data)=>{
-      if(done)return;
-      cleanup();
+      if(done)return; cleanup();
       if(data&&data.success===false)reject(new Error(data.error||"Apps Script แจ้งข้อผิดพลาด"));
       else resolve(data&&data.data!==undefined?data.data:data);
     };
-    script.onerror=()=>{cleanup();reject(new Error("JSONP error: ไม่สามารถเชื่อมต่อ Apps Script ได้"))};
+    script.onerror=()=>{cleanup();reject(new Error("JSONP error"))};
     script.src=url+(url.includes("?")?"&":"?")+"callback="+encodeURIComponent(name);
     script.async=true;
     document.head.appendChild(script);
@@ -1250,46 +1248,42 @@ async function fetchApiJson(url,options={},attempt=0){
   const timer=setTimeout(()=>ctl.abort(),API_TIMEOUT);
   try{
     const r=await fetch(url,{
-      method:options.method||"GET",
-      body:options.body,
+      method:options.method||"GET", body:options.body,
       headers:options.headers||{"Accept":"application/json,text/plain,*/*"},
-      credentials:"omit",
-      redirect:"follow",
-      cache:"no-store",
-      mode:"cors",
-      signal:ctl.signal
+      credentials:"omit", redirect:"follow", cache:"no-store", mode:"cors", signal:ctl.signal
     });
     const text=await r.text();
     if(!r.ok)throw new Error("HTTP "+r.status);
-    let x;
-    try{x=JSON.parse(text)}catch(e){throw new Error("API ส่งข้อมูลที่ไม่ใช่ JSON")}
+    let x; try{x=JSON.parse(text)}catch(e){throw new Error("API ส่งข้อมูลที่ไม่ใช่ JSON")}
     if(x&&x.success===false)throw new Error(x.error||"Apps Script แจ้งข้อผิดพลาด");
     return x&&x.data!==undefined?x.data:x;
   }catch(e){
-    if(attempt<1){
-      await new Promise(resolve=>setTimeout(resolve,500));
-      return fetchApiJson(url,options,attempt+1);
-    }
+    if(attempt<1){await new Promise(r=>setTimeout(r,250));return fetchApiJson(url,options,attempt+1)}
     if(e&&e.name==="AbortError")throw new Error("API ใช้เวลานานเกินไป");
     throw e;
   }finally{clearTimeout(timer)}
 }
-function apiGet(a){
-  const url=apiUrl(a);
-  // JSONP เป็นวิธีหลักสำหรับ GET บน Safari/iPad
-  return jsonp(url).catch(()=>fetchApiJson(url));
+/* เรียก GET แบบขนาน: มือถือมักได้ผลจาก fetch ส่วน Safari/iPad ใช้ JSONP
+   ไม่ต้องรอวิธีใดวิธีหนึ่งครบ 15 วินาทีเหมือนรุ่นก่อน */
+function apiGetFast(a,params){
+  const url=apiUrl(a,params);
+  return new Promise((resolve,reject)=>{
+    let settled=false,errors=0;
+    const finish=(fn,v)=>{if(settled)return;settled=true;fn(v)};
+    jsonp(url).then(v=>finish(resolve,v)).catch(()=>{if(++errors>=2)finish(reject,new Error("เชื่อมต่อ Apps Script ไม่สำเร็จ"))});
+    fetchApiJson(url).then(v=>finish(resolve,v)).catch(()=>{if(++errors>=2)finish(reject,new Error("เชื่อมต่อ Apps Script ไม่สำเร็จ"))});
+  });
 }
+function apiGet(a){return apiGetFast(a)}
 async function apiGetAuth(a,params){
   const token=window.__getIdToken?await window.__getIdToken():null;
-  const url=apiUrl(a,{...(params||{}),idToken:token||""});
-  return jsonp(url).catch(()=>fetchApiJson(url));
+  return apiGetFast(a,{...(params||{}),idToken:token||""});
 }
 async function apiPost(d){
   const token=window.__getIdToken?await window.__getIdToken():null;
   if(!token)throw Error("กรุณาเข้าสู่ระบบก่อนทำรายการนี้");
   return fetchApiJson(API_URL+"?action="+encodeURIComponent(d.action||"")+"&_ts="+Date.now(),{
-    method:"POST",
-    headers:{"Content-Type":"text/plain;charset=utf-8","Accept":"application/json,text/plain,*/*"},
+    method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8","Accept":"application/json,text/plain,*/*"},
     body:JSON.stringify({...d,idToken:token})
   });
 }
