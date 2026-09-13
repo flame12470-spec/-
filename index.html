@@ -1209,11 +1209,15 @@ let pages=[],links=[],settings={},activeId=HOME_ID,authTab="login",editingPageRo
 let conversations=[],usersList=[],activeConvUserId=null,adminChatTimer=null,chatPollTimer=null;
 const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 /* =========================================================
-   NP-404 — Safari / iPad API FIX v2
-   ใช้ JSONP สำหรับ GET เพื่อหลีกเลี่ยงปัญหา CORS/redirect ของ Safari
-   และยังมี fetch เป็น fallback สำหรับเบราว์เซอร์ทั่วไป
+   NP-404 — API connection layer v3
+   เหมือน v2 (JSONP + fetch แข่งกัน ไม่ต้องรอทั้งคู่ครบ) แต่เพิ่ม:
+   1) เก็บ error จริงจากทั้ง fetch และ JSONP แยกกันไว้ใน __lastApiErrors
+      แล้วโชว์ทั้งคู่ในข้อความ error แทนคำว่า "เชื่อมต่อไม่สำเร็จ" เฉยๆ
+      เพื่อวินิจฉัยได้ตรงจุดว่าฝั่งไหนพังเพราะอะไร (CORS / permission / timeout ฯลฯ)
+   2) มี testApiConnection() ไว้กดทดสอบจากในแอปได้เลย ไม่ต้องเปิด URL แยก
    ========================================================= */
 const API_TIMEOUT=8000;
+let __lastApiErrors={fetch:null,jsonp:null};
 function apiUrl(action,params){
   const u=new URL(API_URL);
   u.searchParams.set("action",action||"getAll");
@@ -1231,13 +1235,13 @@ function jsonp(url){
       try{delete window[name]}catch(e){window[name]=undefined}
       if(script.parentNode)script.parentNode.removeChild(script);
     };
-    timer=setTimeout(()=>{cleanup();reject(new Error("JSONP timeout"))},API_TIMEOUT);
+    timer=setTimeout(()=>{cleanup();reject(new Error("JSONP timeout 8 วิ (มักแปลว่า Apps Script เด้งขอ login ของ Google แทนที่จะตอบ JSON — เช็คว่า deployment ตั้ง Who has access เป็น 'Anyone' จริงไหม)"))},API_TIMEOUT);
     window[name]=(data)=>{
       if(done)return; cleanup();
       if(data&&data.success===false)reject(new Error(data.error||"Apps Script แจ้งข้อผิดพลาด"));
       else resolve(data&&data.data!==undefined?data.data:data);
     };
-    script.onerror=()=>{cleanup();reject(new Error("JSONP error"))};
+    script.onerror=()=>{cleanup();reject(new Error("JSONP script โหลดไม่สำเร็จ (อาจถูก CSP บล็อก หรือ URL ผิด)"))};
     script.src=url+(url.includes("?")?"&":"?")+"callback="+encodeURIComponent(name);
     script.async=true;
     document.head.appendChild(script);
@@ -1254,12 +1258,13 @@ async function fetchApiJson(url,options={},attempt=0){
     });
     const text=await r.text();
     if(!r.ok)throw new Error("HTTP "+r.status);
-    let x; try{x=JSON.parse(text)}catch(e){throw new Error("API ส่งข้อมูลที่ไม่ใช่ JSON")}
+    let x; try{x=JSON.parse(text)}catch(e){throw new Error("API ส่งข้อมูลที่ไม่ใช่ JSON (มักแปลว่าโดนเด้งไปหน้า login ของ Google แทน)")}
     if(x&&x.success===false)throw new Error(x.error||"Apps Script แจ้งข้อผิดพลาด");
     return x&&x.data!==undefined?x.data:x;
   }catch(e){
     if(attempt<1){await new Promise(r=>setTimeout(r,250));return fetchApiJson(url,options,attempt+1)}
-    if(e&&e.name==="AbortError")throw new Error("API ใช้เวลานานเกินไป");
+    if(e&&e.name==="AbortError")throw new Error("API ใช้เวลานานเกินไป (เกิน 8 วิ)");
+    if(e instanceof TypeError)throw new Error("Fetch ถูกบล็อกโดย CORS/เครือข่าย (ปกติสำหรับ Apps Script — JSONP จะเป็นตัวช่วยแทน)");
     throw e;
   }finally{clearTimeout(timer)}
 }
@@ -1267,14 +1272,29 @@ async function fetchApiJson(url,options={},attempt=0){
    ไม่ต้องรอวิธีใดวิธีหนึ่งครบ 15 วินาทีเหมือนรุ่นก่อน */
 function apiGetFast(a,params){
   const url=apiUrl(a,params);
+  __lastApiErrors={fetch:null,jsonp:null};
   return new Promise((resolve,reject)=>{
     let settled=false,errors=0;
     const finish=(fn,v)=>{if(settled)return;settled=true;fn(v)};
-    jsonp(url).then(v=>finish(resolve,v)).catch(()=>{if(++errors>=2)finish(reject,new Error("เชื่อมต่อ Apps Script ไม่สำเร็จ"))});
-    fetchApiJson(url).then(v=>finish(resolve,v)).catch(()=>{if(++errors>=2)finish(reject,new Error("เชื่อมต่อ Apps Script ไม่สำเร็จ"))});
+    jsonp(url).then(v=>finish(resolve,v)).catch(e=>{__lastApiErrors.jsonp=e&&e.message||String(e);if(++errors>=2)finish(reject,new Error(combinedApiError_()))});
+    fetchApiJson(url).then(v=>finish(resolve,v)).catch(e=>{__lastApiErrors.fetch=e&&e.message||String(e);if(++errors>=2)finish(reject,new Error(combinedApiError_()))});
   });
 }
+function combinedApiError_(){
+  return "เชื่อมต่อ Apps Script ไม่สำเร็จ\nfetch: "+(__lastApiErrors.fetch||"-")+"\nJSONP: "+(__lastApiErrors.jsonp||"-");
+}
 function apiGet(a){return apiGetFast(a)}
+/* กดทดสอบการเชื่อมต่อ API จากในแอปได้เลย โดยไม่ต้องเปิด URL แยกในแท็บใหม่ */
+async function testApiConnection(){
+  toast("กำลังทดสอบการเชื่อมต่อ...");
+  try{
+    const ping=await apiGetFast("ping");
+    toast("เชื่อมต่อ Apps Script สำเร็จ ("+(ping&&ping.time||"")+")");
+  }catch(e){
+    toast(String(e&&e.message||e),false);
+  }
+}
+window.testApiConnection=testApiConnection;
 async function apiGetAuth(a,params){
   const token=window.__getIdToken?await window.__getIdToken():null;
   return apiGetFast(a,{...(params||{}),idToken:token||""});
@@ -1309,8 +1329,11 @@ async function loadAll(){
     $("pageContent").innerHTML='<div class="empty" style="padding:55px 20px;line-height:2">'+
       '<b style="display:block;font-size:18px;color:var(--ink);margin-bottom:6px">โหลดข้อมูลระบบไม่สำเร็จ</b>'+
       '<span>กรุณาลองรีเฟรชอีกครั้ง หากใช้ iPad/Safari ให้ตรวจสอบว่า Apps Script ตั้งค่าเป็น <b>ทุกคน (Anyone)</b> และ URL API ยังใช้งานได้</span>'+
-      '<small style="display:block;margin-top:8px;opacity:.75;word-break:break-word">'+esc(msg)+'</small>'+
-      '<button class="pill solid" style="margin-top:14px" onclick="loadAll()">ลองโหลดใหม่</button></div>';
+      '<small style="display:block;margin-top:8px;opacity:.75;word-break:break-word;white-space:pre-line">'+esc(msg)+'</small>'+
+      '<div style="margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'+
+      '<button class="pill solid" onclick="loadAll()">ลองโหลดใหม่</button>'+
+      '<button class="pill" onclick="testApiConnection()">ทดสอบ API</button>'+
+      '</div></div>';
   }
 }
 
