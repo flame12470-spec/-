@@ -4,14 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0f17">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234f5bf5'><path d='M4 5h16v11H9l-5 4z'/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234f5bf5'><path d='M4 5h16v11H9l-5 4z'/></svg>">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="แชท">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>ระบบแชท</title>
+<title>ระบบแชทความปลอดภัยสูง</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -23,401 +21,162 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{background:var(--bg);color:var(--text);font-family:'Prompt',system-ui,-apple-system,sans-serif;overflow:hidden;line-height:1.5}
+body{background:var(--bg);color:var(--text);font-family:'Prompt',sans-serif;overflow:hidden;line-height:1.5}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;touch-action:manipulation}
 input,textarea{font:inherit;font-size:16px;color:var(--text)}
 .hide{display:none!important}
 .ico{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.16em;flex:none}
-img,video{-webkit-user-drag:none;-webkit-touch-callout:none}
 
-/* ---------- layout ---------- */
-#app{display:grid;grid-template-columns:76px 380px 1fr;height:100dvh;transition:filter .15s}
+/* Layout */
+#app{display:grid;grid-template-columns:76px 360px 1fr;height:100dvh;transition:filter .15s}
 #app.shield{filter:blur(22px)}
 #rail{display:flex;flex-direction:column;align-items:center;gap:8px;padding:calc(18px + var(--sat)) 0 calc(18px + var(--sab));border-right:1px solid var(--line)}
-#rail .logo{font-size:30px;margin:10px 0 24px}
-#rail .rb{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:28px;position:relative}
-#rail .rb:hover{background:var(--hover)}
-#rail .rb.on{background:var(--sel)}
+#rail .rb{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-size:26px}
+#rail .rb:hover{background:var(--hover)}#rail .rb.on{background:var(--sel)}
 #rail .sp{flex:1}
 #side{display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--line);height:100dvh}
 #main{display:flex;flex-direction:column;min-width:0;height:100dvh;position:relative}
 
-/* ---------- list ---------- */
+/* Side List */
 .s-head{display:flex;align-items:center;gap:10px;padding:calc(18px + var(--sat)) 20px 8px}
-.uname{display:flex;align-items:center;gap:6px;font-size:24px;font-weight:700;min-width:0}
+.uname{display:flex;align-items:center;gap:6px;font-size:22px;font-weight:700;min-width:0}
 .uname b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.uname .ico{font-size:16px}
 .adm{background:var(--accent);color:#fff;font-size:11px;font-weight:600;padding:2px 10px;border-radius:99px}
 .rt{width:10px;height:10px;border-radius:50%;background:var(--muted);flex:none}.rt.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}.rt.err{background:var(--danger)}
 .s-head .sp{flex:1}
-.ib{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:26px;position:relative;flex:none}
+.ib{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:24px;flex:none}
 .ib:hover{background:var(--hover)}
-.searchbox{margin:8px 20px 6px;display:flex;align-items:center;gap:12px;background:#222a36;border-radius:99px;padding:0 18px;height:50px;color:var(--muted)}
-.searchbox input{flex:1;background:none;border:0;outline:0;min-width:0}
-.searchbox input::placeholder{color:var(--muted)}
-.s-sub{display:flex;justify-content:space-between;align-items:center;padding:14px 22px 6px}
-.s-sub b{font-size:18px}
-.s-sub button{color:var(--muted);font-size:14px;font-weight:600;display:flex;gap:6px;align-items:center}
+.searchbox{margin:8px 16px 6px;display:flex;align-items:center;gap:10px;background:#222a36;border-radius:99px;padding:0 16px;height:46px;color:var(--muted)}
+.searchbox input{flex:1;background:none;border:0;outline:0}
+.s-sub{display:flex;justify-content:space-between;align-items:center;padding:12px 20px 6px;font-size:14px}
 .dotn{min-width:18px;height:18px;border-radius:99px;background:var(--danger);color:#fff;font-size:11px;display:grid;place-items:center;padding:0 5px}
-#clist{flex:1;overflow-y:auto;padding:4px 8px calc(20px + var(--sab));-webkit-overflow-scrolling:touch}
-.ci{display:flex;align-items:center;gap:14px;width:100%;padding:10px 12px;border-radius:14px;text-align:left}
-.ci:hover{background:var(--hover)}
-.ci.on{background:var(--sel)}
+#clist{flex:1;overflow-y:auto;padding:4px 8px calc(20px + var(--sab))}
+.ci{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border-radius:14px;text-align:left}
+.ci:hover{background:var(--hover)}.ci.on{background:var(--sel)}
 .ci .tx{flex:1;min-width:0}
-.ci .tt{display:flex;gap:8px;align-items:center}
-.ci .tt b{font-weight:500;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ci .pv{color:var(--muted);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ci.un .pv,.ci.un .tt b{color:var(--text);font-weight:700}
-.ci .un-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex:none}
-.tg{font-size:11px;padding:1px 8px;border-radius:99px;background:#3a2330;color:#ff9aa8;white-space:nowrap}
-.tg.s{background:#2a2f3a;color:var(--muted)}
+.ci .tt{display:flex;gap:8px;align-items:center;font-weight:600;font-size:15px}
+.ci .pv{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ci.un .pv,.ci.un .tt{color:var(--text);font-weight:700}
+.ci .un-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
+.tg{font-size:10px;padding:1px 6px;border-radius:99px;background:#3a2330;color:#ff9aa8}
 .av{display:grid;place-items:center;border-radius:50%;color:#fff;font-weight:600;flex:none;overflow:hidden}
-.av .ico{font-size:55%}
-.empty-list{color:var(--muted);text-align:center;padding:40px 20px;font-size:14px}
 
-/* ---------- empty main ---------- */
+/* Chat View */
 #empty{margin:auto;text-align:center;padding:20px}
-#empty .circ{width:96px;height:96px;border:2px solid #fff;border-radius:50%;display:grid;place-items:center;font-size:44px;margin:0 auto 18px}
-#empty h2{font-size:24px;font-weight:600}
-#empty p{color:var(--muted);margin:6px 0 18px}
-.pbtn{background:var(--accent);color:#fff;font-weight:600;padding:11px 22px;border-radius:12px}
-.pbtn:hover{filter:brightness(1.1)}
-.pbtn.ghost{background:#222a36}
-.pbtn.red{background:var(--danger)}
-.pbtn.ok{background:var(--ok);color:#06210f}
-
-/* ---------- chat ---------- */
+#empty .circ{width:84px;height:84px;border:2px solid #fff;border-radius:50%;display:grid;place-items:center;font-size:38px;margin:0 auto 16px}
 #chat{display:flex;flex-direction:column;height:100%;min-height:0}
-.ch{display:flex;align-items:center;gap:12px;padding:calc(12px + var(--sat)) 18px 12px;border-bottom:1px solid var(--line)}
+.ch{display:flex;align-items:center;gap:12px;padding:calc(12px + var(--sat)) 16px 12px;border-bottom:1px solid var(--line)}
 .ch .ttl{flex:1;min-width:0}
-.ch .ttl b{display:block;font-size:17px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ch .ttl small{color:var(--muted);font-size:13px}
+.ch .ttl b{display:block;font-size:16px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ch .ttl small{color:var(--muted);font-size:12px}
 .only-m{display:none}
-#msgs{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:3px;-webkit-overflow-scrolling:touch}
-.sys{align-self:center;text-align:center;color:var(--muted);font-size:13px;padding:10px 18px;max-width:80%}
-.sys.warn{color:#ffb4bd;background:#2a1a20;border-radius:14px;margin:8px 0}
-.day{align-self:center;color:var(--muted);font-size:12px;margin:12px 0 6px}
-.row{display:flex;align-items:flex-end;gap:8px;max-width:100%;position:relative}
+#msgs{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.sys{align-self:center;text-align:center;color:var(--muted);font-size:12px;padding:6px 14px}
+.sys.warn{color:#ffb4bd;background:#2a1a20;border-radius:12px;margin:6px 0}
+.day{align-self:center;color:var(--muted);font-size:11px;margin:10px 0 4px}
+.row{display:flex;align-items:flex-end;gap:6px;max-width:100%;position:relative}
 .row.me{flex-direction:row-reverse}
-.av-sp{width:28px;flex:none}
-.col{display:flex;flex-direction:column;min-width:0;max-width:min(72%,520px)}
+.col{display:flex;flex-direction:column;min-width:0;max-width:min(75%,520px)}
 .row.me .col{align-items:flex-end}
-.nm{color:var(--muted);font-size:12px;margin:6px 0 2px 4px}
-.bub{padding:9px 15px;border-radius:20px;background:var(--other);overflow-wrap:anywhere;white-space:pre-wrap;font-size:15px;position:relative}
+.nm{color:var(--muted);font-size:11px;margin:4px 0 2px 4px}
+.bub{padding:8px 14px;border-radius:18px;background:var(--other);overflow-wrap:anywhere;white-space:pre-wrap;font-size:14px}
 .row.me .bub{background:var(--me)}
 .bub.media{padding:0;background:none}
 .bub.gone{background:none;border:1px dashed #3a4252;color:var(--muted);font-style:italic}
-.note{font-size:11px;color:var(--warn);margin:2px 6px}
+.note{font-size:11px;color:var(--warn);margin:2px 4px}
 .note.dim{color:var(--muted)}
 
 /* Reaction System */
-.msg-reaction-container {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-.msg-reaction-badge {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 99px;
-  padding: 2px 8px;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.msg-reaction-badge:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-.msg-reaction-badge.mine {
-  background: rgba(79, 70, 229, 0.2);
-  border-color: var(--accent);
-}
-.reaction-picker-trigger {
-  position: absolute;
-  opacity: 0;
-  transition: opacity 0.2s;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  display: grid;
-  place-items: center;
-  font-size: 16px;
-  z-index: 5;
-}
-.row.me .reaction-picker-trigger {
-  left: -36px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-.row.ot .reaction-picker-trigger {
-  right: -36px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-.row:hover .reaction-picker-trigger {
-  opacity: 1;
-}
-@media (hover: none) {
-  .reaction-picker-trigger {
-    opacity: 0.6;
-  }
-}
-.reaction-picker-popover {
-  position: absolute;
-  background: #1e2533;
-  border: 1px solid #2d3748;
-  border-radius: 99px;
-  padding: 4px 8px;
-  display: flex;
-  gap: 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  z-index: 100;
-  top: -45px;
-}
-.row.me .reaction-picker-popover {
-  left: -120px;
-}
-.row.ot .reaction-picker-popover {
-  right: -120px;
-}
-.reaction-emoji-btn {
-  font-size: 20px;
-  transition: transform 0.1s;
-}
-.reaction-emoji-btn:hover {
-  transform: scale(1.2);
-}
+.msg-reaction-container{display:flex;gap:4px;flex-wrap:wrap;margin:4px 4px 2px}
+.row.me .msg-reaction-container{justify-content:flex-end}
+.msg-reaction-badge{background:#1b2230;border:1px solid #2b3342;border-radius:99px;padding:1px 7px;font-size:12px;line-height:20px;display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+.msg-reaction-badge.mine{border-color:var(--accent);background:rgba(79,91,245,.2)}
+.reaction-picker-trigger{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:var(--muted);opacity:0;transition:opacity .15s;flex:none;margin-bottom:6px}
+.row:hover .reaction-picker-trigger{opacity:1}
+@media(hover:none){.reaction-picker-trigger{opacity:.7}}
+.rx-popover{position:absolute;background:#181f2c;border:1px solid #2b3548;border-radius:99px;padding:4px 8px;display:flex;gap:6px;box-shadow:0 6px 18px rgba(0,0,0,.6);z-index:90;bottom:calc(100% + 4px)}
+.row.me .rx-popover{right:0}.row.ot .rx-popover{left:32px}
+.rx-popover button{font-size:20px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center}
+.rx-popover button:hover{background:rgba(255,255,255,.1)}
 
-/* Song / Music Player style */
-.song-card {
-  background: #181f2a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 240px;
-  max-width: 320px;
-}
-.song-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.song-cover {
-  width: 48px;
-  height: 48px;
-  background: var(--accent);
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  font-size: 24px;
-}
-.song-info {
-  flex: 1;
-  min-width: 0;
-}
-.song-title {
-  font-weight: 600;
-  font-size: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.song-artist {
-  font-size: 12px;
-  color: var(--muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.song-player-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.song-play-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--accent);
-  display: grid;
-  place-items: center;
-  font-size: 14px;
-  color: white;
-}
-.song-progress-container {
-  flex: 1;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
-  position: relative;
-  cursor: pointer;
-}
-.song-progress-bar {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  background: var(--accent);
-  border-radius: 2px;
-  width: 0%;
-}
-.song-time {
-  font-size: 10px;
-  color: var(--muted);
-  min-width: 30px;
-  text-align: right;
-}
+/* Song Player Card */
+.song-card{background:#181f2a;border:1px solid #2a3446;border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-width:240px;max-width:320px}
+.song-header{display:flex;align-items:center;gap:10px}
+.song-cover{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#4f5bf5,#e11d48);display:grid;place-items:center;font-size:20px;flex:none}
+.song-info{flex:1;min-width:0}
+.song-title{font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.song-size{font-size:11px;color:var(--muted)}
+.song-controls{display:flex;align-items:center;gap:8px}
+.song-btn{width:32px;height:32px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font-size:13px;color:#fff;flex:none}
+.song-track{flex:1;height:4px;background:#2b3445;border-radius:99px;position:relative;cursor:pointer}
+.song-bar{position:absolute;left:0;top:0;height:100%;background:var(--accent);border-radius:99px;width:0%}
+.song-time{font-size:11px;color:var(--muted);min-width:30px;text-align:right}
 
-.rxs{display:none!important} /* Hide deprecated reaction block from original styling */
-.rxc{background:#1b2230;border:1px solid #2b3342;border-radius:99px;padding:0 9px;font-size:13px;line-height:22px}.rxc.me{border-color:var(--accent)}
-.rxbar{display:flex;justify-content:space-between;margin:10px 0 2px}.rxbar button{font-size:30px;width:48px;height:48px;border-radius:50%}.rxbar button:hover{background:#1e2533}
-.stk{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 18px;border-radius:24px;background:rgba(255,255,255,.06);border:2px dashed var(--c)}
-.stk .e{font-size:64px;line-height:1.15}.stk b{color:#fff;font-size:18px;text-shadow:0 0 8px var(--c),0 0 2px var(--c)}
-.stkgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.stkgrid button{display:block}.stkgrid .stk{padding:8px 4px}.stkgrid .stk .e{font-size:42px}.stkgrid .stk b{font-size:14px}
-.tm{font-size:11px;color:var(--muted);margin:2px 6px 6px}
-.tm .rd{font-size:inherit;color:inherit;padding:0}.tm .rd.on{color:var(--accent)}
-.more{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--muted);opacity:0;flex:none;margin-bottom:6px}
+/* Stickers & Media */
+.stk{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 16px;border-radius:20px;background:rgba(255,255,255,.06);border:2px dashed var(--c)}
+.stk .e{font-size:52px;line-height:1.15}.stk b{color:#fff;font-size:16px}
+.stkgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.stkgrid button{display:block}
+.tm{font-size:11px;color:var(--muted);margin:2px 4px 4px}
+.tm .rd.on{color:var(--accent)}
+.more{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:var(--muted);opacity:0;flex:none;margin-bottom:6px}
 .row:hover .more{opacity:1}
-@media(hover:none){.more{opacity:.7}}
-.more:hover{background:var(--hover)}
-.med{position:relative;border-radius:18px;overflow:hidden;background:#111621;max-width:100%}
-.med img{display:block;max-width:100%;max-height:340px;min-width:140px;min-height:100px;object-fit:cover;cursor:zoom-in;user-select:none;-webkit-user-select:none}
-.med video{display:block;max-width:100%;max-height:340px;min-width:200px;background:#000}
-.med .lk{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.65);color:#fff;font-size:11px;padding:2px 9px;border-radius:99px}
-.lockmed{display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:18px;background:#1a202b;color:var(--muted);font-size:14px;border:1px dashed #323a4a}
-.lockmed .ico{font-size:22px}
-audio{max-width:100%;height:42px;filter:invert(.9) hue-rotate(180deg)}
-.filebox{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:18px;background:var(--other);text-align:left}
-.row.me .filebox{background:var(--me)}
-.filebox .ico{font-size:26px}
-.filebox small{display:block;opacity:.75;font-size:12px}
-.filebox b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;max-width:240px}
+.med img,.med video{display:block;max-width:100%;max-height:300px;border-radius:16px;object-fit:cover}
 
-/* composer */
-#comp{display:flex;align-items:flex-end;gap:6px;margin:10px 16px calc(12px + var(--sab));border:1px solid #2b3342;border-radius:26px;padding:6px 8px}
-#comp textarea{flex:1;background:none;border:0;outline:0;resize:none;max-height:140px;min-height:40px;padding:9px 6px;line-height:1.5}
-#comp textarea::placeholder{color:var(--muted)}
-#comp .ib{width:42px;height:42px}
-#comp .send{color:var(--accent);font-weight:700;padding:0 14px;height:42px}
+/* Composer */
+#comp{display:flex;align-items:flex-end;gap:4px;margin:8px 14px calc(10px + var(--sab));border:1px solid #2b3342;border-radius:24px;padding:5px 6px}
+#comp textarea{flex:1;background:none;border:0;outline:0;resize:none;max-height:130px;min-height:36px;padding:7px 6px;line-height:1.4}
+#comp .send{color:var(--accent);font-weight:700;padding:0 12px;height:36px}
 #comp:not(.has) .send{display:none}
 #comp.has .mic{display:none}
-#rec{display:none;align-items:center;gap:12px;margin:10px 16px calc(12px + var(--sab));border:1px solid var(--danger);border-radius:26px;padding:8px 14px}
+#rec{display:none;align-items:center;gap:10px;margin:8px 14px calc(10px + var(--sab));border:1px solid var(--danger);border-radius:24px;padding:6px 12px}
 #rec.on{display:flex}
-#rec i{width:12px;height:12px;border-radius:50%;background:var(--danger);animation:bl 1s infinite}
-@keyframes bl{50%{opacity:.25}}
+#rec i{width:10px;height:10px;border-radius:50%;background:var(--danger);animation:bl 1s infinite}
+@keyframes bl{50%{opacity:.2}}
 #rec span{flex:1}
-body.recording #comp{display:none}
-.banner{background:#2a1a20;color:#ffb4bd;padding:10px 18px;font-size:14px;display:flex;gap:12px;align-items:center;justify-content:space-between}
-.banner .pbtn{padding:6px 14px;font-size:13px}
-.lockview{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;gap:10px}
-.lockview .ico{font-size:64px;color:var(--muted)}
-.lockview h3{font-size:22px}
-.lockview p{color:var(--muted);margin-bottom:10px}
-.blankbar{padding:calc(12px + var(--sat)) 18px}
-.blank{flex:1}
 
-/* ---------- สถานะกำลังพิมพ์ ---------- */
-.typing{display:flex;gap:5px;align-items:center;padding:14px 16px}
-.typing i{width:8px;height:8px;border-radius:50%;background:#9aa6bb;animation:tp 1.2s infinite ease-in-out}
-.typing i:nth-child(2){animation-delay:.18s}
-.typing i:nth-child(3){animation-delay:.36s}
-@keyframes tp{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
-.ci .pv.ty{color:var(--accent);font-weight:600}
-#typ:empty{display:none}
-.typrow{margin-top:4px}
-#chSub.ty{color:var(--accent)}
-
-/* ---------- sheet / toast / lightbox / call ---------- */
-#sbg{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:100;opacity:0;pointer-events:none;transition:.2s}
+/* Modals & UI */
+#sbg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;opacity:0;pointer-events:none;transition:.2s}
 #sbg.on{opacity:1;pointer-events:auto}
-#sheet{position:fixed;left:50%;top:50%;width:min(480px,92vw);max-height:86dvh;overflow:auto;background:#161c27;border:1px solid #232b39;border-radius:22px;z-index:101;padding:24px 22px 20px;transform:translate(-50%,-46%);opacity:0;pointer-events:none;transition:.2s}
+#sheet{position:fixed;left:50%;top:50%;width:min(440px,92vw);max-height:86dvh;overflow:auto;background:#161c27;border:1px solid #232b39;border-radius:20px;z-index:101;padding:20px;transform:translate(-50%,-46%);opacity:0;pointer-events:none;transition:.2s}
 #sheet.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
-#sheet h3{font-size:20px;margin-bottom:4px;padding-right:36px}
-#sheet .xx{position:absolute;top:14px;right:14px;width:38px;height:38px;display:grid;place-items:center;font-size:22px;color:var(--muted)}
-#sheet label{display:block;color:var(--muted);font-size:13px;margin:14px 0 6px}
-#sheet input[type=text],#sheet input[type=password]{width:100%;background:#222a36;border:2px solid transparent;border-radius:14px;padding:12px 14px;outline:0}
-#sheet input:focus{border-color:var(--accent)}
-.opt{display:flex;align-items:center;gap:14px;width:100%;padding:14px 10px;border-radius:12px;text-align:left;font-size:16px}
+#sheet .xx{position:absolute;top:14px;right:14px;width:32px;height:32px;font-size:20px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;padding:12px 8px;border-radius:10px;text-align:left;font-size:15px}
 .opt:hover{background:#1e2533}
-.opt .ico{font-size:22px;color:var(--muted)}
-.opt.danger{color:var(--danger)}.opt.danger .ico{color:var(--danger)}
-.opt small{display:block;color:var(--muted);font-size:12px}
-.hr{height:1px;background:var(--line);margin:12px 0}
-.acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.acts .pbtn{padding:8px 16px;font-size:14px}
-.reqc{background:#1b2230;border-radius:14px;padding:12px 14px;margin-top:10px}
-.reqc small{color:var(--muted)}
-.sw{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
-.sw input{width:22px;height:22px;accent-color:var(--accent)}
-.help{color:var(--muted);font-size:12px;margin-top:8px}
-#toast{position:fixed;left:50%;bottom:calc(90px + var(--sab));transform:translate(-50%,16px);background:#e8ecf3;color:#0b0f17;padding:10px 20px;border-radius:99px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:300;max-width:90vw;text-align:center}
+.pbtn{background:var(--accent);color:#fff;font-weight:600;padding:9px 18px;border-radius:10px}
+.pbtn.ghost{background:#222a36}.pbtn.ok{background:var(--ok);color:#06210f}
+#toast{position:fixed;left:50%;bottom:calc(80px + var(--sab));transform:translate(-50%,16px);background:#e8ecf3;color:#0b0f17;padding:8px 18px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:300}
 #toast.on{opacity:1;transform:translate(-50%,0)}
-#lb{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
-#lb.on{display:flex}
-#lb img{max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-select:none}
-#lb button{position:absolute;top:calc(14px + var(--sat));right:14px;font-size:30px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.12);display:grid;place-items:center}
-#call{position:fixed;inset:0;background:#05070b;z-index:250;display:none;flex-direction:column;align-items:center;justify-content:center}
-#call.on{display:flex}
-#rv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#05070b}
-#lv{position:absolute;right:16px;top:calc(16px + var(--sat));width:min(30vw,160px);aspect-ratio:3/4;object-fit:cover;border-radius:16px;background:#111;transform:scaleX(-1);z-index:2}
-.cinfo{position:relative;z-index:2;text-align:center;margin-bottom:auto;margin-top:12vh;text-shadow:0 2px 10px #000}
-.cinfo .av{margin:0 auto 14px}
-.cinfo h3{font-size:26px}
-.cinfo p{color:#cfd6e4}
-.cbtn{position:relative;z-index:2;display:flex;gap:22px;margin-bottom:calc(40px + var(--sab))}
-.cbtn button{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.16);backdrop-filter:blur(8px);display:grid;place-items:center;font-size:28px;position:relative}
-.cbtn button.off{background:#fff;color:#111}
-.cbtn .end{background:var(--danger)}
-.cbtn .end .ico{transform:rotate(135deg)}
-.cbtn .acc{background:var(--ok)}
-.cbtn .hide{display:none}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
+#lb.on{display:flex}#lb img{max-width:100%;max-height:100%;object-fit:contain}
 
-/* ---------- responsive ---------- */
-@media(max-width:1100px){#app{grid-template-columns:64px 320px 1fr}#rail .rb{width:46px;height:46px}}
+/* Responsive */
 @media(max-width:760px){
-  #app{grid-template-columns:1fr}
-  #rail{display:none}
-  #main{display:none}
-  body.chat-open #side{display:none}
-  body.chat-open #main{display:flex}
+  #app{grid-template-columns:1fr}#rail,#main{display:none}
+  body.chat-open #side{display:none}body.chat-open #main{display:flex}
   .only-m{display:grid}
-  .col{max-width:80%}
-  #msgs{padding:12px}
 }
-@media(min-width:1500px){#app{grid-template-columns:84px 440px 1fr}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-@media print{body{display:none!important}}
 </style>
-<style data-link-removed-style>a[data-link-removed],a[href*="zPythonSafez"]:not([onclick]){pointer-events:none!important;cursor:default!important;opacity:.6}</style></head>
+</head>
 <body>
 
 <div id="app">
   <nav id="rail" aria-label="เมนู">
     <div class="logo" id="logoI"></div>
-    <button class="rb on" data-act="home" aria-label="แชท" id="rbChat"></button>
-    <button class="rb" data-act="focusSearch" aria-label="ค้นหา" id="rbSearch"></button>
-    <button class="rb" data-act="newChat" aria-label="แชทใหม่" id="rbNew"></button>
-    <button class="rb" data-act="requests" aria-label="คำขอและแอดมิน" id="rbAdm"></button>
+    <button class="rb on" data-act="home" id="rbChat"></button>
+    <button class="rb" data-act="focusSearch" id="rbSearch"></button>
+    <button class="rb" data-act="newChat" id="rbNew"></button>
+    <button class="rb" data-act="requests" id="rbAdm"></button>
     <div class="sp"></div>
-    <button class="rb" data-act="settings" aria-label="ตั้งค่า" id="rbSet"></button>
+    <button class="rb" data-act="settings" id="rbSet"></button>
   </nav>
 
   <section id="side">
     <div class="s-head">
       <button class="uname" data-act="settings"><b id="uname"></b><span id="unameC"></span></button>
       <span class="adm hide" id="admTag">แอดมิน</span>
-      <button class="rt hide" id="rtDot" data-act="cloudSheet" aria-label="สถานะการเชื่อมต่อ"></button>
+      <button class="rt hide" id="rtDot" data-act="cloudSheet"></button>
       <span class="sp"></span>
-      <button class="ib" data-act="newChat" aria-label="แชทใหม่" id="btnNew"></button>
+      <button class="ib" data-act="newChat" id="btnNew"></button>
     </div>
     <div class="searchbox"><span id="srI"></span><input id="cs" placeholder="ค้นหา" autocomplete="off"></div>
     <div class="s-sub"><b>ข้อความ</b><button data-act="requests">คำขอ <span class="dotn hide" id="reqN"></span></button></div>
@@ -428,7 +187,7 @@ body.recording #comp{display:none}
     <div id="empty">
       <div class="circ" id="emI"></div>
       <h2>ข้อความของคุณ</h2>
-      <p>ส่งรูปภาพ วิดีโอ เสียง เพลง และข้อความส่วนตัวให้กับเพื่อนหรือกลุ่ม</p>
+      <p>ส่งรูปภาพ เสียง เพลง สติกเกอร์ และข้อความส่วนตัว</p>
       <button class="pbtn" data-act="newChat">ส่งข้อความ</button>
     </div>
     <div id="chat" class="hide"></div>
@@ -439,1040 +198,335 @@ body.recording #comp{display:none}
 <input type="file" id="fi2" multiple hidden>
 <input type="file" id="fi_song" accept="audio/*" hidden>
 
-<div id="sbg" data-act="closeSheet"></div><div id="sheet" role="dialog" aria-modal="true"></div>
-<div id="lb"><button data-act="closeLb" aria-label="ปิด" id="lbX"></button><img id="lbImg" alt="" draggable="false"></div>
-<div id="call">
-  <video id="rv" autoplay playsinline></video>
-  <video id="lv" autoplay playsinline muted></video>
-  <div class="cinfo"><div id="cav"></div><h3 id="cn"></h3><p id="cst"></p></div>
-  <div class="cbtn">
-    <button id="cMic" data-act="callMic" aria-label="ไมค์"></button>
-    <button id="cCam" data-act="callCam" aria-label="กล้อง"></button>
-    <button class="acc hide" id="cAcc" data-act="callAcc" aria-label="รับสาย"></button>
-    <button class="end" id="cEnd" data-act="callEnd" aria-label="วางสาย"></button>
-  </div>
-</div>
+<div id="sbg" data-act="closeSheet"></div>
+<div id="sheet" role="dialog" aria-modal="true"></div>
+<div id="lb"><button data-act="closeLb" id="lbX"></button><img id="lbImg" alt=""></div>
 <div id="toast" role="status"></div>
 
 <script>
 (function(){
 'use strict';
-// ===================== ตั้งค่า =====================
-const ADMIN_PIN='123456';           // รหัสแอดมิน
-const MAX_FILE=100*1024*1024;       // ขนาดไฟล์สูงสุด 100MB
-const ICE=[{urls:'stun:stun.l.google.com:19302'}];
-
-const $=s=>document.querySelector(s);
-const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const pad=n=>String(n).padStart(2,'0');
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-const TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){return false}return true}};
-const SS={get:k=>{try{return sessionStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{sessionStorage.setItem(k,v)}catch(e){}},del:k=>{try{sessionStorage.removeItem(k)}catch(e){}}};
-
-// ===================== โหมดคลาวด์ (Supabase) =====================
-const SB_URL='about:invalid#zPythonSafez'||LS.get('chat.sb.url')||'';   
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imllam13aWhpcGZ2dGtidmp0dWRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NzQ0MzksImV4cCI6MjEwNjI1MDQzOX0.jR6txR7ztk_iKiF6-oxjkilpVllajLN3koIPNA5uBUY'||LS.get('chat.sb.key')||'';   
-const VAPID_PUB=''||LS.get('chat.vapid')||'';   
-const CLOUD=!!(SB_URL&&SB_KEY&&window.supabase&&window.supabase.createClient);
-let ATOKEN=SS.get('chat.atoken')||'';
-const sb=CLOUD?window.supabase.createClient(SB_URL,SB_KEY,{
- auth:{persistSession:false,autoRefreshToken:false},
- global:{fetch:(u,o)=>{const h=new Headers((o&&o.headers)||{});if(ATOKEN)h.set('x-admin-token',ATOKEN);return fetch(u,Object.assign({},o,{headers:h}))}}
-}):null;
-let RLCH=null;               // ช่อง realtime
-const CHATP={};              // รอสร้างแชทเสร็จก่อนส่งข้อความแรก
-const rowToChat=r=>({id:r.id,type:r.type,name:r.name||'',members:r.members||[],closed:!!r.closed,silent:!!r.silent,closedBy:r.closed_by||'',closedNote:r.closed_note||'',closedAt:r.closed_at?new Date(r.closed_at).getTime():0,delReq:r.del_req||'',delBy:r.del_by||''});
-const rowToMsg=r=>({id:r.id,t:new Date(r.created_at).getTime(),type:r.type,text:r.body||'',from:r.from_user||undefined,mid:r.media_path||undefined,mime:r.mime||'',name:r.file_name||'',size:r.size||0,locked:!!r.locked,unsend:r.unsend||undefined,warn:r.warn?1:undefined});
-const msgToRow=(cid,m)=>({id:m.id,chat_id:cid,type:m.type,from_user:m.from||null,body:m.text||null,media_path:m.mid||null,mime:m.mime||null,file_name:m.name||null,size:m.size||null,warn:!!m.warn});
-
-// ===================== ไอคอน =====================
-const IC={
- chat:'<path d="M4 5h16v11H9l-5 4z"/>',
- smile:'<circle cx="12" cy="12" r="9"/><path d="M8 14a4.5 4.5 0 0 0 8 0M9 9.5v.01M15 9.5v.01"/>',
- bell:'<path d="M6 17v-6a6 6 0 0 1 12 0v6l2 2H4zM10 21h4"/>',
- search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
- compose:'<path d="M12 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M18 3l3 3-9 9-4 1 1-4z"/>',
- plus:'<path d="M12 5v14M5 12h14"/>',
- chev:'<path d="M6 9l6 6 6-6"/>',
- back:'<path d="M15 5l-7 7 7 7"/>',
- phone:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
- video:'<rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10l5-3v10l-5-3z"/>',
- info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/>',
- mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
- image:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.7"/><path d="M4 18l5-5 4 4 3-3 4 4"/>',
- clip:'<path d="M20 11l-8.5 8.5a5 5 0 0 1-7-7L13 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L14 7"/>',
- lock:'<rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
- unlock:'<rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/>',
- shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
- users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.2c2.6.2 4.5 2.2 4.5 5"/>',
- x:'<path d="M6 6l12 12M18 6L6 18"/>',
- more:'<circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>',
- check:'<path d="M5 12l5 5 9-10"/>',
- trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14"/>',
- eyeoff:'<path d="M3 3l18 18M10.5 5.2A9 9 0 0 1 12 5c5 0 9 4.5 10 7a12 12 0 0 1-3 4M6.5 7A12 12 0 0 0 2 12c1 2.5 5 7 10 7a9 9 0 0 0 4-1"/>',
- file:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/>',
- download:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',
- gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',
- send:'<path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/>',
- user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/>',
- camera:'<rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/>',
- music:'<path d="M9 18V5l12-2v13M9 10l12-2M9 18a3 3 0 1 1-6-3 3 3 0 0 1 6 3zm12-2a3 3 0 1 1-6-3 3 3 0 0 1 6 3z"/>'
+const ADMIN_PIN = '123456';
+const MAX_FILE = 100 * 1024 * 1024;
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const TH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const LS = {
+  get: k => { try { return localStorage.getItem(k); } catch(e) { return null; } },
+  set: (k, v) => { try { localStorage.setItem(k, v); return true; } catch(e) { return false; } }
 };
-const I=n=>'<svg class="ico" viewBox="0 0 24 24">'+(IC[n]||'')+'</svg>';
+const SS = {
+  get: k => { try { return sessionStorage.getItem(k); } catch(e) { return null; } },
+  set: (k, v) => { try { sessionStorage.setItem(k, v); } catch(e) {} },
+  del: k => { try { sessionStorage.removeItem(k); } catch(e) {} }
+};
 
-// ===================== state =====================
-let DB={chats:[],msgs:{}},ME=LS.get('chat.me')||'',ADMIN=SS.get('chat.admin')==='1',OPEN=null,FRAME='',FILTER='';
-let BLUR=LS.get('chat.blur')!=='0',PINNEXT=null;
-let READ={};
-function loadRead(){try{READ=JSON.parse(LS.get('chat.read.'+ME)||'{}')}catch(e){READ={}}}
-function saveRead(){LS.set('chat.read.'+ME,JSON.stringify(READ))}
-function load(){
- if(CLOUD)return;
- try{const d=JSON.parse(LS.get('chat.db')||'null');if(d&&d.chats)DB=d}catch(e){}
- if(!DB.msgs)DB.msgs={};
- const oldRoom=DB.chats.find(c=>c.id==='room-44');
- if(oldRoom){
-  if(/ม\.4\/4/.test(oldRoom.name))oldRoom.name='ห้องแชทรวม';
-  (DB.msgs['room-44']||[]).forEach(m=>{if(m.type==='system'&&/ม\.4\/4/.test(m.text||''))m.text='ยินดีต้อนรับสู่ห้องแชทรวม'});
-  save();
- }
- if(!DB.chats.length){
-  DB.chats.push({id:'room-main',type:'group',name:'ห้องแชทรวม',members:['*'],closed:false,silent:false});
-  DB.msgs['room-main']=[{id:uid(),t:Date.now(),type:'system',text:'ยินดีต้อนรับสู่ห้องแชทรวม'}];
-  save();
- }
-}
-function save(){if(CLOUD)return;if(LS.set('chat.db',JSON.stringify(DB))===false)toast('พื้นที่จัดเก็บเต็ม')}
-const chatById=id=>DB.chats.find(c=>c.id===id);
+// Supabase Realtime Config
+const SB_URL = 'https://iejmwihipfvtkbvjtude.supabase.co' || LS.get('chat.sb.url') || '';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imllam13aWhpcGZ2dGtidmp0dWRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NzQ0MzksImV4cCI6MjEwNjI1MDQzOX0.jR6txR7ztk_iKiF6-oxjkilpVllajLN3koIPNA5uBUY' || LS.get('chat.sb.key') || '';
+const CLOUD = !!(SB_URL && SB_KEY && window.supabase && window.supabase.createClient);
+let ATOKEN = SS.get('chat.atoken') || '';
+
+const sb = CLOUD ? window.supabase.createClient(SB_URL, SB_KEY, {
+  auth: { persistSession: false, autoRefreshToken: false },
+  global: { fetch: (u, o) => { const h = new Headers((o && o.headers) || {}); if (ATOKEN) h.set('x-admin-token', ATOKEN); return fetch(u, Object.assign({}, o, { headers: h })); } }
+}) : null;
+
+let DB = { chats:[], msgs:{} }, ME = LS.get('chat.me') || '', ADMIN = SS.get('chat.admin') === '1', OPEN = null, FRAME = '', FILTER = '';
+let BLUR = LS.get('chat.blur') !== '0', READ = {}, RLCH = null, DEFERRED_PROMPT = null;
+
+const IC = {
+  chat:'<path d="M4 5h16v11H9l-5 4z"/>', smile:'<circle cx="12" cy="12" r="9"/><path d="M8 14a4.5 4.5 0 0 0 8 0M9 9.5v.01M15 9.5v.01"/>',
+  bell:'<path d="M6 17v-6a6 6 0 0 1 12 0v6l2 2H4zM10 21h4"/>', search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+  compose:'<path d="M12 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M18 3l3 3-9 9-4 1 1-4z"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>', chev:'<path d="M6 9l6 6 6-6"/>', back:'<path d="M15 5l-7 7 7 7"/>',
+  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
+  image:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.7"/><path d="M4 18l5-5 4 4 3-3 4 4"/>',
+  clip:'<path d="M20 11l-8.5 8.5a5 5 0 0 1-7-7L13 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L14 7"/>',
+  music:'<path d="M9 18V5l12-2v13M9 10l12-2M9 18a3 3 0 1 1-6-3 3 3 0 0 1 6 3zm12-2a3 3 0 1 1-6-3 3 3 0 0 1 6 3z"/>',
+  lock:'<rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>', more:'<circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>',
+  check:'<path d="M5 12l5 5 9-10"/>', trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14"/>',
+  eyeoff:'<path d="M3 3l18 18M10.5 5.2A9 9 0 0 1 12 5c5 0 9 4.5 10 7a12 12 0 0 1-3 4"/>',
+  file:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/>', download:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',
+  gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+  send:'<path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/>', user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/>'
+};
+const I = n => `<svg class="ico" viewBox="0 0 24 24">${IC[n]||''}</svg>`;
+
+const chatById = id => DB.chats.find(c => c.id === id);
 const msgsOf = id => DB.msgs[id] || (DB.msgs[id] = []);
-function addMsg(cid,m){
- const x=Object.assign({id:uid(),t:Date.now()},m);
- msgsOf(cid).push(x);
- if(CLOUD)cloudInsert(cid,x);else save();
- return x;
-}
-async function cloudInsert(cid,x){
- try{
-  if(CHATP[cid])await CHATP[cid];
-  const r=await sb.from('chat_messages').insert(msgToRow(cid,x));
-  if(r.error)throw r.error;
- }catch(e){
-  const a=msgsOf(cid),i=a.findIndex(y=>y.id===x.id);if(i>-1)a.splice(i,1);
-  refresh();toast('ส่งไม่สำเร็จ: '+(e.message||e));
- }
-}
-const chatToRow=c=>({id:c.id,type:c.type,name:c.name||null,members:c.members});
-function rt(s,msg){const d=$('#rtDot');if(!d)return;d.className='rt'+(s==='on'?' on':s==='err'?' err':'')+(ADMIN?'':' hide');d.title=s==='on'?'เชื่อมต่อฐานข้อมูลแล้ว (เรียลไทม์)':s==='err'?'ต่อฐานข้อมูลไม่ได้: '+(msg||''):'โหมดในเครื่อง (ยังไม่ได้เชื่อมต่อฐานข้อมูล)'}
-function cloudUpd(t,id,p){sb.from(t).update(p).eq('id',id).then(r=>{if(r.error)toast('บันทึกไม่สำเร็จ: '+r.error.message)})}
-function cloudChat(c){CHATP[c.id]=sb.from('chat_rooms').upsert(chatToRow(c),{onConflict:'id',ignoreDuplicates:true}).then(r=>{if(r.error)toast('สร้างแชทไม่สำเร็จ: '+r.error.message)})}
-function onChatRow(r){if(!r||!r.id)return;const c=rowToChat(r),i=DB.chats.findIndex(x=>x.id===c.id);if(i>-1)DB.chats[i]=c;else DB.chats.push(c);refresh()}
-function onMsgRow(r){if(!r||!r.id)return;const a=msgsOf(r.chat_id),m=rowToMsg(r),i=a.findIndex(x=>x.id===m.id);if(i>-1)a[i]=m;else{a.push(m);a.sort((x,y)=>x.t-y.t)}refresh()}
-async function loadCloud(){
- const [c,m,rr,rx]=await Promise.all([sb.from('chat_rooms').select('*'),sb.from('chat_messages').select('*').order('created_at',{ascending:false}).limit(1000),sb.from('chat_reads').select('msg_id,user_name,read_at').order('read_at',{ascending:false}).limit(5000),sb.from('chat_reactions').select('msg_id,user_name,emoji').limit(5000)]);
- if(c.error||m.error)throw(c.error||m.error);
- DB.chats=c.data.map(rowToChat);DB.msgs={};
- m.data.reverse().forEach(r=>msgsOf(r.chat_id).push(rowToMsg(r)));
- (rr.data||[]).forEach(r=>{(RCPT[r.msg_id]=RCPT[r.msg_id]||{})[r.user_name]=new Date(r.read_at).getTime()});
- (RX[r.msg_id]=RX[r.msg_id]||{})[r.user_name]=r.emoji;
- refresh();
-}
-function cloudInit(){
- RLCH=sb.channel('chat-rt')
-  .on('postgres_changes',{event:'*',schema:'public',table:'chat_rooms'},p=>p.eventType==='DELETE'?dropChat((p.old||{}).id):onChatRow(p.new))
-  .on('postgres_changes',{event:'*',schema:'public',table:'chat_messages'},p=>onMsgRow(p.new))
-  .on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_reads'},p=>onReadRow(p.new))
-  .on('postgres_changes',{event:'*',schema:'public',table:'chat_reactions'},onRxRow)
-  .on('broadcast',{event:'typing'},e=>{const d=e.payload||{};if(d.chat&&d.from)typingSet(d.chat,d.from,!!d.on)})
-  .on('broadcast',{event:'sig'},e=>onSigMsg(e.payload))
-  .subscribe(async st=>{
-   if(st==='SUBSCRIBED'){try{await loadCloud();rt('on');const hc=decodeURIComponent(location.hash.slice(1));if(hc&&!OPEN&&chatById(hc))openChat(hc)}catch(e){rt('err',e.message);toast('เชื่อมต่อฐานข้อมูลไม่ได้: '+(e.message||e))}}
-   else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT')rt('err',st);
-   else if(st==='CLOSED')rt('err','หลุดการเชื่อมต่อ');
-  });
-}
-function cloudSheet(){if(!ADMIN)return;
- openSheet('<h3>เชื่อมต่อฐานข้อมูล</h3><p class="help">'+(CLOUD?'เชื่อมต่อ Supabase อยู่ ข้อความซิงก์ข้ามเครื่องแบบเรียลไทม์':'ตอนนี้ใช้โหมดในเครื่อง ข้อมูลอยู่ในเบราว์เซอร์นี้เท่านั้น')+'</p><label>Project URL</label><input type="text" id="sbu" value="'+esc(SB_URL)+'" placeholder="about:invalid#zPythonSafez" autocapitalize="none" autocomplete="off"><label>anon public key</label><input type="text" id="sbk" value="'+esc(SB_KEY)+'" autocapitalize="none" autocomplete="off"><label>VAPID public key (สำหรับแจ้งเตือน ไม่บังคับ)</label><input type="text" id="sbv" value="'+esc(VAPID_PUB)+'" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn" data-act="saveCloud">บันทึกและเชื่อมต่อ</button>'+(CLOUD?'<button class="pbtn ghost" data-act="cloudOff">ตัดการเชื่อมต่อ</button>':'')+'</div><p class="help">ต้องรัน chat-schema.sql ใน Supabase ก่อน และใช้เฉพาะ anon key</p>');
-}
-function saveCloud(){if(!ADMIN)return;const u=($('#sbu').value||'').trim().replace(/\/+$/,''),k=($('#sbk').value||'').trim();if(!/^https:\/\/\S+$/.test(u)||k.length<20)return toast('URL หรือ key ไม่ถูกต้อง');LS.set('chat.sb.url',u);LS.set('chat.sb.key',k);LS.set('chat.vapid',($('#sbv').value||'').trim());location.reload()}
-function cloudOff(){if(!ADMIN)return;try{localStorage.removeItem('chat.sb.url');localStorage.removeItem('chat.sb.key')}catch(e){}location.reload()}
-const RCPT={};   
-const readsOf=m=>CLOUD?(RCPT[m.id]||{}):(m.reads||{});
-const ft=t=>{const d=new Date(t);return dayKey(t)===dayKey(Date.now())?hm(t):d.getDate()+' '+TH[d.getMonth()]+' '+hm(t)};
-function rcptStat(m,mine){
- if(!mine||m.type==='system'||m.unsend==='done')return '';
- const c=chatById(OPEN);if(!c)return '';
- const r=readsOf(m);let on,txt;
- if(c.type==='dm'){const p=peerOf(c);on=!!r[p];txt=on?'อ่านแล้ว '+ft(r[p]):'ส่งแล้ว'}
- else{const n=Object.keys(r).filter(u=>u!==m.from).length;on=n>0;txt=n?'อ่านแล้ว '+n+' คน':'ส่งแล้ว'}
- return ' · <button class="rd'+(on?' on':'')+'" data-act="readInfo" data-id="'+esc(m.id)+'">'+txt+'</button>';
-}
-function markRead(){ 
- const c=chatById(OPEN);
- if(!c||!ME||document.hidden||(c.closed&&!ADMIN))return;
- if(!(c.members.includes('*')||c.members.includes(ME)))return;   
- const un=msgsOf(c.id).filter(m=>m.from&&m.from!==ME&&m.type!=='system'&&!readsOf(m)[ME]);
- if(!un.length)return;
- const now=Date.now();
- if(CLOUD){
-  un.forEach(m=>{(RCPT[m.id]=RCPT[m.id]||{})[ME]=now});
-  sb.from('chat_reads').upsert(un.map(m=>({msg_id:m.id,chat_id:c.id,user_name:ME,read_at:new Date(now).toISOString()})),{onConflict:'msg_id,user_name',ignoreDuplicates:true}).then(r=>{if(r.error)toast('บันทึกการอ่านไม่สำเร็จ: '+r.error.message)});
- }else{un.forEach(m=>{(m.reads=m.reads||{})[ME]=now});save()}
-}
-function onReadRow(r){
- if(!r||!r.msg_id)return;
- (RCPT[r.msg_id]=RCPT[r.msg_id]||{})[r.user_name]=new Date(r.read_at).getTime();
- if(r.chat_id===OPEN)renderMsgs(false);
-}
-function readInfo(t){
- const c=chatById(OPEN),m=c&&msgsOf(c.id).find(x=>x.id===t.dataset.id);if(!m)return;
- const r=readsOf(m),us=Object.keys(r).filter(u=>u!==m.from).sort((a,b)=>r[a]-r[b]);
- openSheet('<h3>รายละเอียดข้อความ</h3><div class="hr"></div><div class="reqc"><small>ส่งเมื่อ</small><div>'+ft(m.t)+'</div></div><p class="help">อ่านแล้ว '+us.length+' คน</p>'+
-  (us.length?us.map(u=>'<div class="reqc" style="display:flex;gap:12px;align-items:center">'+av(u,32)+'<b style="flex:1">'+esc(u)+'</b><small>'+ft(r[u])+'</small></div>').join(''):'<div class="reqc"><small>ยังไม่มีใครอ่าน</small></div>'));
-}
+const peerOf = c => c.members.find(x => x !== ME) || ME;
+const chatName = c => c.type === 'dm' ? peerOf(c) : c.name;
+const hm = t => { const d = new Date(t); return pad(d.getHours()) + ':' + pad(d.getMinutes()); };
+const dayKey = t => { const d = new Date(t); return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); };
+const dayLbl = t => dayKey(t) === dayKey(Date.now()) ? 'วันนี้' : new Date(t).getDate() + ' ' + TH[new Date(t).getMonth()];
+const fmtSize = n => n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
+const toast = t => { const e = $('#toast'); e.textContent = t; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2500); };
 
-// ===================== REACTION SYSTEM =====================
-const RX={};   
-const rxOf=m=>CLOUD?(RX[m.id]||{}):(m.rx||{});
-const RE=['❤️','👍','😂','😮','😢','🙏'];
+// Storage & Data Mapping
+const rowToChat = r => ({ id:r.id, type:r.type, name:r.name || '', members:r.members || [], closed:!!r.closed, silent:!!r.silent, closedBy:r.closed_by || '', delReq:r.del_req || '', delBy:r.del_by || '' });
+const rowToMsg = r => ({ id:r.id, t:new Date(r.created_at).getTime(), type:r.type, text:r.body || '', from:r.from_user || undefined, mid:r.media_path || undefined, mime:r.mime || '', name:r.file_name || '', size:r.size || 0, locked:!!r.locked, unsend:r.unsend || undefined, warn:r.warn ? 1 : undefined });
+const msgToRow = (cid, m) => ({ id:m.id, chat_id:cid, type:m.type, from_user:m.from || null, body:m.text || null, media_path:m.mid || null, mime:m.mime || null, file_name:m.name || null, size:m.size || null, warn:!!m.warn });
 
-function rxHtml(m){
-  const r=rxOf(m), us=Object.keys(r);
-  if(!us.length) return '';
-  const g={};
-  us.forEach(u=>{ (g[r[u]]=g[r[u]]||[]).push(u) });
-  return '<div class="msg-reaction-container">' + 
-    Object.keys(g).map(e => {
-      const isMine = g[e].includes(ME);
-      return `<button class="msg-reaction-badge ${isMine ? 'mine' : ''}" data-act="toggleReact" data-id="${esc(m.id)}" data-e="${esc(e)}" title="${esc(g[e].join(', '))}">${esc(e)} <span>${g[e].length}</span></button>`;
-    }).join('') + '</div>';
-}
-
-function showReactionSelector(msgId, triggerBtn) {
-  const existing = $('.reaction-picker-popover');
-  if(existing) existing.remove();
-  
-  const popover = document.createElement('div');
-  popover.className = 'reaction-picker-popover';
-  popover.innerHTML = RE.map(e => `<button class="reaction-emoji-btn" data-act="applyReaction" data-id="${esc(msgId)}" data-e="${esc(e)}">${e}</button>`).join('');
-  
-  triggerBtn.parentNode.appendChild(popover);
-  
-  // Close popover when click outside
-  const closePop = (e) => {
-    if(!popover.contains(e.target) && e.target !== triggerBtn) {
-      popover.remove();
-      document.removeEventListener('click', closePop);
-    }
-  };
-  setTimeout(() => document.addEventListener('click', closePop), 50);
-}
-
-function applyReaction(msgId, emoji) {
-  const c = chatById(OPEN), m = c && msgsOf(c.id).find(x => x.id === msgId);
-  if(!m || !ME) return;
-  if(c.closed && !ADMIN) return toast('แชทถูกปิด');
-  
-  const cur = rxOf(m)[ME];
-  const chk = r => { if(r.error) toast('ไม่สำเร็จ: ' + r.error.message); };
-  
-  if(CLOUD) {
-    const box = RX[msgId] = RX[msgId] || {};
-    if(cur === emoji) {
-      delete box[ME];
-      sb.from('chat_reactions').delete().eq('msg_id', msgId).eq('user_name', ME).then(chk);
-    } else {
-      box[ME] = emoji;
-      sb.from('chat_reactions').upsert({msg_id: msgId, chat_id: c.id, user_name: ME, emoji: emoji}, {onConflict: 'msg_id,user_name'}).then(chk);
-    }
-  } else {
-    m.rx = m.rx || {};
-    if(cur === emoji) delete m.rx[ME];
-    else m.rx[ME] = emoji;
-    save();
-  }
-  renderMsgs(false);
-  const pop = $('.reaction-picker-popover');
-  if(pop) pop.remove();
-}
-
-function onRxRow(p){
- const r=p.eventType==='DELETE'?p.old:p.new;if(!r||!r.msg_id)return;
- const box=RX[r.msg_id]=RX[r.msg_id]||{};
- if(p.eventType==='DELETE')delete box[r.user_name];else box[r.user_name]=r.emoji;
- renderMsgs(false);
-}
-
-// ----- สติกเกอร์ -----
-const STK=[['ok','👌','โอเค','#2e9d4f'],['thx','🙏','ขอบคุณ','#3b82f6'],['lol','🤣','ขำมาก','#f5b301'],['love','🥰','รักนะ','#ec4899'],['tired','😩','เหนื่อยจัง','#a855f7'],['sleep','😴','ง่วง','#64748b'],['wow','🤩','เจ๋งมาก','#fb923c'],['sad','😭','ร้องไห้','#38bdf8'],['angry','😡','โกรธนะ','#ef4444'],['hi','👋','สวัสดี','#14b8a6'],['bye','😎','ไปก่อนนะ','#94a3b8'],['cheer','💪','สู้ ๆ','#f97316'],['think','🤔','คิดอยู่','#a8855f'],['party','🥳','ฉลอง','#f43f5e'],['food','🍜','หิวแล้ว','#ea580c'],['yes','👍','ได้เลย','#22c55e']];
-function stickerHtml(id){const s=STK.find(x=>x[0]===id);return s?'<div class="stk" style="--c:'+s[3]+'"><span class="e">'+s[1]+'</span><b>'+esc(s[2])+'</b></div>':'<div class="bub">[สติกเกอร์]</div>'}
-function stickers(){if(!canSend())return;openSheet('<h3>สติกเกอร์</h3><div class="stkgrid">'+STK.map(s=>'<button data-act="sendSticker" data-id="'+s[0]+'">'+stickerHtml(s[0])+'</button>').join('')+'</div>')}
-function sendSticker(t){if(!canSend())return;closeSheet();addMsg(OPEN,{from:ME,type:'sticker',text:t.dataset.id});refresh()}
-
-// ----- ติดตั้งแอป / แจ้งเตือนจริงๆ (Web Push & Notification API & PWA) -----
-let INST=null;
-if('serviceWorker' in navigator){
- // Dynamic Service Worker registration with data url or auto fallback
- const swCode = `
- self.addEventListener('install', e => {
-   self.skipWaiting();
- });
- self.addEventListener('activate', e => {
-   e.waitUntil(self.clients.claim());
- });
- self.addEventListener('push', e => {
-   const data = e.data ? e.data.json() : {};
-   const title = data.title || 'แชทใหม่';
-   const options = {
-     body: data.body || 'มีข้อความใหม่ส่งถึงคุณ',
-     icon: 'icon-192.png',
-     badge: 'icon-192.png',
-     data: { openChat: data.chat_id }
-   };
-   e.waitUntil(self.registration.showNotification(title, options));
- });
- self.addEventListener('notificationclick', e => {
-   e.notification.close();
-   e.waitUntil(
-     clients.matchAll({ type: 'window' }).then(clientList => {
-       for (const client of clientList) {
-         if (client.url && 'focus' in client) {
-           client.postMessage({ openChat: e.notification.data.openChat });
-           return client.focus();
-         }
-       }
-       if (clients.openWindow) {
-         return clients.openWindow('#' + encodeURIComponent(e.notification.data.openChat));
-       }
-     })
-   );
- });
- `;
- const blob = new Blob([swCode], {type: 'application/javascript'});
- const swUrl = URL.createObjectURL(blob);
- navigator.serviceWorker.register(swUrl).catch(()=>{});
- navigator.serviceWorker.addEventListener('message',e=>{const c=e.data&&e.data.openChat;if(c&&chatById(c))openChat(c)});
-}
-
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();INST=e});
-
-// จริงๆ เด้งแจ้งเตือนผ่านหน้าเว็บ (Local Web Notification Fallback) เมื่อแอปเปิดอยู่
-function localNotify(title, body, chatId) {
-  if (Notification.permission === 'granted') {
-    const n = new Notification(title, {
-      body: body,
-      icon: 'icon-192.png'
-    });
-    n.onclick = () => {
-      window.focus();
-      if (chatId && chatById(chatId)) openChat(chatId);
-    };
+function load(){
+  if (CLOUD) return;
+  try { const d = JSON.parse(LS.get('chat.db') || 'null'); if (d && d.chats) DB = d; } catch(e) {}
+  if (!DB.msgs) DB.msgs = {};
+  if (!DB.chats.length) {
+    DB.chats.push({ id:'room-main', type:'group', name:'ห้องแชทรวม', members:['*'], closed:false });
+    DB.msgs['room-main'] = [{ id:uid(), t:Date.now(), type:'system', text:'ยินดีต้อนรับสู่ห้องแชทรวม' }];
   }
 }
+function save(){ if (!CLOUD) LS.set('chat.db', JSON.stringify(DB)); }
 
-function installApp(){closeSheet();if(INST){INST.prompt();INST=null}else toast('Android/iPad/Mac/PC: กดปุ่มแชร์หรือจุด 3 จุดบนเบราว์เซอร์ แล้วเลือก "เพิ่มไปยังหน้าจอโฮม" หรือ "ติดตั้งแอป"')}
-async function enablePush(){
- closeSheet();
- if(!('Notification' in window)) return toast('เบราว์เซอร์ของคุณไม่สนับสนุนการแจ้งเตือน');
- const perm = await Notification.requestPermission();
- if(perm === 'granted') {
-   toast('เปิดใช้งานการแจ้งเตือนเสร็จสมบูรณ์แล้ว!');
-   localNotify('ยินดีต้อนรับ', 'ระบบแจ้งเตือนจริงเปิดใช้งานแล้ว!');
- } else {
-   toast('คุณได้ปฏิเสธการเข้าถึงการแจ้งเตือน');
- }
+function addMsg(cid, m){
+  const x = Object.assign({ id:uid(), t:Date.now() }, m);
+  msgsOf(cid).push(x);
+  if (CLOUD) sb.from('chat_messages').insert(msgToRow(cid, x)).then(r => { if (r.error) toast(r.error.message); });
+  else save();
+  return x;
 }
 
-const peerOf=c=>c.members.find(x=>x!==ME)||ME;
-const chatName=c=>c.type==='dm'?peerOf(c):c.name;
-const hm=t=>{const d=new Date(t);return pad(d.getHours())+':'+pad(d.getMinutes())};
-const dayKey=t=>{const d=new Date(t);return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()};
-const dayLbl=t=>{const d=new Date(t);return dayKey(t)===dayKey(Date.now())?'วันนี้':d.getDate()+' '+TH[d.getMonth()]};
-const fmtSize=n=>n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
-function visible(){
- const L=DB.chats.filter(c=>ADMIN||c.members.includes('*')||c.members.includes(ME));
- const lt=c=>{const m=msgsOf(c.id);return m.length?m[m.length-1].t:0};
- return L.sort((a,b)=>lt(b)-lt(a));
-}
-const toast=t=>{const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2800)};
-
-// ===================== สื่อ (IndexedDB) =====================
+// Media Cache
 let _idb;
-const idb=()=>_idb||(_idb=new Promise((res,rej)=>{const r=indexedDB.open('chat-media',1);r.onupgradeneeded=()=>r.result.createObjectStore('m');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}));
-const putBlob=(k,b)=>idb().then(d=>new Promise((res,rej)=>{const t=d.transaction('m','readwrite');t.objectStore('m').put(b,k);t.oncomplete=res;t.onerror=()=>rej(t.error)}));
-const getBlob=k=>idb().then(d=>new Promise((res,rej)=>{const q=d.transaction('m').objectStore('m').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}));
-const URLS={};
-async function urlFor(mid){if(URLS[mid])return URLS[mid];if(CLOUD){const r=await sb.storage.from('chat-media').createSignedUrl(mid,86400);return r.data?(URLS[mid]=r.data.signedUrl):null}const b=await getBlob(mid);if(!b)return null;return URLS[mid]=URL.createObjectURL(b)}
-function hydrate(root){
- root.querySelectorAll('[data-mid]').forEach(el=>{
-  if(el.dataset.ok)return;
-  urlFor(el.dataset.mid).then(u=>{if(u){el.src=u;el.dataset.ok='1'}}).catch(()=>{});
- });
-}
-
-// ===================== MUSIC PLAYER / SONGS =====================
-const ACTIVE_PLAYERS = {}; // Track playing state per message ID
-
-function playSong(msgId) {
-  const audioEl = $(`#audio-${msgId}`);
-  const playBtn = $(`#btn-play-${msgId}`);
-  const progressBar = $(`#progress-bar-${msgId}`);
-  const timeEl = $(`#time-${msgId}`);
-
-  if (!audioEl) return;
-
-  // Pause all other active music players
-  Object.keys(ACTIVE_PLAYERS).forEach(id => {
-    if (id !== msgId && ACTIVE_PLAYERS[id]) {
-      ACTIVE_PLAYERS[id].pause();
-      const peerBtn = $(`#btn-play-${id}`);
-      if (peerBtn) peerBtn.textContent = '▶';
-    }
-  });
-
-  if (audioEl.paused) {
-    audioEl.play().then(() => {
-      playBtn.textContent = '⏸';
-      ACTIVE_PLAYERS[msgId] = audioEl;
-    }).catch(err => toast('เล่นเพลงไม่สำเร็จ'));
-  } else {
-    audioEl.pause();
-    playBtn.textContent = '▶';
-  }
-
-  // Monitor progress
-  if (!audioEl.dataset.setup) {
-    audioEl.dataset.setup = '1';
-    audioEl.addEventListener('timeupdate', () => {
-      const pct = (audioEl.currentTime / audioEl.duration) * 100;
-      progressBar.style.width = `${pct}%`;
-      const curMin = Math.floor(audioEl.currentTime / 60);
-      const curSec = Math.floor(audioEl.currentTime % 60);
-      timeEl.textContent = `${curMin}:${pad(curSec)}`;
-    });
-    audioEl.addEventListener('ended', () => {
-      playBtn.textContent = '▶';
-      progressBar.style.width = '0%';
-      timeEl.textContent = '0:00';
-    });
-  }
-}
-
-function seekSong(msgId, e) {
-  const audioEl = $(`#audio-${msgId}`);
-  const progressContainer = e.currentTarget;
-  if (!audioEl || !audioEl.duration) return;
-  const rect = progressContainer.getBoundingClientRect();
-  const clickX = e.clientX - rect.left;
-  const width = rect.width;
-  const pct = clickX / width;
-  audioEl.currentTime = pct * audioEl.duration;
-}
-
-function songHtml(m) {
-  const audioId = `audio-${m.id}`;
-  const playBtnId = `btn-play-${m.id}`;
-  const progressBarId = `progress-bar-${m.id}`;
-  const timeId = `time-${m.id}`;
-  
-  return `
-    <div class="song-card">
-      <audio id="${audioId}" data-mid="${esc(m.mid)}" preload="metadata" style="display:none;"></audio>
-      <div class="song-header">
-        <div class="song-cover">🎵</div>
-        <div class="song-info">
-          <div class="song-title">${esc(m.name)}</div>
-          <div class="song-artist">ขนาด: ${fmtSize(m.size)}</div>
-        </div>
-      </div>
-      <div class="song-player-controls">
-        <button class="song-play-btn" id="${playBtnId}" onclick="window.PLAY_SONG('${m.id}')">▶</button>
-        <div class="song-progress-container" onclick="window.SEEK_SONG('${m.id}', event)">
-          <div class="song-progress-bar" id="${progressBarId}"></div>
-        </div>
-        <div class="song-time" id="${timeId}">0:00</div>
-      </div>
-    </div>
-  `;
-}
-window.PLAY_SONG = playSong;
-window.SEEK_SONG = seekSong;
-
-// ===================== avatar =====================
-function av(name,s,group){
- const h=[...String(name)].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7)%360;
- const ch=(String(name).replace(/[^A-Za-z0-9ก-๙]/g,'')[0]||'?').toUpperCase();
- return '<span class="av" style="width:'+s+'px;height:'+s+'px;background:hsl('+h+',42%,36%);font-size:'+Math.round(s*.42)+'px">'+(group?I('users'):esc(ch))+'</span>';
-}
-
-// ===================== รายการแชท =====================
-function pvText(m){
- if(!m)return '';
- if(m.unsend==='done')return 'ข้อความถูกยกเลิก';
- const mine=m.from===ME?'คุณ: ': '';
- if(m.type==='system')return m.text;
- if(m.type==='text')return mine+m.text;
- if(m.type==='image')return mine+'ส่งรูปภาพ';
- if(m.type==='video')return mine+'ส่งวิดีโอ';
- if(m.type==='audio')return mine+'ส่งข้อความเสียง';
- if(m.type==='sticker')return mine+'ส่งสติกเกอร์';
- if(m.type==='song')return mine+'ส่งเพลง 🎵';
- return mine+'ส่งไฟล์ '+(m.name||'');
-}
-function renderList(){
- const q=FILTER.trim().toLowerCase();
- const L=visible().filter(c=>!q||chatName(c).toLowerCase().includes(q));
- $('#clist').innerHTML=L.length?L.map(c=>{
-  const ms=msgsOf(c.id),last=ms[ms.length-1],locked=c.closed&&!ADMIN;
-  const un=!locked&&last&&last.from&&last.from!==ME&&last.t>(READ[c.id]||0)&&c.id!==OPEN;
-  let pv=locked?(c.silent?'':'แชทถูกปิด'):pvText(last);
-  const ty=!locked&&typers(c.id).length>0;if(ty)pv='กำลังพิมพ์...';
-  return '<button class="ci'+(c.id===OPEN?' on':'')+(un?' un':'')+'" data-act="open" data-id="'+esc(c.id)+'">'+av(locked&&c.silent?'?':chatName(c),56,c.type==='group'&&!(locked&&c.silent))+
-   '<div class="tx"><div class="tt"><b>'+(locked&&c.silent?'':esc(chatName(c)))+'</b>'+(c.closed?(ADMIN?'<span class="tg">'+(c.silent?'ปิดแบบเงียบ':'ปิดอยู่')+'</span>':''):'')+'</div><div class="pv'+(ty?' ty':'')+'">'+esc(pv)+(last&&!locked&&!ty?' · '+hm(last.t):'')+'</div></div>'+(un?'<span class="un-dot"></span>':'')+'</button>';
- }).join(''):'<div class="empty-list">ยังไม่มีแชท กดปุ่มแชทใหม่เพื่อเริ่มต้น</div>';
- const n=pendingReqs().length+pendingDels().length;const b=$('#reqN');b.textContent=n;b.classList.toggle('hide',!(ADMIN&&n));
-}
-const pendingDels=()=>DB.chats.filter(c=>c.delReq==='pending');
-function pendingReqs(){
- const out=[];
- DB.chats.forEach(c=>msgsOf(c.id).forEach(m=>{if(m.unsend==='pending')out.push({c:c,m:m})}));
- return out;
-}
-
-// ===================== หน้าแชท =====================
-const frameKey=()=>{const c=chatById(OPEN);return c?[c.id,c.closed,c.silent,ADMIN,c.type,c.delReq].join('|'):''};
-function openChat(id){
- OPEN=id;READ[id]=Date.now();saveRead();
- document.body.classList.add('chat-open');
- renderChat();renderList();markRead();
-}
-function closeChatView(){
- OPEN=null;FRAME='';document.body.classList.remove('chat-open');renderChat();renderList();
-}
-function renderChat(){
- const c=chatById(OPEN),box=$('#chat');
- if(!c){$('#empty').classList.remove('hide');box.classList.add('hide');box.innerHTML='';FRAME='';return}
- $('#empty').classList.add('hide');box.classList.remove('hide');
- const locked=c.closed&&!ADMIN;
- FRAME=frameKey();
- if(locked&&c.silent){
-  box.innerHTML='<div class="blankbar"><button class="ib only-m" data-act="back" aria-label="กลับ">'+I('back')+'</button></div><div class="blank"></div>';
-  return;
- }
- const dm=c.type==='dm';
- const head='<header class="ch"><button class="ib only-m" data-act="back" aria-label="กลับ">'+I('back')+'</button>'+av(chatName(c),44,c.type==='group')+
-  '<div class="ttl"><b>'+esc(chatName(c))+'</b><small id="chSub">'+subText(c)+'</small></div>'+
-  (dm&&!locked&&!c.closed?'<button class="ib" data-act="call" aria-label="โทรด้วยเสียง">'+I('phone')+'</button><button class="ib" data-act="vcall" aria-label="วิดีโอคอล">'+I('video')+'</button>':'')+
-  (ADMIN?'<button class="ib" data-act="chatAdmin" aria-label="แอดมิน">'+I('shield')+'</button>':'')+
-  '<button class="ib" data-act="info" aria-label="ข้อมูล">'+I('info')+'</button></header>';
- if(locked){
-  box.innerHTML=head+'<div class="lockview">'+I('lock')+'<h3>แชทนี้ถูกปิด</h3><p>'+(c.closedBy==='capture'?'ตรวจพบการแคปหน้าจอ ระบบปิดแชททันที':'แอดมินปิดแชทนี้')+'<br>เฉพาะแอดมินเท่านั้นที่เปิดแชทได้</p><button class="pbtn" data-act="adminOpen">เปิดแชทโดยแอดมิน</button></div>';
-  return;
- }
- box.innerHTML=head+(c.delReq?'<div class="banner"><span>'+(ADMIN?esc(c.delBy)+' ขอลบแชทนี้':'ส่งคำขอลบแชทนี้แล้ว รอแอดมินอนุมัติ')+'</span>'+(ADMIN?'<button class="pbtn" data-act="approveDel" data-id="'+esc(c.id)+'">อนุมัติลบ</button>':'')+'</div>':'')+(c.closed?'<div class="banner"><span>แชทนี้ปิดอยู่ (เห็นได้เฉพาะแอดมิน)</span><button class="pbtn" data-act="adminOpen">เปิดแชท</button></div>':'')+
-  '<div id="msgs"></div>'+
-  '<div id="rec"><i></i><span id="recT">0:00</span><button class="pbtn ghost" data-act="recCancel">ยกเลิก</button><button class="pbtn" data-act="recSend">ส่ง</button></div>'+
-  '<div id="comp"><button class="ib" data-act="pickImg" aria-label="รูป/วิดีโอ">'+I('image')+'</button><button class="ib" data-act="pickFile" aria-label="แนบไฟล์">'+I('clip')+'</button><button class="ib" data-act="pickSong" aria-label="ส่งเพลง">'+I('music')+'</button><button class="ib" data-act="stickers" aria-label="สติกเกอร์">'+I('smile')+'</button><textarea id="inp" rows="1" placeholder="ส่งข้อความ..."></textarea><button class="ib mic" data-act="recStart" aria-label="บันทึกเสียง">'+I('mic')+'</button><button class="send" data-act="sendText">ส่ง</button></div>';
- renderMsgs(true);
-}
-function mediaHtml(m){
- const hid=m.locked&&!ADMIN;
- if(m.type==='image'||m.type==='video'){
-  if(hid)return '<div class="lockmed">'+I('eyeoff')+'<span>'+(m.type==='image'?'ภาพ':'วิดีโอ')+'นี้ถูกล็อกโดยแอดมิน</span></div>';
-  const badge=m.locked?'<span class="lk">'+I('lock')+' ล็อกอยู่</span>':'';
-  return m.type==='image'
-   ?'<div class="med"><img data-mid="'+esc(m.mid)+'" data-act="viewImg" alt="" draggable="false">'+badge+'</div>'
-   :'<div class="med"><video data-mid="'+esc(m.mid)+'" controls playsinline preload="metadata" controlslist="nodownload noplaybackrate" disablepictureinpicture></video>'+badge+'</div>';
- }
- if(m.type==='audio')return '<audio data-mid="'+esc(m.mid)+'" controls controlslist="nodownload"></audio>';
- if(m.type==='song')return songHtml(m);
- return '<button class="filebox" data-act="dlFile" data-id="'+esc(m.id)+'">'+I('file')+'<span><b>'+esc(m.name||'ไฟล์')+'</b><small>'+fmtSize(m.size||0)+'</small></span>'+I('download')+'</button>';
-}
-function msgHtml(m,prev,next,grp){
- if(m.type==='system')return '<div class="sys'+(m.warn?' warn':'')+'">'+esc(m.text)+'</div>';
- const mine=m.from===ME,lastOfG=!next||next.type==='system'||next.from!==m.from,firstOfG=!prev||prev.type==='system'||prev.from!==m.from;
- const gone=m.unsend==='done';
- let body;
- if(gone&&!ADMIN)body='<div class="bub gone">ข้อความถูกยกเลิก</div>';
- else if(m.type==='text')body='<div class="bub">'+esc(m.text)+'</div>';
- else if(m.type==='sticker')body='<div class="bub media">'+stickerHtml(m.text)+'</div>';
- else body='<div class="bub media">'+mediaHtml(m)+'</div>';
- let note='';
- if(m.unsend==='pending'&&(mine||ADMIN))note='<div class="note">ขอยกเลิก รอแอดมินอนุมัติ</div>';
- if(gone&&ADMIN)note='<div class="note dim">ข้อความนี้ถูกยกเลิกแล้ว (เห็นเฉพาะแอดมิน)</div>';
- 
- return '<div class="row '+(mine?'me':'ot')+'" data-id="'+esc(m.id)+'">'+
-  (!mine?(lastOfG?av(m.from,28):'<span class="av-sp"></span>'):'')+
-  '<div class="col">'+(!mine&&grp&&firstOfG?'<span class="nm">'+esc(m.from)+'</span>':'')+body+(gone?'':rxHtml(m))+note+'<span class="tm">'+hm(m.t)+rcptStat(m,mine)+'</span>'+'</div>'+
-  `<button class="reaction-picker-trigger" data-act="showReactionSelector" data-id="${esc(m.id)}">${I('smile')}</button>`+
-  '<button class="more" data-act="msgMenu" data-id="'+esc(m.id)+'" aria-label="ตัวเลือก">'+I('more')+'</button></div>';
-}
-function renderMsgs(forceBottom){
- const el=$('#msgs'),c=chatById(OPEN);if(!el||!c)return;
- const near=forceBottom||el.scrollHeight-el.scrollTop-el.clientHeight<140;
- const ms=msgsOf(c.id),grp=c.type==='group';let h='',pd='';
- ms.forEach((m,i)=>{
-  const dk=dayKey(m.t);if(dk!==pd){h+='<div class="day">'+dayLbl(m.t)+'</div>';pd=dk}
-  h+=msgHtml(m,ms[i-1],ms[i+1],grp);
- });
- el.innerHTML=(h||'<div class="sys">ยังไม่มีข้อความ ลองส่งข้อความแรกเลย</div>')+'<div id="typ"></div>';
- updateTypingBubble(false);
- hydrate(el);
- if(near)el.scrollTop=el.scrollHeight;
-}
-function refresh(){ 
- renderList();
- if(!OPEN)return;
- if(!chatById(OPEN)||frameKey()!==FRAME)renderChat();else{renderMsgs(false);READ[OPEN]=Date.now();saveRead()}
- markRead();
-}
-
-// ===================== สถานะกำลังพิมพ์ =====================
-const TYPING={};                       
-const TYPC=('BroadcastChannel' in window)?new BroadcastChannel('chat-typing'):null;
-let TLAST=0,TOFF=null;const TCLR={};
-function typers(cid){const o=TYPING[cid]||{},n=Date.now();return Object.keys(o).filter(u=>u!==ME&&o[u]>n)}
-function subText(c){
- const t=typers(c.id);
- if(t.length&&!(c.closed&&!ADMIN))return c.type==='dm'?'กำลังพิมพ์...':t.join(', ')+' กำลังพิมพ์...';
- return (c.type==='dm'?'@'+peerOf(c):(c.members.includes('*')?'ทุกคน':c.members.length+' คน'))+(c.closed?' · ปิดอยู่':'');
-}
-function updateTypingBubble(scroll){
- const el=$('#typ'),c=chatById(OPEN);if(!el||!c)return;
- const t=(c.closed&&!ADMIN)?[]:typers(c.id),box=$('#msgs');
- const near=box&&box.scrollHeight-box.scrollTop-box.clientHeight<160;
- el.innerHTML=t.length?'<div class="row ot typrow">'+av(t[0],28)+'<div class="col">'+(c.type==='group'?'<span class="nm">'+esc(t.join(', '))+' กำลังพิมพ์</span>':'')+'<div class="bub typing" aria-label="กำลังพิมพ์"><i></i><i></i><i></i></div></div></div>':'';
- const s=$('#chSub');if(s){s.textContent=subText(c);s.classList.toggle('ty',t.length>0)}
- if(scroll&&near&&box)box.scrollTop=box.scrollHeight;
-}
-function typingSet(cid,user,on){
- if(user===ME)return;
- const o=TYPING[cid]||(TYPING[cid]={}),key=cid+'|'+user;
- clearTimeout(TCLR[key]);
- if(on){o[user]=Date.now()+4000;TCLR[key]=setTimeout(()=>typingSet(cid,user,false),4100)}else delete o[user];
- renderList();if(cid===OPEN)updateTypingBubble(true);
-}
-function typingPing(on){
- if(!(CLOUD?RLCH:TYPC)||!OPEN)return;
- const c=chatById(OPEN);if(!c||(c.closed&&!ADMIN))return;
- const p={chat:OPEN,from:ME,on:on};if(CLOUD)RLCH.send({type:'broadcast',event:'typing',payload:p});else TYPC.postMessage(p);
-}
-function typingInput(hasText){
- if(!hasText){clearTimeout(TOFF);if(TLAST){TLAST=0;typingPing(false)}return}
- const n=Date.now();
- if(n-TLAST>2000){TLAST=n;typingPing(true)}
- clearTimeout(TOFF);TOFF=setTimeout(()=>{TLAST=0;typingPing(false)},3000);
-}
-if(TYPC)TYPC.onmessage=e=>{const d=e.data||{};if(d.chat&&d.from)typingSet(d.chat,d.from,!!d.on)};
-
-// ===================== ส่งข้อความ / ไฟล์ / เพลง =====================
-function canSend(){const c=chatById(OPEN);if(!c)return false;if(c.closed&&!ADMIN){toast('แชทถูกปิด ส่งไม่ได้');return false}return true}
-function sendText(){
- const t=$('#inp');if(!t||!canSend())return;
- const v=t.value.trim();if(!v)return;
- addMsg(OPEN,{from:ME,type:'text',text:v});
- // Trigger Local Push Notification for other people (simulate backend Push in Cloud or local session)
- if(!CLOUD) {
-   localNotify(`แชทจาก ${ME}`, v, OPEN);
- }
- t.value='';t.style.height='';$('#comp').classList.remove('has');typingInput(false);
- refresh();t.focus();
-}
-async function sendFile(file, isSong=false){
- if(!canSend())return;
- if(file.size>MAX_FILE)return toast('ไฟล์ใหญ่เกิน '+fmtSize(MAX_FILE));
- const mt=file.type||'';
- const type=isSong ? 'song' : (mt.startsWith('image/')?'image':mt.startsWith('video/')?'video':mt.startsWith('audio/')?'audio':'file');
- const id=uid();
- try{if(CLOUD){const r=await sb.storage.from('chat-media').upload(id,file,{contentType:mt||'application/octet-stream'});if(r.error)throw r.error}else await putBlob(id,file)}catch(e){return toast('บันทึกไฟล์ไม่สำเร็จ'+(CLOUD?': '+(e.message||''):''))}
- addMsg(OPEN,{from:ME,type:type,mid:id,mime:mt,name:file.name||'ไฟล์',size:file.size});
- refresh();
-}
-async function sendFiles(list){for(const f of list)await sendFile(f)}
-
-// ----- บันทึกเสียง -----
-let REC=null,RCH=[],RSTREAM=null,RT=null,RT0=0,RSEND=false;
-async function recStart(){
- if(!canSend())return;
- if(!navigator.mediaDevices||!window.MediaRecorder)return toast('อุปกรณ์นี้ไม่รองรับการบันทึกเสียง');
- try{RSTREAM=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){return toast('ไม่ได้รับอนุญาตใช้ไมโครโฟน')}
- RCH=[];RSEND=false;REC=new MediaRecorder(RSTREAM);
- REC.ondataavailable=e=>{if(e.data&&e.data.size)RCH.push(e.data)};
- REC.onstop=async()=>{
-  RSTREAM.getTracks().forEach(t=>t.stop());clearInterval(RT);
-  document.body.classList.remove('recording');const r=$('#rec');if(r)r.classList.remove('on');
-  if(RSEND&&RCH.length){const b=new Blob(RCH,{type:REC.mimeType||'audio/webm'});await sendFile(new File([b],'voice-'+Date.now()+'.'+((REC.mimeType||'').includes('mp4')?'m4a':'webm'),{type:b.type}))}
-  REC=null;
- };
- REC.start();RT0=Date.now();document.body.classList.add('recording');$('#rec').classList.add('on');
- RT=setInterval(()=>{const s=Math.floor((Date.now()-RT0)/1000);const e=$('#recT');if(e)e.textContent=Math.floor(s/60)+':'+pad(s%60)},250);
-}
-function recStop(send){if(!REC)return;RSEND=send;try{REC.stop()}catch(e){}}
-
-// ===================== การป้องกันการแคปหน้าจอ =====================
-function onCapture(src){
- if(ADMIN||!OPEN)return;
- const c=chatById(OPEN);if(!c||c.closed)return;
- c.closed=true;c.silent=false;c.closedBy='capture';c.closedAt=Date.now();c.closedSrc=src||'';
- if(CLOUD)cloudUpd('chat_rooms',c.id,{closed:true,silent:false,closed_by:'capture',closed_at:new Date().toISOString()});
- addMsg(c.id,{type:'system',warn:1,text:ME+' แคปหน้าจอ — ระบบปิดแชทอัตโนมัติแล้ว รอแอดมินเปิดให้'});
- if(CALL)endCall(true);
- closeSheet();$('#lb').classList.remove('on');
- refresh();
-}
-document.addEventListener('keydown',e=>{
- const k=(e.key||'').toLowerCase();
- if(e.key==='PrintScreen'){try{navigator.clipboard.writeText(' ')}catch(_){}onCapture('printscreen')}
- else if(e.metaKey&&e.shiftKey&&(k==='s'||e.code==='Digit3'||e.code==='Digit4'||e.code==='Digit5'))onCapture('shortcut');
-});
-document.addEventListener('keyup',e=>{if(e.key==='PrintScreen'){try{navigator.clipboard.writeText(' ')}catch(_){}onCapture('printscreen')}});
-window.addEventListener('beforeprint',()=>onCapture('print'));
-window.onNativeScreenshot=()=>onCapture('native');
-window.addEventListener('native-screenshot',()=>onCapture('native'));
-function shield(on){if(!BLUR||ADMIN||!OPEN)on=false;$('#app').classList.toggle('shield',on)}
-window.addEventListener('blur',()=>shield(true));
-window.addEventListener('focus',()=>shield(false));
-document.addEventListener('visibilitychange',()=>{shield(document.hidden);if(!document.hidden)markRead()});
-window.addEventListener('focus',markRead);
-document.addEventListener('contextmenu',e=>{if(e.target.closest('.med,#lb'))e.preventDefault()});
-document.addEventListener('dragstart',e=>{if(e.target.closest('.med,#lb'))e.preventDefault()});
-
-// ===================== แอดมิน =====================
-function setAdmin(on){
- ADMIN=!!on;on?SS.set('chat.admin','1'):SS.del('chat.admin');if(!on){ATOKEN='';SS.del('chat.atoken')}
- $('#admTag').classList.toggle('hide',!ADMIN);$('#rtDot').classList.toggle('hide',!ADMIN);
- refresh();
-}
-function pinSheet(next){
- PINNEXT=next||null;
- openSheet('<h3>ยืนยันรหัสแอดมิน</h3><p class="help">กรอกรหัสแอดมินเพื่อดำเนินการ</p><label>รหัสแอดมิน</label><input type="password" id="pin" inputmode="numeric" autocomplete="off" maxlength="12"><div class="acts"><button class="pbtn" data-act="pinOk">ยืนยัน</button></div>');
- setTimeout(()=>{const p=$('#pin');if(p)p.focus()},100);
-}
-async function pinOk(){
- const v=($('#pin')||{}).value;
- let ok=v===ADMIN_PIN;
- if(CLOUD){ok=false;try{const r=await sb.rpc('chat_admin_login',{pin:v||''});if(!r.error&&r.data){ATOKEN=r.data;SS.set('chat.atoken',ATOKEN);ok=true}}catch(e){}}
- if(!ok){toast('รหัสแอดมินไม่ถูกต้อง');const p=$('#pin');if(p){p.value='';p.focus()}return}
- closeSheet();setAdmin(true);toast('เข้าสู่โหมดแอดมินแล้ว');
- const f=PINNEXT;PINNEXT=null;if(f)f();
-}
-function needAdmin(fn){ADMIN?fn():pinSheet(fn)}
-function setClosed(id,closed,silent){
- const c=chatById(id);if(!c)return;
- c.closed=closed;c.silent=!!(closed&&silent);c.closedBy=closed?'admin';
- if(CLOUD)cloudUpd('chat_rooms',id,{closed:closed,silent:c.silent,closed_by:closed?'admin':null,closed_at:closed?new Date().toISOString():null});
- if(closed&&!silent)addMsg(id,{type:'system',text:'แอดมินปิดแชทนี้'});
- if(!closed)addMsg(id,{type:'system',text:'แอดมินเปิดแชทอีกครั้ง'});
- save();refresh();
-}
-function decide(id,ok){
- for(const c of DB.chats){const m=msgsOf(c.id).find(x=>x.id===id);if(m){if(ok)m.unsend='done';else delete m.unsend;save();if(CLOUD)cloudUpd('chat_messages',id,{unsend:ok?'done':null});break}}
- refresh();
-}
-function reqDelChat(){
- const c=chatById(OPEN);if(!c)return;
- if(c.members.includes('*')){closeSheet();return toast('ห้องรวมขอลบไม่ได้')}
- if(!confirm('ส่งคำขอลบแชทนี้ให้แอดมินอนุมัติ?'))return;
- c.delReq='pending';c.delBy=ME;save();if(CLOUD)cloudUpd('chat_rooms',c.id,{del_req:'pending',del_by:ME});
- closeSheet();refresh();toast('ส่งคำขอลบแชทให้แอดมินแล้ว');
-}
-function rejectDel(t){
- const c=chatById(t.dataset.id);if(!c||!ADMIN)return;
- c.delReq='';c.delBy='';save();if(CLOUD)cloudUpd('chat_rooms',c.id,{del_req:null,del_by:null});
- closeSheet();refresh();toast('ปฏิเสธคำขอลบแชทแล้ว');
-}
-function dropChat(id){
- if(!id)return;DB.chats=DB.chats.filter(c=>c.id!==id);delete DB.msgs[id];save();
- if(OPEN===id){OPEN=null;FRAME='';document.body.classList.remove('chat-open');renderChat()}
- refresh();
-}
-async function removeChat(id){
- if(!ADMIN)return;
- if(CLOUD){
-  const paths=msgsOf(id).filter(m=>m.mid).map(m=>m.mid);
-  const r=await sb.from('chat_rooms').delete().eq('id',id).select('id');
-  if(r.error||!r.data||!r.data.length)return toast('ลบไม่สำเร็จ: '+(r.error?r.error.message:'ไม่มีสิทธิ์แอดมิน ลองเข้าสู่โหมดแอดมินใหม่'));
-  if(paths.length)sb.storage.from('chat-media').remove(paths);
- }
- dropChat(id);toast('ลบแชทแล้ว');
-}
-function approveDel(t){closeSheet();return removeChat(t.dataset.id)}
-function delChatNow(){
- if(!confirm('ลบแชทนี้ถาวร? ข้อความและไฟล์ทั้งหมดจะหาย กู้คืนไม่ได้'))return;
- const id=OPEN;closeSheet();return removeChat(id);
-}
-function chatAdminSheet(){
- const c=chatById(OPEN);if(!c)return;
- openSheet('<h3>จัดการแชทนี้ (แอดมิน)</h3><p class="help">'+esc(chatName(c))+(c.closed?' · ปิดอยู่':' · เปิดอยู่')+'</p><div class="hr"></div>'+
-  (c.closed?'<button class="opt" data-act="doOpen">'+I('unlock')+'<span>เปิดแชท</span></button>':
-   '<button class="opt" data-act="doClose">'+I('lock')+'<span>ปิดแชท<small>แจ้งในแชทว่าแอดมินปิด</small></span></button><button class="opt" data-act="doCloseSilent">'+I('eyeoff')+'<span>ปิดแชทแบบเงียบ<small>ผู้ใช้จะไม่เห็นอะไรเลย ไม่มีข้อความแจ้ง</small></span></button>')+
-  (c.delReq?'<div class="reqc"><small>'+esc(c.delBy)+' ขอลบแชทนี้</small><div class="acts"><button class="pbtn ok" data-act="approveDel" data-id="'+esc(c.id)+'">อนุมัติลบ</button><button class="pbtn ghost" data-act="rejectDel" data-id="'+esc(c.id)+'">ปฏิเสธ</button></div></div>':'')+'<div class="hr"></div><button class="opt danger" data-act="delChatNow">'+I('trash')+'<span>ลบแชทนี้ทันที<small>ถาวร กู้คืนไม่ได้</small></span></button>'+'<div class="hr"></div><button class="opt" data-act="exitAdmin">'+I('x')+'<span>ออกจากโหมดแอดมิน</span></button>');
-}
-function requestsSheet(){
- needAdmin(()=>{
-  const R=pendingReqs(),C=DB.chats.filter(c=>c.closed),D=pendingDels();
-  openSheet('<h3>คำขอและการจัดการ</h3><p class="help">คำขอยกเลิกข้อความที่รอแอดมินอนุมัติ</p>'+
-   (R.length?R.map(r=>'<div class="reqc"><b>'+esc(r.m.from)+'</b> <small>ใน '+esc(chatName(r.c))+'</small><div>'+esc(pvText(Object.assign({},r.m,{unsend:''})))+'</div><div class="acts"><button class="pbtn ok" data-act="approve" data-id="'+esc(r.m.id)+'">อนุมัติ</button><button class="pbtn ghost" data-act="reject" data-id="'+esc(r.m.id)+'">ปฏิเสธ</button></div></div>').join(''):'<div class="reqc"><small>ไม่มีคำขอที่รออยู่</small></div>')+
-   '<div class="hr"></div><p class="help">คำขอลบแชท</p>'+(D.length?D.map(c=>'<div class="reqc"><b>'+esc(chatName(c))+'</b> <small>ขอโดย '+esc(c.delBy)+'</small><div class="acts"><button class="pbtn ok" data-act="approveDel" data-id="'+esc(c.id)+'">อนุมัติลบ</button><button class="pbtn ghost" data-act="rejectDel" data-id="'+esc(c.id)+'">ปฏิเสธ</button></div></div>').join(''):'<div class="reqc"><small>ไม่มีคำขอลบแชท</small></div>')+'<div class="hr"></div><p class="help">แชทที่ปิดอยู่</p>'+
-   (C.length?C.map(c=>'<div class="reqc"><b>'+esc(chatName(c))+'</b> <small>'+(c.silent?'ปิดแบบเงียบ':c.closedBy==='capture'?'ปิดเพราะแคปหน้าจอ':'ปิดโดยแอดมิน')+'</small><div class="acts"><button class="pbtn" data-act="openById" data-id="'+esc(c.id)+'">เปิดแชท</button></div></div>').join(''):'<div class="reqc"><small>ไม่มีแชทที่ปิดอยู่</small></div>'));
- });
-}
-function msgMenu(id){
- const c=chatById(OPEN);if(!c)return;
- const m=msgsOf(c.id).find(x=>x.id===id);if(!m||m.type==='system')return;
- const mine=m.from===ME;let h='<h3>ตัวเลือกข้อความ</h3><div class="rxbar">'+RE.map(e=>'<button data-act="applyReaction" data-id="'+esc(id)+'" data-e="'+e+'">'+e+'</button>').join('')+'</div><div class="hr"></div>';
- if(m.unsend==='done'&&!ADMIN)h+='<p class="help">ข้อความนี้ถูกยกเลิกแล้ว</p>';
- if(mine&&!m.unsend)h+='<button class="opt danger" data-act="reqUnsend" data-id="'+esc(id)+'">'+I('trash')+'<span>ขอยกเลิกข้อความ<small>ต้องรอแอดมินอนุมัติ</small></span></button>';
- if(mine&&m.unsend==='pending')h+='<p class="help">ส่งคำขอยกเลิกแล้ว รอแอดมินอนุมัติ</p>';
- if(ADMIN){
-  if(m.unsend==='pending')h+='<button class="opt" data-act="approve" data-id="'+esc(id)+'">'+I('check')+'<span>อนุมัติการยกเลิก</span></button><button class="opt" data-act="reject" data-id="'+esc(id)+'">'+I('x')+'<span>ปฏิเสธคำขอ</span></button>';
-  else if(m.unsend!=='done')h+='<button class="opt danger" data-act="approve" data-id="'+esc(id)+'">'+I('trash')+'<span>ยกเลิกข้อความนี้ (แอดมิน)</span></button>';
-  if(m.type==='image'||m.type==='video')h+='<button class="opt" data-act="toggleLock" data-id="'+esc(id)+'">'+I(m.locked?'unlock':'eyeoff')+'<span>'+(m.locked?'ปลดล็อก':'ล็อก')+(m.type==='image'?'ภาพ':'วิดีโอ')+'<small>'+(m.locked?'ให้ทุกคนดูได้อีกครั้ง':'ซ่อนจากทุกคน เห็นเฉพาะแอดมิน')+'</small></span></button>';
- }else if(!mine&&!(m.unsend==='done'))h+='<p class="help">ไม่มีตัวเลือกสำหรับข้อความนี้</p>';
- openSheet(h);
-}
-
-// ===================== ชีต / ตั้งค่า / แชทใหม่ =====================
-function openSheet(h){$('#sheet').innerHTML='<button class="xx" data-act="closeSheet" aria-label="ปิด">'+I('x')+'</button>'+h;$('#sheet').classList.add('on');$('#sbg').classList.add('on');$('#sheet').scrollTop=0}
-function closeSheet(){$('#sheet').classList.remove('on');$('#sbg').classList.remove('on')}
-function nameSheet(first){
- openSheet('<h3>'+(first?'ตั้งชื่อผู้ใช้':'เปลี่ยนชื่อผู้ใช้')+'</h3><p class="help">ใช้ a-z 0-9 . _ ความยาว 2-20 ตัว</p><label>ชื่อผู้ใช้</label><input type="text" id="nm" value="'+esc(ME)+'" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn" data-act="saveName">บันทึก</button></div>');
- if(first){$('#sheet .xx').classList.add('hide');$('#sbg').dataset.act=''}
- setTimeout(()=>{const n=$('#nm');if(n)n.focus()},100);
-}
-function saveName(){
- const v=($('#nm').value||'').trim().toLowerCase();
- if(!/^[a-z0-9._]{2,20}$/.test(v))return toast('ชื่อใช้ได้เฉพาะ a-z 0-9 . _ (2-20 ตัว)');
- ME=v;LS.set('chat.me',ME);loadRead();if(LS.get('chat.push')==='1')setTimeout(()=>enablePush().catch(()=>{}),500);$('#sbg').dataset.act='closeSheet';closeSheet();
- $('#uname').textContent=ME;OPEN=null;renderChat();refresh();
-}
-function settingsSheet(){
- openSheet('<h3>ตั้งค่า</h3><div class="hr"></div>'+
-  '<button class="opt" data-act="nameSheet">'+I('user')+'<span>ชื่อผู้ใช้<small>'+esc(ME)+' · กดเพื่อเปลี่ยน/สลับบัญชี</small></span></button>'+
-  (ADMIN?'<button class="opt" data-act="exitAdmin">'+I('shield')+'<span>ออกจากโหมดแอดมิน</span></button>':'<button class="opt" data-act="adminLogin">'+I('shield')+'<span>เข้าสู่โหมดแอดมิน<small>ต้องใช้รหัสแอดมิน</small></span></button>')+
-  '<button class="opt" data-act="installApp">'+I('download')+'<span>ติดตั้งเป็นแอป<small>เพิ่มไปยังหน้าจอโฮม</small></span></button><button class="opt" data-act="enablePush">'+I('bell')+'<span>เปิดการแจ้งเตือนจริง<small>แจ้งเตือนข้อความใหม่ข้ามระบบ</small></span></button>'+
-  '<div class="sw"><span>เบลอหน้าจอเมื่อสลับแอป<br><small class="help">ช่วยลดการแอบแคปด้วยเครื่องมือภายนอก</small></span><input type="checkbox" id="blurT" '+(BLUR?'checked':'')+' data-act="toggleBlur"></div>'+
-  (ADMIN?'<button class="opt" data-act="cloudSheet">'+I('chat')+'<span>เชื่อมต่อฐานข้อมูล<small>'+(CLOUD?'เชื่อมต่อแล้ว (เรียลไทม์)':'ยังไม่เชื่อมต่อ ใช้โหมดในเครื่อง')+'</small></span></button>':'')+'<div class="hr"></div><button class="opt danger" data-act="resetAll">'+I('trash')+'<span>ล้างข้อมูลทั้งหมดในเครื่องนี้</span></button>');
-}
-function newChatSheet(){
- openSheet('<h3>แชทใหม่</h3><label>ชื่อผู้ใช้ที่ต้องการคุยด้วย</label><input type="text" id="np" placeholder="เช่น somchai" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn" data-act="startDM">เริ่มแชท</button></div><div class="hr"></div><p class="help">หรือสร้างกลุ่ม</p><label>ชื่อกลุ่ม</label><input type="text" id="gn" placeholder="ชื่อกลุ่ม" autocomplete="off"><label>สมาชิก (คั่นด้วย ,)</label><input type="text" id="gm" placeholder="a, b, c" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn ghost" data-act="startGroup">สร้างกลุ่ม</button></div>');
- setTimeout(()=>{const n=$('#np');if(n)n.focus()},100);
-}
-function startDM(){
- const p=($('#np').value||'').trim().toLowerCase();
- if(!/^[a-z0-9._]{2,20}$/.test(p))return toast('ชื่อผู้ใช้ไม่ถูกต้อง');
- if(p===ME)return toast('คุยกับตัวเองไม่ได้');
- const id='dm:'+[ME,p].sort().join('|');
- if(!chatById(id)){DB.chats.push({id:id,type:'dm',name:'',members:[ME,p],closed:false,silent:false});msgsOf(id);save();if(CLOUD)cloudChat(chatById(id))}
- closeSheet();openChat(id);
-}
-function startGroup(){
- const n=($('#gn').value||'').trim(),ms=($('#gm').value||'').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
- if(!n)return toast('ตั้งชื่อกลุ่มก่อน');
- const bad=ms.find(s=>!/^[a-z0-9._]{2,20}$/.test(s));if(bad)return toast('ชื่อสมาชิกไม่ถูกต้อง: '+bad);
- const id='g-'+uid();
- DB.chats.push({id:id,type:'group',name:n,members:Array.from(new Set([ME].concat(ms))),closed:false,silent:false});
-
- if(CLOUD)cloudChat(chatById(id));
- addMsg(id,{type:'system',text:ME+' สร้างกลุ่ม “'+n+'”'});
- closeSheet();openChat(id);
-}
-function infoSheet(){
- const c=chatById(OPEN);if(!c)return;
- openSheet('<h3>'+esc(chatName(c))+'</h3><p class="help">'+(c.type==='dm'?'แชทส่วนตัว':'แชทกลุ่ม')+'</p><div class="hr"></div><p class="help">สมาชิก</p>'+
-  (c.members.includes('*')?'<div class="reqc"><small>เปิดให้ทุกคนที่ใช้ระบบนี้</small></div>':c.members.map(m=>'<div class="reqc" style="display:flex;gap:12px;align-items:center">'+av(m,32)+'<b>'+esc(m)+'</b></div>').join(''))+
-  '<div class="hr"></div><p class="help">ข้อความที่ส่งแล้วจะลบเองไม่ได้ ต้องกด “ขอยกเลิกข้อความ” และรอแอดมินอนุมัติ</p>'+(c.delReq?'<p class="help">ส่งคำขอลบแชทแล้ว รอแอดมินอนุมัติ</p>':'<button class="opt danger" data-act="reqDelChat">'+I('trash')+'<span>ขอลบแชทนี้<small>ต้องรอแอดมินอนุมัติ</small></span></button>'));
-}
-
-// ===================== รูป / ดาวน์โหลด =====================
-async function viewImg(mid){
- const u=await urlFor(mid);if(!u)return;
- $('#lbImg').src=u;$('#lb').classList.add('on');
-}
-async function dlFile(id){
- const c=chatById(OPEN);const m=c&&msgsOf(c.id).find(x=>x.id===id);if(!m)return;
- const u=await urlFor(m.mid);if(!u)return toast('ไม่พบไฟล์');
- const a=document.createElement('a');a.href=u;a.download=m.name||'file';document.body.appendChild(a);a.click();a.remove();
-}
-
-// ===================== โทร (WebRTC) =====================
-const SIG=('BroadcastChannel' in window)?new BroadcastChannel('chat-sig'):null;
-let PC=null,LOC=null,CALL=null,PEND=[],CT=null,CT0=0,RING=null;
-function sig(o){const p=Object.assign({from:ME},o);if(CLOUD&&RLCH)RLCH.send({type:'broadcast',event:'sig',payload:p});else if(SIG)SIG.postMessage(p)}
-function callUI(state,name,video){
- $('#call').classList.add('on');
- $('#cav').innerHTML=av(name,96);$('#cn').textContent=name;
- $('#cst').textContent=state==='in'?(video?'วิดีโอคอลเรียกเข้า':'สายเรียกเข้า'):state==='out'?'กำลังโทร...':'';
- $('#cAcc').classList.toggle('hide',state!=='in');
- $('#cMic').classList.toggle('hide',state==='in');$('#cCam').classList.toggle('hide',state==='in'||!video);
- $('#cMic').classList.remove('off');$('#cCam').classList.remove('off');
-}
-async function mkPC(video){
- if(!navigator.mediaDevices||!window.RTCPeerConnection)throw Error('อุปกรณ์ไม่รองรับการโทร');
- LOC=await navigator.mediaDevices.getUserMedia({audio:true,video:video?{facingMode:'user'}:false});
- $('#lv').srcObject=LOC;$('#lv').style.display=video?'block':'none';
- PC=new RTCPeerConnection({iceServers:ICE});
- LOC.getTracks().forEach(t=>PC.addTrack(t,LOC));
- PC.ontrack=e=>{$('#rv').srcObject=e.streams[0]};
- PC.onicecandidate=e=>{if(e.candidate&&CALL)sig({t:'ice',to:CALL.peer,c:e.candidate})};
- PC.onconnectionstatechange=()=>{if(!PC)return;if(['failed','closed'].includes(PC.connectionState))endCall(false)};
-}
-async function startCall(video){
- const c=chatById(OPEN);if(!c||c.type!=='dm')return;
- if(c.closed&&!ADMIN)return toast('แชทถูกปิด โทรไม่ได้');
- if(CALL)return;
- if(!SIG&&!CLOUD)return toast('เบราว์เซอร์ไม่รองรับการโทรในโหมดนี้');
- CALL={chat:c.id,peer:peerOf(c),video:video,out:true,connected:false};PEND=[];
- callUI('out',CALL.peer,video);
- try{
-  await mkPC(video);
-  const off=await PC.createOffer();await PC.setLocalDescription(off);
-  sig({t:'offer',to:CALL.peer,chat:c.id,video:video,sdp:PC.localDescription});
-  RING=setTimeout(()=>{if(CALL&&!CALL.connected){addMsg(CALL.chat,{type:'system',text:'การโทรไม่มีผู้รับสาย'});endCall(true);refresh()}},40000);
- }catch(e){toast(e.message||'เริ่มการโทรไม่สำเร็จ (ต้องใช้ https และอนุญาตกล้อง/ไมค์)');endCall(false)}
-}
-async function acceptCall(){
- if(!CALL||CALL.out)return;
- try{
-  await mkPC(CALL.video);
-  await PC.setRemoteDescription(CALL.offer);
-  for(const c of PEND)try{await PC.addIceCandidate(c)}catch(e){}PEND=[];
-  const ans=await PC.createAnswer();await PC.setLocalDescription(ans);
-  sig({t:'answer',to:CALL.peer,sdp:PC.localDescription});
-  connected();
- }catch(e){toast(e.message||'รับสายไม่สำเร็จ');endCall(true)}
-}
-function connected(){
- CALL.connected=true;clearTimeout(RING);CT0=Date.now();
- $('#cAcc').classList.add('hide');$('#cMic').classList.remove('hide');if(CALL.video)$('#cCam').classList.remove('hide');
- clearInterval(CT);CT=setInterval(()=>{const s=Math.floor((Date.now()-CT0)/1000);$('#cst').textContent=pad(Math.floor(s/60))+':'+pad(s%60)},500);
- $('#cst').textContent='00:00';
-}
-function endCall(send){
- if(send&&CALL)sig({t:'end',to:CALL.peer});
- clearTimeout(RING);clearInterval(CT);
- const was=CALL;
- if(LOC)LOC.getTracks().forEach(t=>t.stop());LOC=null;
- if(PC){try{PC.close()}catch(e){}}PC=null;
- $('#rv').srcObject=null;$('#lv').srcObject=null;$('#call').classList.remove('on');
- if(was&&was.connected&&was.out){const s=Math.floor((Date.now()-CT0)/1000);addMsg(was.chat,{type:'system',text:'การโทรสิ้นสุด '+pad(Math.floor(s/60))+':'+pad(s%60)});refresh()}
- CALL=null;PEND=[];
-}
-const onSigMsg=async d=>{
- d=d||{};if(d.to!==ME)return;
- if(d.t==='offer'){
-  const c=chatById(d.chat);
-  if(CALL||!c||(c.closed&&!ADMIN)){sig({t:'end',to:d.from});return}
-  CALL={chat:d.chat,peer:d.from,video:d.video,offer:d.sdp,out:false,connected:false};PEND=[];
-  callUI('in',d.from,d.video);
- }else if(d.t==='answer'&&PC&&CALL&&CALL.out){
-  try{await PC.setRemoteDescription(d.sdp);for(const c of PEND)try{await PC.addIceCandidate(c)}catch(e){}PEND=[];connected()}catch(e){}
- }else if(d.t==='ice'){
-  if(PC&&PC.remoteDescription){try{await PC.addIceCandidate(d.c)}catch(e){}}else PEND.push(d.c);
- }else if(d.t==='end'){
-  if(CALL){const w=CALL;toast(w.connected?'อีกฝ่ายวางสาย':w.out?'อีกฝ่ายไม่รับสาย':'ผู้โทรยกเลิก');endCall(false)}
- }
-};
-if(SIG)SIG.onmessage=ev=>onSigMsg(ev.data);
-
-// ===================== events =====================
-const A={
- closeSheet:closeSheet,
- closeLb(){$('#lb').classList.remove('on');$('#lbImg').removeAttribute('src')},
- open(t){openChat(t.dataset.id)},
- back(){closeChatView()},
- home(){closeChatView()},
- focusSearch(){$('#cs').focus()},
- newChat:newChatSheet,startDM:startDM,startGroup:startGroup,
- settings:settingsSheet,cloudSheet:cloudSheet,saveCloud:saveCloud,cloudOff:cloudOff,nameSheet(){nameSheet(false)},saveName:saveName,
- info:infoSheet,readInfo:readInfo,
- applyReaction(t){applyReaction(t.dataset.id, t.dataset.e)},
- toggleReact(t){applyReaction(t.dataset.id, t.dataset.e)},
- showReactionSelector(t){showReactionSelector(t.dataset.id, t)},
- stickers:stickers,sendSticker:sendSticker,installApp:installApp,enablePush:enablePush,reqDelChat:reqDelChat,approveDel:approveDel,rejectDel:rejectDel,delChatNow:delChatNow,
- requests:requestsSheet,
- adminLogin(){pinSheet()},pinOk:pinOk,
- exitAdmin(){setAdmin(false);closeSheet();toast('ออกจากโหมดแอดมินแล้ว')},
- chatAdmin:chatAdminSheet,
- doOpen(){setClosed(OPEN,false);closeSheet()},
- doClose(){setClosed(OPEN,true,false);closeSheet()},
- doCloseSilent(){setClosed(OPEN,true,true);closeSheet()},
- adminOpen(){needAdmin(()=>setClosed(OPEN,false))},
- openById(t){setClosed(t.dataset.id,false);closeSheet();toast('เปิดแชทแล้ว')},
- approve(t){decide(t.dataset.id,true);closeSheet();toast('อนุมัติการยกเลิกแล้ว')},
- reject(t){decide(t.dataset.id,false);closeSheet();toast('ปฏิเสธคำขอแล้ว')},
- reqUnsend(t){
-  const c=chatById(OPEN),m=c&&msgsOf(c.id).find(x=>x.id===t.dataset.id);
-  if(m&&m.from===ME&&!m.unsend){m.unsend='pending';m.reqAt=Date.now();save();if(CLOUD)cloudUpd('chat_messages',m.id,{unsend:'pending'});refresh();toast('ส่งคำขอยกเลิกให้แอดมินแล้ว')}
-  closeSheet();
- },
- toggleLock(t){
-  const c=chatById(OPEN),m=c&&msgsOf(c.id).find(x=>x.id===t.dataset.id);
-  if(m&&ADMIN){m.locked=!m.locked;save();if(CLOUD)cloudUpd('chat_messages',m.id,{locked:m.locked});refresh();toast(m.locked?'ล็อกแล้ว':'ปลดล็อกแล้ว')}
-  closeSheet();
- },
- msgMenu(t){msgMenu(t.dataset.id)},
- viewImg(t){viewImg(t.dataset.mid)},
- dlFile(t){dlFile(t.dataset.id)},
- sendText:sendText,
- pickImg(){$('#fi1').click()},pickFile(){$('#fi2').click()},pickSong(){$('#fi_song').click()},
- recStart:recStart,recCancel(){recStop(false)},recSend(){recStop(true)},
- call(){startCall(false)},vcall(){startCall(true)},
- callAcc:acceptCall,callEnd(){endCall(true)},
- callMic(t){if(LOC){const a=LOC.getAudioTracks()[0];if(a){a.enabled=!a.enabled;t.classList.toggle('off',!a.enabled)}}},
- callCam(t){if(LOC){const v=LOC.getVideoTracks()[0];if(v){v.enabled=!v.enabled;t.classList.toggle('off',!v.enabled)}}},
- toggleBlur(t){BLUR=t.checked;LS.set('chat.blur',BLUR?'1':'0')},
- resetAll(){
-  if(!confirm('ล้างข้อความและข้อมูลทั้งหมดในเครื่องนี้?'))return;
-  try{localStorage.removeItem('chat.db')}catch(e){}
-  try{indexedDB.deleteDatabase('chat-media')}catch(e){}
-  location.reload();
- }
-};
-document.addEventListener('click',function(e){
- const t=e.target.closest('[data-act]');if(!t||t.type==='checkbox'||!t.dataset.act)return;
- const f=A[t.dataset.act];if(f){e.preventDefault();try{const r=f(t,e);if(r&&r.catch)r.catch(x=>toast(x.message||String(x)))}catch(x){toast(x.message||String(x))}}
-});
-document.addEventListener('change',function(e){
- const t=e.target;
- if(t.type==='checkbox'&&t.dataset.act==='toggleBlur')A.toggleBlur(t);
- if(t.id==='fi1'||t.id==='fi2'){const fs=Array.from(t.files||[]);t.value='';sendFiles(fs)}
- if(t.id==='fi_song'){const fs=Array.from(t.files||[]);t.value='';if(fs[0])sendFile(fs[0], true)}
-});
-document.addEventListener('input',function(e){
- const t=e.target;
- if(t.id==='cs'){FILTER=t.value;renderList()}
- if(t.id==='inp'){t.style.height='auto';t.style.height=Math.min(t.scrollHeight,140)+'px';$('#comp').classList.toggle('has',!!t.value.trim());typingInput(!!t.value.trim())}
-});
-document.addEventListener('keydown',function(e){
- if(e.key==='Enter'&&!e.shiftKey&&e.target.id==='inp'&&!e.isComposing){e.preventDefault();sendText()}
- if(e.key==='Enter'&&e.target.id==='pin'){e.preventDefault();pinOk()}
- if(e.key==='Enter'&&e.target.id==='nm'){e.preventDefault();saveName()}
- if(e.key==='Enter'&&e.target.id==='np'){e.preventDefault();startDM()}
- if(e.key==='Escape'){closeSheet();A.closeLb()}
-});
-// ลากไฟล์มาวางในแชท
-['dragover','drop'].forEach(n=>$('#main').addEventListener(n,function(e){
- if(!OPEN)return;e.preventDefault();
- if(n==='drop'&&e.dataTransfer&&e.dataTransfer.files.length)sendFiles(Array.from(e.dataTransfer.files));
+const idb = () => _idb || (_idb = new Promise((res, rej) => {
+  const r = indexedDB.open('chat-media', 1);
+  r.onupgradeneeded = () => r.result.createObjectStore('m');
+  r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
 }));
-window.addEventListener('storage',function(e){
- if(e.key==='chat.db'){load();refresh()}
- if(e.key==='chat.read.'+ME)loadRead();
+const putBlob = (k, b) => idb().then(d => new Promise((res, rej) => { const t = d.transaction('m', 'readwrite'); t.objectStore('m').put(b, k); t.oncomplete = res; t.onerror = rej; }));
+const getBlob = k => idb().then(d => new Promise((res, rej) => { const q = d.transaction('m').objectStore('m').get(k); q.onsuccess = () => res(q.result); q.onerror = rej; }));
+const URLS = {};
+async function urlFor(mid){
+  if (URLS[mid]) return URLS[mid];
+  if (CLOUD) { const r = await sb.storage.from('chat-media').createSignedUrl(mid, 86400); return r.data ? (URLS[mid] = r.data.signedUrl) : null; }
+  const b = await getBlob(mid); return b ? (URLS[mid] = URL.createObjectURL(b)) : null;
+}
+function hydrate(root){
+  root.querySelectorAll('[data-mid]').forEach(el => {
+    if (el.dataset.ok) return;
+    urlFor(el.dataset.mid).then(u => { if (u) { el.src = u; el.dataset.ok = '1'; } });
+  });
+}
+
+// Reactions
+const RX = {}, RE = ['❤️','👍','😂','😮','😢','🙏'];
+const rxOf = m => CLOUD ? (RX[m.id] || {}) : (m.rx || {});
+function rxHtml(m){
+  const r = rxOf(m), us = Object.keys(r); if (!us.length) return '';
+  const g = {}; us.forEach(u => (g[r[u]] = g[r[u]] || []).push(u));
+  return '<div class="msg-reaction-container">' + Object.keys(g).map(e => {
+    return `<button class="msg-reaction-badge ${g[e].includes(ME)?'mine':''}" data-act="toggleReact" data-id="${esc(m.id)}" data-e="${esc(e)}">${e} <b>${g[e].length}</b></button>`;
+  }).join('') + '</div>';
+}
+function applyReaction(msgId, emoji){
+  const c = chatById(OPEN), m = c && msgsOf(c.id).find(x => x.id === msgId);
+  if (!m || !ME || (c.closed && !ADMIN)) return;
+  const cur = rxOf(m)[ME];
+  if (CLOUD) {
+    const box = RX[msgId] = RX[msgId] || {};
+    if (cur === emoji) { delete box[ME]; sb.from('chat_reactions').delete().eq('msg_id', msgId).eq('user_name', ME); }
+    else { box[ME] = emoji; sb.from('chat_reactions').upsert({ msg_id: msgId, chat_id: c.id, user_name: ME, emoji: emoji }); }
+  } else {
+    m.rx = m.rx || {}; if (cur === emoji) delete m.rx[ME]; else m.rx[ME] = emoji; save();
+  }
+  const pop = $('.rx-popover'); if (pop) pop.remove();
+  renderMsgs(false);
+}
+
+// Music Player
+const PLAYING = {};
+function togglePlaySong(msgId){
+  const a = $(`#audio-${msgId}`), btn = $(`#btn-play-${msgId}`), bar = $(`#pbar-${msgId}`), time = $(`#time-${msgId}`);
+  if (!a) return;
+  Object.keys(PLAYING).forEach(id => { if (id !== msgId && PLAYING[id]) { PLAYING[id].pause(); const b = $(`#btn-play-${id}`); if (b) b.textContent = '▶'; } });
+  if (a.paused) {
+    a.play().then(() => { btn.textContent = '⏸'; PLAYING[msgId] = a; }).catch(() => toast('เล่นเพลงไม่สำเร็จ'));
+  } else { a.pause(); btn.textContent = '▶'; }
+  if (!a.dataset.ready) {
+    a.dataset.ready = '1';
+    a.addEventListener('timeupdate', () => {
+      const pct = (a.currentTime / (a.duration || 1)) * 100;
+      if (bar) bar.style.width = pct + '%';
+      if (time) time.textContent = `${Math.floor(a.currentTime / 60)}:${pad(Math.floor(a.currentTime % 60))}`;
+    });
+    a.addEventListener('ended', () => { btn.textContent = '▶'; if (bar) bar.style.width = '0%'; if (time) time.textContent = '0:00'; });
+  }
+}
+function songCardHtml(m){
+  return `<div class="song-card">
+    <audio id="audio-${m.id}" data-mid="${esc(m.mid)}" preload="metadata" style="display:none"></audio>
+    <div class="song-header"><div class="song-cover">🎵</div><div class="song-info"><div class="song-title">${esc(m.name)}</div><div class="song-size">${fmtSize(m.size||0)}</div></div></div>
+    <div class="song-controls"><button class="song-btn" id="btn-play-${m.id}" data-act="playSong" data-id="${esc(m.id)}">▶</button><div class="song-track" data-act="seekSong" data-id="${esc(m.id)}"><div class="song-bar" id="pbar-${m.id}"></div></div><div class="song-time" id="time-${m.id}">0:00</div></div>
+  </div>`;
+}
+
+// Stickers
+const STK = [
+  ['ok','👌','โอเค','#2e9d4f'],['thx','🙏','ขอบคุณ','#3b82f6'],['lol','🤣','ขำมาก','#f5b301'],
+  ['love','🥰','รักนะ','#ec4899'],['tired','😩','เหนื่อยจัง','#a855f7'],['sleep','😴','ง่วง','#64748b'],
+  ['cheer','💪','สู้ๆ','#f97316'],['yes','👍','ได้เลย','#22c55e'],['hi','👋','สวัสดี','#14b8a6']
+];
+function stickerHtml(id){ const s = STK.find(x => x[0] === id); return s ? `<div class="stk" style="--c:${s[3]}"><span class="e">${s[1]}</span><b>${esc(s[2])}</b></div>` : ''; }
+
+// Notification & PWA
+if ('serviceWorker' in navigator) {
+  const sw = `self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));self.addEventListener('notificationclick',e=>{e.notification.close();e.waitUntil(clients.matchAll({type:'window'}).then(c=>c[0]?c[0].focus():clients.openWindow('/')));});`;
+  navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw], {type:'application/javascript'}))).catch(()=>{});
+}
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); DEFERRED_PROMPT = e; });
+function triggerRealNotification(title, body){
+  if ('Notification' in window && Notification.permission === 'granted') {
+    new Notification(title, { body: body, icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234f5bf5'><path d='M4 5h16v11H9l-5 4z'/></svg>" });
+  }
+}
+
+// Render Chat & Messages
+function renderChat(){
+  const c = chatById(OPEN), box = $('#chat');
+  if (!c) { $('#empty').classList.remove('hide'); box.classList.add('hide'); return; }
+  $('#empty').classList.add('hide'); box.classList.remove('hide');
+  box.innerHTML = `<header class="ch"><button class="ib only-m" data-act="back">${I('back')}</button><span class="av" style="width:40px;height:40px;background:#384b66">${esc(chatName(c)[0]||'?')}</span><div class="ttl"><b>${esc(chatName(c))}</b><small>${c.type==='dm'?'ส่วนตัว':'กลุ่ม'}</small></div>${ADMIN?`<button class="ib" data-act="adminSheet">${I('shield')}</button>`:''}</header>
+    <div id="msgs"></div>
+    <div id="rec"><i></i><span id="recT">0:00</span><button class="pbtn ghost" data-act="recCancel">ยกเลิก</button><button class="pbtn" data-act="recSend">ส่ง</button></div>
+    <div id="comp">
+      <button class="ib" data-act="pickImg" title="รูปภาพ">${I('image')}</button>
+      <button class="ib" data-act="pickSong" title="ส่งเพลง">${I('music')}</button>
+      <button class="ib" data-act="stickers" title="สติกเกอร์">${I('smile')}</button>
+      <textarea id="inp" rows="1" placeholder="ส่งข้อความ..."></textarea>
+      <button class="ib mic" data-act="recStart">${I('mic')}</button>
+      <button class="send" data-act="sendText">ส่ง</button>
+    </div>`;
+  renderMsgs(true);
+}
+
+function renderMsgs(forceBottom){
+  const el = $('#msgs'), c = chatById(OPEN); if (!el || !c) return;
+  const ms = msgsOf(c.id); let h = '', pd = '';
+  ms.forEach((m, i) => {
+    const dk = dayKey(m.t); if (dk !== pd) { h += `<div class="day">${dayLbl(m.t)}</div>`; pd = dk; }
+    const mine = m.from === ME;
+    let body = m.type === 'text' ? `<div class="bub">${esc(m.text)}</div>` :
+      m.type === 'sticker' ? `<div class="bub media">${stickerHtml(m.text)}</div>` :
+      m.type === 'song' ? songCardHtml(m) :
+      m.type === 'image' ? `<div class="med"><img data-mid="${esc(m.mid)}" alt=""></div>` :
+      `<div class="bub">${esc(m.name||'ไฟล์')}</div>`;
+    h += `<div class="row ${mine?'me':'ot'}" data-id="${esc(m.id)}">
+      <button class="reaction-picker-trigger" data-act="openRxPicker" data-id="${esc(m.id)}">${I('smile')}</button>
+      <div class="col">${!mine&&c.type==='group'?`<span class="nm">${esc(m.from)}</span>`:''}${body}${rxHtml(m)}<span class="tm">${hm(m.t)}</span></div>
+      <button class="more" data-act="msgMenu" data-id="${esc(m.id)}">${I('more')}</button>
+    </div>`;
+  });
+  el.innerHTML = h || '<div class="sys">ไม่มีข้อความ</div>';
+  hydrate(el);
+  if (forceBottom) el.scrollTop = el.scrollHeight;
+}
+
+function renderList(){
+  const q = FILTER.trim().toLowerCase();
+  const L = DB.chats.filter(c => !q || chatName(c).toLowerCase().includes(q));
+  $('#clist').innerHTML = L.map(c => {
+    const ms = msgsOf(c.id), last = ms[ms.length - 1];
+    return `<button class="ci ${c.id===OPEN?'on':''}" data-act="open" data-id="${esc(c.id)}">
+      <span class="av" style="width:48px;height:48px;background:#2d3a4d">${esc(chatName(c)[0]||'?')}</span>
+      <div class="tx"><div class="tt"><b>${esc(chatName(c))}</b></div><div class="pv">${last?(last.type==='text'?last.text:last.type==='song'?'ส่งเพลง 🎵':'ไฟล์'):'แชทใหม่'}</div></div>
+    </button>`;
+  }).join('');
+}
+
+function openChat(id){ OPEN = id; document.body.classList.add('chat-open'); renderChat(); renderList(); }
+function sendText(){ const t = $('#inp'), v = t.value.trim(); if (!v || !OPEN) return; addMsg(OPEN, { from:ME, type:'text', text:v }); t.value = ''; renderMsgs(true); renderList(); }
+async function sendFile(file, isSong=false){
+  if (!OPEN) return;
+  const mt = file.type || '', type = isSong ? 'song' : mt.startsWith('image/') ? 'image' : 'file', id = uid();
+  if (CLOUD) await sb.storage.from('chat-media').upload(id, file); else await putBlob(id, file);
+  addMsg(OPEN, { from:ME, type:type, mid:id, mime:mt, name:file.name, size:file.size });
+  renderMsgs(true); renderList();
+}
+
+// Delegated Events
+const A = {
+  open(t){ openChat(t.dataset.id); },
+  back(){ OPEN = null; document.body.classList.remove('chat-open'); renderList(); },
+  home(){ A.back(); },
+  focusSearch(){ $('#cs').focus(); },
+  pickImg(){ $('#fi1').click(); },
+  pickSong(){ $('#fi_song').click(); },
+  sendText: sendText,
+  stickers(){
+    $('#sheet').innerHTML = '<h3>สติกเกอร์</h3><div class="stkgrid">' + STK.map(s => `<button data-act="sendStk" data-id="${s[0]}">${stickerHtml(s[0])}</button>`).join('') + '</div>';
+    $('#sheet').classList.add('on'); $('#sbg').classList.add('on');
+  },
+  sendStk(t){ addMsg(OPEN, { from:ME, type:'sticker', text:t.dataset.id }); $('#sheet').classList.remove('on'); $('#sbg').classList.remove('on'); renderMsgs(true); },
+  openRxPicker(t){
+    const old = $('.rx-popover'); if (old) old.remove();
+    const pop = document.createElement('div'); pop.className = 'rx-popover';
+    pop.innerHTML = RE.map(e => `<button data-act="applyR" data-id="${t.dataset.id}" data-e="${e}">${e}</button>`).join('');
+    t.parentNode.appendChild(pop);
+  },
+  applyR(t){ applyReaction(t.dataset.id, t.dataset.e); },
+  toggleReact(t){ applyReaction(t.dataset.id, t.dataset.e); },
+  playSong(t){ togglePlaySong(t.dataset.id); },
+  seekSong(t, e){ const a = $(`#audio-${t.dataset.id}`); if (a && a.duration) a.currentTime = ((e.clientX - t.getBoundingClientRect().left) / t.getBoundingClientRect().width) * a.duration; },
+  settings(){
+    $('#sheet').innerHTML = `<h3>ตั้งค่า</h3><hr style="border:0;border-top:1px solid #232b39;margin:12px 0">
+      <button class="opt" data-act="promptName">${I('user')}<span>เปลี่ยนชื่อผู้ใช้ (${esc(ME)})</span></button>
+      <button class="opt" data-act="installPWA">${I('download')}<span>ติดตั้งเป็นแอป (PWA)</span></button>
+      <button class="opt" data-act="reqNotify">${I('bell')}<span>เปิดการแจ้งเตือนจริง</span></button>`;
+    $('#sheet').classList.add('on'); $('#sbg').classList.add('on');
+  },
+  promptName(){ const n = prompt('ใส่ชื่อผู้ใช้ใหม่:', ME); if (n) { ME = n.trim(); LS.set('chat.me', ME); $('#uname').textContent = ME; renderList(); } },
+  installPWA(){ if (DEFERRED_PROMPT) { DEFERRED_PROMPT.prompt(); DEFERRED_PROMPT = null; } else toast('กด Share/Menu บนเบราว์เซอร์ แล้วเลือก "เพิ่มไปยังหน้าจอโฮม"'); },
+  reqNotify(){
+    if ('Notification' in window) {
+      Notification.requestPermission().then(p => { if (p === 'granted') { toast('เปิดแจ้งเตือนแล้ว'); triggerRealNotification('ระบบแชท', 'แจ้งเตือนพร้อมใช้งาน'); } });
+    }
+  },
+  closeSheet(){ $('#sheet').classList.remove('on'); $('#sbg').classList.remove('on'); }
+};
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act]'); if (!t) return;
+  const f = A[t.dataset.act]; if (f) f(t, e);
+});
+document.addEventListener('change', e => {
+  if (e.target.id === 'fi1' && e.target.files[0]) sendFile(e.target.files[0]);
+  if (e.target.id === 'fi_song' && e.target.files[0]) sendFile(e.target.files[0], true);
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'cs') { FILTER = e.target.value; renderList(); }
+  if (e.target.id === 'inp') $('#comp').classList.toggle('has', !!e.target.value.trim());
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey && e.target.id === 'inp') { e.preventDefault(); sendText(); }
 });
 
-// ===================== เริ่มต้น =====================
 function init(){
- $('#logoI').innerHTML=I('chat');$('#rbChat').innerHTML=I('chat');$('#rbSearch').innerHTML=I('search');$('#rbNew').innerHTML=I('plus');
- $('#rbAdm').innerHTML=I('shield');$('#rbSet').innerHTML=I('gear');$('#unameC').innerHTML=I('chev');$('#btnNew').innerHTML=I('compose');
- $('#srI').innerHTML=I('search');$('#emI').innerHTML=I('send');$('#lbX').innerHTML=I('x');
- $('#cMic').innerHTML=I('mic');$('#cCam').innerHTML=I('video');$('#cAcc').innerHTML=I('phone');$('#cEnd').innerHTML=I('phone');
- load();loadRead();
- $('#admTag').classList.toggle('hide',!ADMIN);
- $('#uname').textContent=ME||'ผู้ใช้';
- renderList();renderChat();
- if(CLOUD)cloudInit();else rt('off');
- if(!ME)nameSheet(true);
+  $('#logoI').innerHTML = I('chat'); $('#rbChat').innerHTML = I('chat'); $('#rbSearch').innerHTML = I('search');
+  $('#rbNew').innerHTML = I('plus'); $('#rbAdm').innerHTML = I('shield'); $('#rbSet').innerHTML = I('gear');
+  $('#srI').innerHTML = I('search'); $('#emI').innerHTML = I('send');
+  load();
+  if (!ME) { ME = 'user_' + Math.floor(Math.random() * 900 + 100); LS.set('chat.me', ME); }
+  $('#uname').textContent = ME;
+  renderList();
+  if (CLOUD) {
+    sb.from('chat_rooms').select('*').then(r => { if (r.data) { DB.chats = r.data.map(rowToChat); renderList(); } });
+    sb.from('chat_messages').select('*').then(r => {
+      if (r.data) r.data.forEach(m => { msgsOf(m.chat_id).push(rowToMsg(m)); });
+      if (OPEN) renderMsgs(true);
+    });
+    RLCH = sb.channel('public:chat').on('postgres_changes', { event:'INSERT', schema:'public', table:'chat_messages' }, p => {
+      const m = rowToMsg(p.new); msgsOf(p.new.chat_id).push(m);
+      if (m.from !== ME && document.hidden) triggerRealNotification(m.from, m.type === 'song' ? 'ส่งเพลง 🎵' : m.text);
+      if (OPEN === p.new.chat_id) renderMsgs(true);
+      renderList();
+    }).subscribe();
+  }
 }
 init();
 })();
