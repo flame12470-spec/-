@@ -103,6 +103,7 @@ img,video{-webkit-user-drag:none;-webkit-touch-callout:none}
 .note{font-size:11px;color:var(--warn);margin:2px 6px}
 .note.dim{color:var(--muted)}
 .tm{font-size:11px;color:var(--muted);margin:2px 6px 6px}
+.tm .rd{font-size:inherit;color:inherit;padding:0}.tm .rd.on{color:var(--accent)}
 .more{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--muted);opacity:0;flex:none;margin-bottom:6px}
 .row:hover .more{opacity:1}
 @media(hover:none){.more{opacity:.7}}
@@ -384,16 +385,18 @@ function cloudChat(c){CHATP[c.id]=sb.from('chat_rooms').upsert(chatToRow(c),{onC
 function onChatRow(r){if(!r||!r.id)return;const c=rowToChat(r),i=DB.chats.findIndex(x=>x.id===c.id);if(i>-1)DB.chats[i]=c;else DB.chats.push(c);refresh()}
 function onMsgRow(r){if(!r||!r.id)return;const a=msgsOf(r.chat_id),m=rowToMsg(r),i=a.findIndex(x=>x.id===m.id);if(i>-1)a[i]=m;else{a.push(m);a.sort((x,y)=>x.t-y.t)}refresh()}
 async function loadCloud(){
- const [c,m]=await Promise.all([sb.from('chat_rooms').select('*'),sb.from('chat_messages').select('*').order('created_at',{ascending:false}).limit(1000)]);
+ const [c,m,rr]=await Promise.all([sb.from('chat_rooms').select('*'),sb.from('chat_messages').select('*').order('created_at',{ascending:false}).limit(1000),sb.from('chat_reads').select('msg_id,user_name,read_at').order('read_at',{ascending:false}).limit(5000)]);
  if(c.error||m.error)throw(c.error||m.error);
  DB.chats=c.data.map(rowToChat);DB.msgs={};
  m.data.reverse().forEach(r=>msgsOf(r.chat_id).push(rowToMsg(r)));
+ (rr.data||[]).forEach(r=>{(RCPT[r.msg_id]=RCPT[r.msg_id]||{})[r.user_name]=new Date(r.read_at).getTime()});
  refresh();
 }
 function cloudInit(){
  RLCH=sb.channel('chat-rt')
   .on('postgres_changes',{event:'*',schema:'public',table:'chat_rooms'},p=>p.eventType==='DELETE'?dropChat((p.old||{}).id):onChatRow(p.new))
   .on('postgres_changes',{event:'*',schema:'public',table:'chat_messages'},p=>onMsgRow(p.new))
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_reads'},p=>onReadRow(p.new))
   .on('broadcast',{event:'typing'},e=>{const d=e.payload||{};if(d.chat&&d.from)typingSet(d.chat,d.from,!!d.on)})
   .on('broadcast',{event:'sig'},e=>onSigMsg(e.payload))
   .subscribe(async st=>{
@@ -407,6 +410,40 @@ function cloudSheet(){if(!ADMIN)return;
 }
 function saveCloud(){if(!ADMIN)return;const u=($('#sbu').value||'').trim().replace(/\/+$/,''),k=($('#sbk').value||'').trim();if(!/^https:\/\/\S+$/.test(u)||k.length<20)return toast('URL หรือ key ไม่ถูกต้อง');LS.set('chat.sb.url',u);LS.set('chat.sb.key',k);location.reload()}
 function cloudOff(){if(!ADMIN)return;try{localStorage.removeItem('chat.sb.url');localStorage.removeItem('chat.sb.key')}catch(e){}location.reload()}
+const RCPT={};   // ใบอ่านในโหมดคลาวด์: RCPT[msgId][user]=เวลาที่อ่าน
+const readsOf=m=>CLOUD?(RCPT[m.id]||{}):(m.reads||{});
+const ft=t=>{const d=new Date(t);return dayKey(t)===dayKey(Date.now())?hm(t):d.getDate()+' '+TH[d.getMonth()]+' '+hm(t)};
+function rcptStat(m,mine){
+ if(!mine||m.type==='system'||m.unsend==='done')return '';
+ const c=chatById(OPEN);if(!c)return '';
+ const r=readsOf(m);let on,txt;
+ if(c.type==='dm'){const p=peerOf(c);on=!!r[p];txt=on?'อ่านแล้ว '+ft(r[p]):'ส่งแล้ว'}
+ else{const n=Object.keys(r).filter(u=>u!==m.from).length;on=n>0;txt=n?'อ่านแล้ว '+n+' คน':'ส่งแล้ว'}
+ return ' · <button class="rd'+(on?' on':'')+'" data-act="readInfo" data-id="'+esc(m.id)+'">'+txt+'</button>';
+}
+function markRead(){ // บันทึกว่าฉันอ่านข้อความของคนอื่นในแชทที่เปิดอยู่แล้ว
+ const c=chatById(OPEN);
+ if(!c||!ME||document.hidden||(c.closed&&!ADMIN))return;
+ if(!(c.members.includes('*')||c.members.includes(ME)))return;   // แอดมินที่แอบดูแชทคนอื่นไม่นับว่าอ่าน
+ const un=msgsOf(c.id).filter(m=>m.from&&m.from!==ME&&m.type!=='system'&&!readsOf(m)[ME]);
+ if(!un.length)return;
+ const now=Date.now();
+ if(CLOUD){
+  un.forEach(m=>{(RCPT[m.id]=RCPT[m.id]||{})[ME]=now});
+  sb.from('chat_reads').upsert(un.map(m=>({msg_id:m.id,chat_id:c.id,user_name:ME,read_at:new Date(now).toISOString()})),{onConflict:'msg_id,user_name',ignoreDuplicates:true}).then(r=>{if(r.error)toast('บันทึกการอ่านไม่สำเร็จ: '+r.error.message)});
+ }else{un.forEach(m=>{(m.reads=m.reads||{})[ME]=now});save()}
+}
+function onReadRow(r){
+ if(!r||!r.msg_id)return;
+ (RCPT[r.msg_id]=RCPT[r.msg_id]||{})[r.user_name]=new Date(r.read_at).getTime();
+ if(r.chat_id===OPEN)renderMsgs(false);
+}
+function readInfo(t){
+ const c=chatById(OPEN),m=c&&msgsOf(c.id).find(x=>x.id===t.dataset.id);if(!m)return;
+ const r=readsOf(m),us=Object.keys(r).filter(u=>u!==m.from).sort((a,b)=>r[a]-r[b]);
+ openSheet('<h3>รายละเอียดข้อความ</h3><div class="hr"></div><div class="reqc"><small>ส่งเมื่อ</small><div>'+ft(m.t)+'</div></div><p class="help">อ่านแล้ว '+us.length+' คน</p>'+
+  (us.length?us.map(u=>'<div class="reqc" style="display:flex;gap:12px;align-items:center">'+av(u,32)+'<b style="flex:1">'+esc(u)+'</b><small>'+ft(r[u])+'</small></div>').join(''):'<div class="reqc"><small>ยังไม่มีใครอ่าน</small></div>'));
+}
 const peerOf=c=>c.members.find(x=>x!==ME)||ME;
 const chatName=c=>c.type==='dm'?peerOf(c):c.name;
 const hm=t=>{const d=new Date(t);return pad(d.getHours())+':'+pad(d.getMinutes())};
@@ -478,7 +515,7 @@ const frameKey=()=>{const c=chatById(OPEN);return c?[c.id,c.closed,c.silent,ADMI
 function openChat(id){
  OPEN=id;READ[id]=Date.now();saveRead();
  document.body.classList.add('chat-open');
- renderChat();renderList();
+ renderChat();renderList();markRead();
 }
 function closeChatView(){
  OPEN=null;FRAME='';document.body.classList.remove('chat-open');renderChat();renderList();
@@ -534,7 +571,7 @@ function msgHtml(m,prev,next,grp){
  if(gone&&ADMIN)note='<div class="note dim">ข้อความนี้ถูกยกเลิกแล้ว (เห็นเฉพาะแอดมิน)</div>';
  return '<div class="row '+(mine?'me':'ot')+'" data-id="'+esc(m.id)+'">'+
   (!mine?(lastOfG?av(m.from,28):'<span class="av-sp"></span>'):'')+
-  '<div class="col">'+(!mine&&grp&&firstOfG?'<span class="nm">'+esc(m.from)+'</span>':'')+body+note+(lastOfG?'<span class="tm">'+hm(m.t)+'</span>':'')+'</div>'+
+  '<div class="col">'+(!mine&&grp&&firstOfG?'<span class="nm">'+esc(m.from)+'</span>':'')+body+note+'<span class="tm">'+hm(m.t)+rcptStat(m,mine)+'</span>'+'</div>'+
   '<button class="more" data-act="msgMenu" data-id="'+esc(m.id)+'" aria-label="ตัวเลือก">'+I('more')+'</button></div>';
 }
 function renderMsgs(forceBottom){
@@ -554,6 +591,7 @@ function refresh(){ // เรียกหลังข้อมูลเปลี
  renderList();
  if(!OPEN)return;
  if(!chatById(OPEN)||frameKey()!==FRAME)renderChat();else{renderMsgs(false);READ[OPEN]=Date.now();saveRead()}
+ markRead();
 }
 
 // ===================== สถานะกำลังพิมพ์ =====================
@@ -660,7 +698,8 @@ window.addEventListener('native-screenshot',()=>onCapture('native'));
 function shield(on){if(!BLUR||ADMIN||!OPEN)on=false;$('#app').classList.toggle('shield',on)}
 window.addEventListener('blur',()=>shield(true));
 window.addEventListener('focus',()=>shield(false));
-document.addEventListener('visibilitychange',()=>shield(document.hidden));
+document.addEventListener('visibilitychange',()=>{shield(document.hidden);if(!document.hidden)markRead()});
+window.addEventListener('focus',markRead);
 document.addEventListener('contextmenu',e=>{if(e.target.closest('.med,#lb'))e.preventDefault()});
 document.addEventListener('dragstart',e=>{if(e.target.closest('.med,#lb'))e.preventDefault()});
 
@@ -913,7 +952,7 @@ const A={
  focusSearch(){$('#cs').focus()},
  newChat:newChatSheet,startDM:startDM,startGroup:startGroup,
  settings:settingsSheet,cloudSheet:cloudSheet,saveCloud:saveCloud,cloudOff:cloudOff,nameSheet(){nameSheet(false)},saveName:saveName,
- info:infoSheet,reqDelChat:reqDelChat,approveDel:approveDel,rejectDel:rejectDel,delChatNow:delChatNow,
+ info:infoSheet,readInfo:readInfo,reqDelChat:reqDelChat,approveDel:approveDel,rejectDel:rejectDel,delChatNow:delChatNow,
  requests:requestsSheet,
  adminLogin(){pinSheet()},pinOk:pinOk,
  exitAdmin(){setAdmin(false);closeSheet();toast('ออกจากโหมดแอดมินแล้ว')},
