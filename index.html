@@ -370,7 +370,7 @@ function addMsg(cid,m){
 async function cloudInsert(cid,x){
  try{
   if(CHATP[cid])await CHATP[cid];
-  const r=await sb.from('messages').insert(msgToRow(cid,x));
+  const r=await sb.from('chat_messages').insert(msgToRow(cid,x));
   if(r.error)throw r.error;
  }catch(e){
   const a=msgsOf(cid),i=a.findIndex(y=>y.id===x.id);if(i>-1)a.splice(i,1);
@@ -380,11 +380,11 @@ async function cloudInsert(cid,x){
 const chatToRow=c=>({id:c.id,type:c.type,name:c.name||null,members:c.members});
 function rt(s,msg){const d=$('#rtDot');if(!d)return;d.className='rt'+(s==='on'?' on':s==='err'?' err':'');d.title=s==='on'?'เชื่อมต่อฐานข้อมูลแล้ว (เรียลไทม์)':s==='err'?'ต่อฐานข้อมูลไม่ได้: '+(msg||''):'โหมดในเครื่อง (ยังไม่ได้เชื่อมต่อฐานข้อมูล)'}
 function cloudUpd(t,id,p){sb.from(t).update(p).eq('id',id).then(r=>{if(r.error)toast('บันทึกไม่สำเร็จ: '+r.error.message)})}
-function cloudChat(c){CHATP[c.id]=sb.from('chats').upsert(chatToRow(c),{onConflict:'id',ignoreDuplicates:true}).then(r=>{if(r.error)toast('สร้างแชทไม่สำเร็จ: '+r.error.message)})}
+function cloudChat(c){CHATP[c.id]=sb.from('chat_rooms').upsert(chatToRow(c),{onConflict:'id',ignoreDuplicates:true}).then(r=>{if(r.error)toast('สร้างแชทไม่สำเร็จ: '+r.error.message)})}
 function onChatRow(r){if(!r||!r.id)return;const c=rowToChat(r),i=DB.chats.findIndex(x=>x.id===c.id);if(i>-1)DB.chats[i]=c;else DB.chats.push(c);refresh()}
 function onMsgRow(r){if(!r||!r.id)return;const a=msgsOf(r.chat_id),m=rowToMsg(r),i=a.findIndex(x=>x.id===m.id);if(i>-1)a[i]=m;else{a.push(m);a.sort((x,y)=>x.t-y.t)}refresh()}
 async function loadCloud(){
- const [c,m]=await Promise.all([sb.from('chats').select('*'),sb.from('messages').select('*').order('created_at',{ascending:false}).limit(1000)]);
+ const [c,m]=await Promise.all([sb.from('chat_rooms').select('*'),sb.from('chat_messages').select('*').order('created_at',{ascending:false}).limit(1000)]);
  if(c.error||m.error)throw(c.error||m.error);
  DB.chats=c.data.map(rowToChat);DB.msgs={};
  m.data.reverse().forEach(r=>msgsOf(r.chat_id).push(rowToMsg(r)));
@@ -392,8 +392,8 @@ async function loadCloud(){
 }
 function cloudInit(){
  RLCH=sb.channel('chat-rt')
-  .on('postgres_changes',{event:'*',schema:'public',table:'chats'},p=>onChatRow(p.new))
-  .on('postgres_changes',{event:'*',schema:'public',table:'messages'},p=>onMsgRow(p.new))
+  .on('postgres_changes',{event:'*',schema:'public',table:'chat_rooms'},p=>onChatRow(p.new))
+  .on('postgres_changes',{event:'*',schema:'public',table:'chat_messages'},p=>onMsgRow(p.new))
   .on('broadcast',{event:'typing'},e=>{const d=e.payload||{};if(d.chat&&d.from)typingSet(d.chat,d.from,!!d.on)})
   .on('broadcast',{event:'sig'},e=>onSigMsg(e.payload))
   .subscribe(async st=>{
@@ -639,7 +639,7 @@ function onCapture(src){
  if(ADMIN||!OPEN)return;
  const c=chatById(OPEN);if(!c||c.closed)return;
  c.closed=true;c.silent=false;c.closedBy='capture';c.closedAt=Date.now();c.closedSrc=src||'';
- if(CLOUD)cloudUpd('chats',c.id,{closed:true,silent:false,closed_by:'capture',closed_at:new Date().toISOString()});
+ if(CLOUD)cloudUpd('chat_rooms',c.id,{closed:true,silent:false,closed_by:'capture',closed_at:new Date().toISOString()});
  addMsg(c.id,{type:'system',warn:1,text:ME+' แคปหน้าจอ — ระบบปิดแชทอัตโนมัติแล้ว รอแอดมินเปิดให้'});
  if(CALL)endCall(true);
  closeSheet();$('#lb').classList.remove('on');
@@ -686,13 +686,13 @@ function needAdmin(fn){ADMIN?fn():pinSheet(fn)}
 function setClosed(id,closed,silent){
  const c=chatById(id);if(!c)return;
  c.closed=closed;c.silent=!!(closed&&silent);c.closedBy=closed?'admin':'';
- if(CLOUD)cloudUpd('chats',id,{closed:closed,silent:c.silent,closed_by:closed?'admin':null,closed_at:closed?new Date().toISOString():null});
+ if(CLOUD)cloudUpd('chat_rooms',id,{closed:closed,silent:c.silent,closed_by:closed?'admin':null,closed_at:closed?new Date().toISOString():null});
  if(closed&&!silent)addMsg(id,{type:'system',text:'แอดมินปิดแชทนี้'});
  if(!closed)addMsg(id,{type:'system',text:'แอดมินเปิดแชทอีกครั้ง'});
  save();refresh();
 }
 function decide(id,ok){
- for(const c of DB.chats){const m=msgsOf(c.id).find(x=>x.id===id);if(m){if(ok)m.unsend='done';else delete m.unsend;save();if(CLOUD)cloudUpd('messages',id,{unsend:ok?'done':null});break}}
+ for(const c of DB.chats){const m=msgsOf(c.id).find(x=>x.id===id);if(m){if(ok)m.unsend='done';else delete m.unsend;save();if(CLOUD)cloudUpd('chat_messages',id,{unsend:ok?'done':null});break}}
  refresh();
 }
 function chatAdminSheet(){
@@ -894,12 +894,12 @@ const A={
  reject(t){decide(t.dataset.id,false);closeSheet();toast('ปฏิเสธคำขอแล้ว')},
  reqUnsend(t){
   const c=chatById(OPEN),m=c&&msgsOf(c.id).find(x=>x.id===t.dataset.id);
-  if(m&&m.from===ME&&!m.unsend){m.unsend='pending';m.reqAt=Date.now();save();if(CLOUD)cloudUpd('messages',m.id,{unsend:'pending'});refresh();toast('ส่งคำขอยกเลิกให้แอดมินแล้ว')}
+  if(m&&m.from===ME&&!m.unsend){m.unsend='pending';m.reqAt=Date.now();save();if(CLOUD)cloudUpd('chat_messages',m.id,{unsend:'pending'});refresh();toast('ส่งคำขอยกเลิกให้แอดมินแล้ว')}
   closeSheet();
  },
  toggleLock(t){
   const c=chatById(OPEN),m=c&&msgsOf(c.id).find(x=>x.id===t.dataset.id);
-  if(m&&ADMIN){m.locked=!m.locked;save();if(CLOUD)cloudUpd('messages',m.id,{locked:m.locked});refresh();toast(m.locked?'ล็อกแล้ว':'ปลดล็อกแล้ว')}
+  if(m&&ADMIN){m.locked=!m.locked;save();if(CLOUD)cloudUpd('chat_messages',m.id,{locked:m.locked});refresh();toast(m.locked?'ล็อกแล้ว':'ปลดล็อกแล้ว')}
   closeSheet();
  },
  msgMenu(t){msgMenu(t.dataset.id)},
