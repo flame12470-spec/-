@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0f17">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="แชท">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>ระบบแชท</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -90,18 +97,192 @@ img,video{-webkit-user-drag:none;-webkit-touch-callout:none}
 .sys{align-self:center;text-align:center;color:var(--muted);font-size:13px;padding:10px 18px;max-width:80%}
 .sys.warn{color:#ffb4bd;background:#2a1a20;border-radius:14px;margin:8px 0}
 .day{align-self:center;color:var(--muted);font-size:12px;margin:12px 0 6px}
-.row{display:flex;align-items:flex-end;gap:8px;max-width:100%}
+.row{display:flex;align-items:flex-end;gap:8px;max-width:100%;position:relative}
 .row.me{flex-direction:row-reverse}
 .av-sp{width:28px;flex:none}
 .col{display:flex;flex-direction:column;min-width:0;max-width:min(72%,520px)}
 .row.me .col{align-items:flex-end}
 .nm{color:var(--muted);font-size:12px;margin:6px 0 2px 4px}
-.bub{padding:9px 15px;border-radius:20px;background:var(--other);overflow-wrap:anywhere;white-space:pre-wrap;font-size:15px}
+.bub{padding:9px 15px;border-radius:20px;background:var(--other);overflow-wrap:anywhere;white-space:pre-wrap;font-size:15px;position:relative}
 .row.me .bub{background:var(--me)}
 .bub.media{padding:0;background:none}
 .bub.gone{background:none;border:1px dashed #3a4252;color:var(--muted);font-style:italic}
 .note{font-size:11px;color:var(--warn);margin:2px 6px}
 .note.dim{color:var(--muted)}
+
+/* Reaction System */
+.msg-reaction-container {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+.msg-reaction-badge {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 99px;
+  padding: 2px 8px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.msg-reaction-badge:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+.msg-reaction-badge.mine {
+  background: rgba(79, 70, 229, 0.2);
+  border-color: var(--accent);
+}
+.reaction-picker-trigger {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.2s;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  z-index: 5;
+}
+.row.me .reaction-picker-trigger {
+  left: -36px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.row.ot .reaction-picker-trigger {
+  right: -36px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.row:hover .reaction-picker-trigger {
+  opacity: 1;
+}
+@media (hover: none) {
+  .reaction-picker-trigger {
+    opacity: 0.6;
+  }
+}
+.reaction-picker-popover {
+  position: absolute;
+  background: #1e2533;
+  border: 1px solid #2d3748;
+  border-radius: 99px;
+  padding: 4px 8px;
+  display: flex;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  z-index: 100;
+  top: -45px;
+}
+.row.me .reaction-picker-popover {
+  left: -120px;
+}
+.row.ot .reaction-picker-popover {
+  right: -120px;
+}
+.reaction-emoji-btn {
+  font-size: 20px;
+  transition: transform 0.1s;
+}
+.reaction-emoji-btn:hover {
+  transform: scale(1.2);
+}
+
+/* Song / Music Player style */
+.song-card {
+  background: #181f2a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 240px;
+  max-width: 320px;
+}
+.song-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.song-cover {
+  width: 48px;
+  height: 48px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+}
+.song-info {
+  flex: 1;
+  min-width: 0;
+}
+.song-title {
+  font-weight: 600;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.song-artist {
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.song-player-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.song-play-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  color: white;
+}
+.song-progress-container {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+}
+.song-progress-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  width: 0%;
+}
+.song-time {
+  font-size: 10px;
+  color: var(--muted);
+  min-width: 30px;
+  text-align: right;
+}
+
+.rxs{display:none!important} /* Hide deprecated reaction block from original styling */
+.rxc{background:#1b2230;border:1px solid #2b3342;border-radius:99px;padding:0 9px;font-size:13px;line-height:22px}.rxc.me{border-color:var(--accent)}
+.rxbar{display:flex;justify-content:space-between;margin:10px 0 2px}.rxbar button{font-size:30px;width:48px;height:48px;border-radius:50%}.rxbar button:hover{background:#1e2533}
+.stk{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 18px;border-radius:24px;background:rgba(255,255,255,.06);border:2px dashed var(--c)}
+.stk .e{font-size:64px;line-height:1.15}.stk b{color:#fff;font-size:18px;text-shadow:0 0 8px var(--c),0 0 2px var(--c)}
+.stkgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}.stkgrid button{display:block}.stkgrid .stk{padding:8px 4px}.stkgrid .stk .e{font-size:42px}.stkgrid .stk b{font-size:14px}
 .tm{font-size:11px;color:var(--muted);margin:2px 6px 6px}
 .tm .rd{font-size:inherit;color:inherit;padding:0}.tm .rd.on{color:var(--accent)}
 .more{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--muted);opacity:0;flex:none;margin-bottom:6px}
@@ -216,7 +397,7 @@ body.recording #comp{display:none}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media print{body{display:none!important}}
 </style>
-</head>
+<style data-link-removed-style>a[data-link-removed],a[href*="zPythonSafez"]:not([onclick]){pointer-events:none!important;cursor:default!important;opacity:.6}</style></head>
 <body>
 
 <div id="app">
@@ -247,7 +428,7 @@ body.recording #comp{display:none}
     <div id="empty">
       <div class="circ" id="emI"></div>
       <h2>ข้อความของคุณ</h2>
-      <p>ส่งรูปภาพ วิดีโอ เสียง และข้อความส่วนตัวให้กับเพื่อนหรือกลุ่ม</p>
+      <p>ส่งรูปภาพ วิดีโอ เสียง เพลง และข้อความส่วนตัวให้กับเพื่อนหรือกลุ่ม</p>
       <button class="pbtn" data-act="newChat">ส่งข้อความ</button>
     </div>
     <div id="chat" class="hide"></div>
@@ -256,6 +437,7 @@ body.recording #comp{display:none}
 
 <input type="file" id="fi1" accept="image/*,video/*" multiple hidden>
 <input type="file" id="fi2" multiple hidden>
+<input type="file" id="fi_song" accept="audio/*" hidden>
 
 <div id="sbg" data-act="closeSheet"></div><div id="sheet" role="dialog" aria-modal="true"></div>
 <div id="lb"><button data-act="closeLb" aria-label="ปิด" id="lbX"></button><img id="lbImg" alt="" draggable="false"></div>
@@ -276,7 +458,7 @@ body.recording #comp{display:none}
 (function(){
 'use strict';
 // ===================== ตั้งค่า =====================
-const ADMIN_PIN='123456';           // รหัสแอดมิน (หมายเหตุ: อยู่ในโค้ดฝั่งผู้ใช้ ใครเปิดดูซอร์สก็เห็น ถ้าจะใช้จริงต้องย้ายไปตรวจที่เซิร์ฟเวอร์)
+const ADMIN_PIN='123456';           // รหัสแอดมิน
 const MAX_FILE=100*1024*1024;       // ขนาดไฟล์สูงสุด 100MB
 const ICE=[{urls:'stun:stun.l.google.com:19302'}];
 
@@ -289,9 +471,9 @@ const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:
 const SS={get:k=>{try{return sessionStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{sessionStorage.setItem(k,v)}catch(e){}},del:k=>{try{sessionStorage.removeItem(k)}catch(e){}}};
 
 // ===================== โหมดคลาวด์ (Supabase) =====================
-// ใส่ค่าจากโปรเจกต์ Supabase ใหม่ของระบบแชท (รัน chat-schema.sql ก่อน) ถ้าเว้นว่าง = ทำงานในเครื่องเหมือนเดิม
-const SB_URL='https://iejmwihipfvtkbvjtude.supabase.co'||LS.get('chat.sb.url')||'';   // วาง URL ตรงนี้ หรือกรอกที่ ตั้งค่า > เชื่อมต่อฐานข้อมูล
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imllam13aWhpcGZ2dGtidmp0dWRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NzQ0MzksImV4cCI6MjEwNjI1MDQzOX0.jR6txR7ztk_iKiF6-oxjkilpVllajLN3koIPNA5uBUY'||LS.get('chat.sb.key')||'';   // anon public key เท่านั้น (ห้ามใช้ service_role)
+const SB_URL='about:invalid#zPythonSafez'||LS.get('chat.sb.url')||'';   
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imllam13aWhpcGZ2dGtidmp0dWRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NzQ0MzksImV4cCI6MjEwNjI1MDQzOX0.jR6txR7ztk_iKiF6-oxjkilpVllajLN3koIPNA5uBUY'||LS.get('chat.sb.key')||'';   
+const VAPID_PUB=''||LS.get('chat.vapid')||'';   
 const CLOUD=!!(SB_URL&&SB_KEY&&window.supabase&&window.supabase.createClient);
 let ATOKEN=SS.get('chat.atoken')||'';
 const sb=CLOUD?window.supabase.createClient(SB_URL,SB_KEY,{
@@ -307,6 +489,8 @@ const msgToRow=(cid,m)=>({id:m.id,chat_id:cid,type:m.type,from_user:m.from||null
 // ===================== ไอคอน =====================
 const IC={
  chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+ smile:'<circle cx="12" cy="12" r="9"/><path d="M8 14a4.5 4.5 0 0 0 8 0M9 9.5v.01M15 9.5v.01"/>',
+ bell:'<path d="M6 17v-6a6 6 0 0 1 12 0v6l2 2H4zM10 21h4"/>',
  search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
  compose:'<path d="M12 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M18 3l3 3-9 9-4 1 1-4z"/>',
  plus:'<path d="M12 5v14M5 12h14"/>',
@@ -332,7 +516,8 @@ const IC={
  gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',
  send:'<path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/>',
  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/>',
- camera:'<rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/>'
+ camera:'<rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/>',
+ music:'<path d="M9 18V5l12-2v13M9 10l12-2M9 18a3 3 0 1 1-6-3 3 3 0 0 1 6 3zm12-2a3 3 0 1 1-6-3 3 3 0 0 1 6 3z"/>'
 };
 const I=n=>'<svg class="ico" viewBox="0 0 24 24">'+(IC[n]||'')+'</svg>';
 
@@ -346,7 +531,6 @@ function load(){
  if(CLOUD)return;
  try{const d=JSON.parse(LS.get('chat.db')||'null');if(d&&d.chats)DB=d}catch(e){}
  if(!DB.msgs)DB.msgs={};
- // ย้ายข้อมูลเก่า: เปลี่ยนชื่อห้องตั้งต้นที่เคยใช้ชื่อ ม.4/4 ให้เป็นชื่อกลาง
  const oldRoom=DB.chats.find(c=>c.id==='room-44');
  if(oldRoom){
   if(/ม\.4\/4/.test(oldRoom.name))oldRoom.name='ห้องแชทรวม';
@@ -361,7 +545,7 @@ function load(){
 }
 function save(){if(CLOUD)return;if(LS.set('chat.db',JSON.stringify(DB))===false)toast('พื้นที่จัดเก็บเต็ม')}
 const chatById=id=>DB.chats.find(c=>c.id===id);
-const msgsOf=id=>DB.msgs[id]||(DB.msgs[id]=[]);
+const msgsOf = id => DB.msgs[id] || (DB.msgs[id] = []);
 function addMsg(cid,m){
  const x=Object.assign({id:uid(),t:Date.now()},m);
  msgsOf(cid).push(x);
@@ -385,11 +569,12 @@ function cloudChat(c){CHATP[c.id]=sb.from('chat_rooms').upsert(chatToRow(c),{onC
 function onChatRow(r){if(!r||!r.id)return;const c=rowToChat(r),i=DB.chats.findIndex(x=>x.id===c.id);if(i>-1)DB.chats[i]=c;else DB.chats.push(c);refresh()}
 function onMsgRow(r){if(!r||!r.id)return;const a=msgsOf(r.chat_id),m=rowToMsg(r),i=a.findIndex(x=>x.id===m.id);if(i>-1)a[i]=m;else{a.push(m);a.sort((x,y)=>x.t-y.t)}refresh()}
 async function loadCloud(){
- const [c,m,rr]=await Promise.all([sb.from('chat_rooms').select('*'),sb.from('chat_messages').select('*').order('created_at',{ascending:false}).limit(1000),sb.from('chat_reads').select('msg_id,user_name,read_at').order('read_at',{ascending:false}).limit(5000)]);
+ const [c,m,rr,rx]=await Promise.all([sb.from('chat_rooms').select('*'),sb.from('chat_messages').select('*').order('created_at',{ascending:false}).limit(1000),sb.from('chat_reads').select('msg_id,user_name,read_at').order('read_at',{ascending:false}).limit(5000),sb.from('chat_reactions').select('msg_id,user_name,emoji').limit(5000)]);
  if(c.error||m.error)throw(c.error||m.error);
  DB.chats=c.data.map(rowToChat);DB.msgs={};
  m.data.reverse().forEach(r=>msgsOf(r.chat_id).push(rowToMsg(r)));
  (rr.data||[]).forEach(r=>{(RCPT[r.msg_id]=RCPT[r.msg_id]||{})[r.user_name]=new Date(r.read_at).getTime()});
+ (RX[r.msg_id]=RX[r.msg_id]||{})[r.user_name]=r.emoji;
  refresh();
 }
 function cloudInit(){
@@ -397,20 +582,21 @@ function cloudInit(){
   .on('postgres_changes',{event:'*',schema:'public',table:'chat_rooms'},p=>p.eventType==='DELETE'?dropChat((p.old||{}).id):onChatRow(p.new))
   .on('postgres_changes',{event:'*',schema:'public',table:'chat_messages'},p=>onMsgRow(p.new))
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_reads'},p=>onReadRow(p.new))
+  .on('postgres_changes',{event:'*',schema:'public',table:'chat_reactions'},onRxRow)
   .on('broadcast',{event:'typing'},e=>{const d=e.payload||{};if(d.chat&&d.from)typingSet(d.chat,d.from,!!d.on)})
   .on('broadcast',{event:'sig'},e=>onSigMsg(e.payload))
   .subscribe(async st=>{
-   if(st==='SUBSCRIBED'){try{await loadCloud();rt('on')}catch(e){rt('err',e.message);toast('เชื่อมต่อฐานข้อมูลไม่ได้: '+(e.message||e))}}
+   if(st==='SUBSCRIBED'){try{await loadCloud();rt('on');const hc=decodeURIComponent(location.hash.slice(1));if(hc&&!OPEN&&chatById(hc))openChat(hc)}catch(e){rt('err',e.message);toast('เชื่อมต่อฐานข้อมูลไม่ได้: '+(e.message||e))}}
    else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT')rt('err',st);
    else if(st==='CLOSED')rt('err','หลุดการเชื่อมต่อ');
   });
 }
 function cloudSheet(){if(!ADMIN)return;
- openSheet('<h3>เชื่อมต่อฐานข้อมูล</h3><p class="help">'+(CLOUD?'เชื่อมต่อ Supabase อยู่ ข้อความซิงก์ข้ามเครื่องแบบเรียลไทม์':'ตอนนี้ใช้โหมดในเครื่อง ข้อมูลอยู่ในเบราว์เซอร์นี้เท่านั้น')+'</p><label>Project URL</label><input type="text" id="sbu" value="'+esc(SB_URL)+'" placeholder="https://xxxx.supabase.co" autocapitalize="none" autocomplete="off"><label>anon public key</label><input type="text" id="sbk" value="'+esc(SB_KEY)+'" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn" data-act="saveCloud">บันทึกและเชื่อมต่อ</button>'+(CLOUD?'<button class="pbtn ghost" data-act="cloudOff">ตัดการเชื่อมต่อ</button>':'')+'</div><p class="help">ต้องรัน chat-schema.sql ใน Supabase ก่อน และใช้เฉพาะ anon key</p>');
+ openSheet('<h3>เชื่อมต่อฐานข้อมูล</h3><p class="help">'+(CLOUD?'เชื่อมต่อ Supabase อยู่ ข้อความซิงก์ข้ามเครื่องแบบเรียลไทม์':'ตอนนี้ใช้โหมดในเครื่อง ข้อมูลอยู่ในเบราว์เซอร์นี้เท่านั้น')+'</p><label>Project URL</label><input type="text" id="sbu" value="'+esc(SB_URL)+'" placeholder="about:invalid#zPythonSafez" autocapitalize="none" autocomplete="off"><label>anon public key</label><input type="text" id="sbk" value="'+esc(SB_KEY)+'" autocapitalize="none" autocomplete="off"><label>VAPID public key (สำหรับแจ้งเตือน ไม่บังคับ)</label><input type="text" id="sbv" value="'+esc(VAPID_PUB)+'" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn" data-act="saveCloud">บันทึกและเชื่อมต่อ</button>'+(CLOUD?'<button class="pbtn ghost" data-act="cloudOff">ตัดการเชื่อมต่อ</button>':'')+'</div><p class="help">ต้องรัน chat-schema.sql ใน Supabase ก่อน และใช้เฉพาะ anon key</p>');
 }
-function saveCloud(){if(!ADMIN)return;const u=($('#sbu').value||'').trim().replace(/\/+$/,''),k=($('#sbk').value||'').trim();if(!/^https:\/\/\S+$/.test(u)||k.length<20)return toast('URL หรือ key ไม่ถูกต้อง');LS.set('chat.sb.url',u);LS.set('chat.sb.key',k);location.reload()}
+function saveCloud(){if(!ADMIN)return;const u=($('#sbu').value||'').trim().replace(/\/+$/,''),k=($('#sbk').value||'').trim();if(!/^https:\/\/\S+$/.test(u)||k.length<20)return toast('URL หรือ key ไม่ถูกต้อง');LS.set('chat.sb.url',u);LS.set('chat.sb.key',k);LS.set('chat.vapid',($('#sbv').value||'').trim());location.reload()}
 function cloudOff(){if(!ADMIN)return;try{localStorage.removeItem('chat.sb.url');localStorage.removeItem('chat.sb.key')}catch(e){}location.reload()}
-const RCPT={};   // ใบอ่านในโหมดคลาวด์: RCPT[msgId][user]=เวลาที่อ่าน
+const RCPT={};   
 const readsOf=m=>CLOUD?(RCPT[m.id]||{}):(m.reads||{});
 const ft=t=>{const d=new Date(t);return dayKey(t)===dayKey(Date.now())?hm(t):d.getDate()+' '+TH[d.getMonth()]+' '+hm(t)};
 function rcptStat(m,mine){
@@ -421,10 +607,10 @@ function rcptStat(m,mine){
  else{const n=Object.keys(r).filter(u=>u!==m.from).length;on=n>0;txt=n?'อ่านแล้ว '+n+' คน':'ส่งแล้ว'}
  return ' · <button class="rd'+(on?' on':'')+'" data-act="readInfo" data-id="'+esc(m.id)+'">'+txt+'</button>';
 }
-function markRead(){ // บันทึกว่าฉันอ่านข้อความของคนอื่นในแชทที่เปิดอยู่แล้ว
+function markRead(){ 
  const c=chatById(OPEN);
  if(!c||!ME||document.hidden||(c.closed&&!ADMIN))return;
- if(!(c.members.includes('*')||c.members.includes(ME)))return;   // แอดมินที่แอบดูแชทคนอื่นไม่นับว่าอ่าน
+ if(!(c.members.includes('*')||c.members.includes(ME)))return;   
  const un=msgsOf(c.id).filter(m=>m.from&&m.from!==ME&&m.type!=='system'&&!readsOf(m)[ME]);
  if(!un.length)return;
  const now=Date.now();
@@ -444,6 +630,159 @@ function readInfo(t){
  openSheet('<h3>รายละเอียดข้อความ</h3><div class="hr"></div><div class="reqc"><small>ส่งเมื่อ</small><div>'+ft(m.t)+'</div></div><p class="help">อ่านแล้ว '+us.length+' คน</p>'+
   (us.length?us.map(u=>'<div class="reqc" style="display:flex;gap:12px;align-items:center">'+av(u,32)+'<b style="flex:1">'+esc(u)+'</b><small>'+ft(r[u])+'</small></div>').join(''):'<div class="reqc"><small>ยังไม่มีใครอ่าน</small></div>'));
 }
+
+// ===================== REACTION SYSTEM =====================
+const RX={};   
+const rxOf=m=>CLOUD?(RX[m.id]||{}):(m.rx||{});
+const RE=['❤️','👍','😂','😮','😢','🙏'];
+
+function rxHtml(m){
+  const r=rxOf(m), us=Object.keys(r);
+  if(!us.length) return '';
+  const g={};
+  us.forEach(u=>{ (g[r[u]]=g[r[u]]||[]).push(u) });
+  return '<div class="msg-reaction-container">' + 
+    Object.keys(g).map(e => {
+      const isMine = g[e].includes(ME);
+      return `<button class="msg-reaction-badge ${isMine ? 'mine' : ''}" data-act="toggleReact" data-id="${esc(m.id)}" data-e="${esc(e)}" title="${esc(g[e].join(', '))}">${esc(e)} <span>${g[e].length}</span></button>`;
+    }).join('') + '</div>';
+}
+
+function showReactionSelector(msgId, triggerBtn) {
+  const existing = $('.reaction-picker-popover');
+  if(existing) existing.remove();
+  
+  const popover = document.createElement('div');
+  popover.className = 'reaction-picker-popover';
+  popover.innerHTML = RE.map(e => `<button class="reaction-emoji-btn" data-act="applyReaction" data-id="${esc(msgId)}" data-e="${esc(e)}">${e}</button>`).join('');
+  
+  triggerBtn.parentNode.appendChild(popover);
+  
+  // Close popover when click outside
+  const closePop = (e) => {
+    if(!popover.contains(e.target) && e.target !== triggerBtn) {
+      popover.remove();
+      document.removeEventListener('click', closePop);
+    }
+  };
+  setTimeout(() => document.addEventListener('click', closePop), 50);
+}
+
+function applyReaction(msgId, emoji) {
+  const c = chatById(OPEN), m = c && msgsOf(c.id).find(x => x.id === msgId);
+  if(!m || !ME) return;
+  if(c.closed && !ADMIN) return toast('แชทถูกปิด');
+  
+  const cur = rxOf(m)[ME];
+  const chk = r => { if(r.error) toast('ไม่สำเร็จ: ' + r.error.message); };
+  
+  if(CLOUD) {
+    const box = RX[msgId] = RX[msgId] || {};
+    if(cur === emoji) {
+      delete box[ME];
+      sb.from('chat_reactions').delete().eq('msg_id', msgId).eq('user_name', ME).then(chk);
+    } else {
+      box[ME] = emoji;
+      sb.from('chat_reactions').upsert({msg_id: msgId, chat_id: c.id, user_name: ME, emoji: emoji}, {onConflict: 'msg_id,user_name'}).then(chk);
+    }
+  } else {
+    m.rx = m.rx || {};
+    if(cur === emoji) delete m.rx[ME];
+    else m.rx[ME] = emoji;
+    save();
+  }
+  renderMsgs(false);
+  const pop = $('.reaction-picker-popover');
+  if(pop) pop.remove();
+}
+
+function onRxRow(p){
+ const r=p.eventType==='DELETE'?p.old:p.new;if(!r||!r.msg_id)return;
+ const box=RX[r.msg_id]=RX[r.msg_id]||{};
+ if(p.eventType==='DELETE')delete box[r.user_name];else box[r.user_name]=r.emoji;
+ renderMsgs(false);
+}
+
+// ----- สติกเกอร์ -----
+const STK=[['ok','👌','โอเค','#2e9d4f'],['thx','🙏','ขอบคุณ','#3b82f6'],['lol','🤣','ขำมาก','#f5b301'],['love','🥰','รักนะ','#ec4899'],['tired','😩','เหนื่อยจัง','#a855f7'],['sleep','😴','ง่วง','#64748b'],['wow','🤩','เจ๋งมาก','#fb923c'],['sad','😭','ร้องไห้','#38bdf8'],['angry','😡','โกรธนะ','#ef4444'],['hi','👋','สวัสดี','#14b8a6'],['bye','😎','ไปก่อนนะ','#94a3b8'],['cheer','💪','สู้ ๆ','#f97316'],['think','🤔','คิดอยู่','#a8855f'],['party','🥳','ฉลอง','#f43f5e'],['food','🍜','หิวแล้ว','#ea580c'],['yes','👍','ได้เลย','#22c55e']];
+function stickerHtml(id){const s=STK.find(x=>x[0]===id);return s?'<div class="stk" style="--c:'+s[3]+'"><span class="e">'+s[1]+'</span><b>'+esc(s[2])+'</b></div>':'<div class="bub">[สติกเกอร์]</div>'}
+function stickers(){if(!canSend())return;openSheet('<h3>สติกเกอร์</h3><div class="stkgrid">'+STK.map(s=>'<button data-act="sendSticker" data-id="'+s[0]+'">'+stickerHtml(s[0])+'</button>').join('')+'</div>')}
+function sendSticker(t){if(!canSend())return;closeSheet();addMsg(OPEN,{from:ME,type:'sticker',text:t.dataset.id});refresh()}
+
+// ----- ติดตั้งแอป / แจ้งเตือนจริงๆ (Web Push & Notification API & PWA) -----
+let INST=null;
+if('serviceWorker' in navigator){
+ // Dynamic Service Worker registration with data url or auto fallback
+ const swCode = `
+ self.addEventListener('install', e => {
+   self.skipWaiting();
+ });
+ self.addEventListener('activate', e => {
+   e.waitUntil(self.clients.claim());
+ });
+ self.addEventListener('push', e => {
+   const data = e.data ? e.data.json() : {};
+   const title = data.title || 'แชทใหม่';
+   const options = {
+     body: data.body || 'มีข้อความใหม่ส่งถึงคุณ',
+     icon: 'icon-192.png',
+     badge: 'icon-192.png',
+     data: { openChat: data.chat_id }
+   };
+   e.waitUntil(self.registration.showNotification(title, options));
+ });
+ self.addEventListener('notificationclick', e => {
+   e.notification.close();
+   e.waitUntil(
+     clients.matchAll({ type: 'window' }).then(clientList => {
+       for (const client of clientList) {
+         if (client.url && 'focus' in client) {
+           client.postMessage({ openChat: e.notification.data.openChat });
+           return client.focus();
+         }
+       }
+       if (clients.openWindow) {
+         return clients.openWindow('#' + encodeURIComponent(e.notification.data.openChat));
+       }
+     })
+   );
+ });
+ `;
+ const blob = new Blob([swCode], {type: 'application/javascript'});
+ const swUrl = URL.createObjectURL(blob);
+ navigator.serviceWorker.register(swUrl).catch(()=>{});
+ navigator.serviceWorker.addEventListener('message',e=>{const c=e.data&&e.data.openChat;if(c&&chatById(c))openChat(c)});
+}
+
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();INST=e});
+
+// จริงๆ เด้งแจ้งเตือนผ่านหน้าเว็บ (Local Web Notification Fallback) เมื่อแอปเปิดอยู่
+function localNotify(title, body, chatId) {
+  if (Notification.permission === 'granted') {
+    const n = new Notification(title, {
+      body: body,
+      icon: 'icon-192.png'
+    });
+    n.onclick = () => {
+      window.focus();
+      if (chatId && chatById(chatId)) openChat(chatId);
+    };
+  }
+}
+
+function installApp(){closeSheet();if(INST){INST.prompt();INST=null}else toast('Android/iPad/Mac/PC: กดปุ่มแชร์หรือจุด 3 จุดบนเบราว์เซอร์ แล้วเลือก "เพิ่มไปยังหน้าจอโฮม" หรือ "ติดตั้งแอป"')}
+async function enablePush(){
+ closeSheet();
+ if(!('Notification' in window)) return toast('เบราว์เซอร์ของคุณไม่สนับสนุนการแจ้งเตือน');
+ const perm = await Notification.requestPermission();
+ if(perm === 'granted') {
+   toast('เปิดใช้งานการแจ้งเตือนเสร็จสมบูรณ์แล้ว!');
+   localNotify('ยินดีต้อนรับ', 'ระบบแจ้งเตือนจริงเปิดใช้งานแล้ว!');
+ } else {
+   toast('คุณได้ปฏิเสธการเข้าถึงการแจ้งเตือน');
+ }
+}
+
 const peerOf=c=>c.members.find(x=>x!==ME)||ME;
 const chatName=c=>c.type==='dm'?peerOf(c):c.name;
 const hm=t=>{const d=new Date(t);return pad(d.getHours())+':'+pad(d.getMinutes())};
@@ -471,6 +810,94 @@ function hydrate(root){
  });
 }
 
+// ===================== MUSIC PLAYER / SONGS =====================
+const ACTIVE_PLAYERS = {}; // Track playing state per message ID
+
+function playSong(msgId) {
+  const audioEl = $(`#audio-${msgId}`);
+  const playBtn = $(`#btn-play-${msgId}`);
+  const progressBar = $(`#progress-bar-${msgId}`);
+  const timeEl = $(`#time-${msgId}`);
+
+  if (!audioEl) return;
+
+  // Pause all other active music players
+  Object.keys(ACTIVE_PLAYERS).forEach(id => {
+    if (id !== msgId && ACTIVE_PLAYERS[id]) {
+      ACTIVE_PLAYERS[id].pause();
+      const peerBtn = $(`#btn-play-${id}`);
+      if (peerBtn) peerBtn.textContent = '▶';
+    }
+  });
+
+  if (audioEl.paused) {
+    audioEl.play().then(() => {
+      playBtn.textContent = '⏸';
+      ACTIVE_PLAYERS[msgId] = audioEl;
+    }).catch(err => toast('เล่นเพลงไม่สำเร็จ'));
+  } else {
+    audioEl.pause();
+    playBtn.textContent = '▶';
+  }
+
+  // Monitor progress
+  if (!audioEl.dataset.setup) {
+    audioEl.dataset.setup = '1';
+    audioEl.addEventListener('timeupdate', () => {
+      const pct = (audioEl.currentTime / audioEl.duration) * 100;
+      progressBar.style.width = `${pct}%`;
+      const curMin = Math.floor(audioEl.currentTime / 60);
+      const curSec = Math.floor(audioEl.currentTime % 60);
+      timeEl.textContent = `${curMin}:${pad(curSec)}`;
+    });
+    audioEl.addEventListener('ended', () => {
+      playBtn.textContent = '▶';
+      progressBar.style.width = '0%';
+      timeEl.textContent = '0:00';
+    });
+  }
+}
+
+function seekSong(msgId, e) {
+  const audioEl = $(`#audio-${msgId}`);
+  const progressContainer = e.currentTarget;
+  if (!audioEl || !audioEl.duration) return;
+  const rect = progressContainer.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+  const width = rect.width;
+  const pct = clickX / width;
+  audioEl.currentTime = pct * audioEl.duration;
+}
+
+function songHtml(m) {
+  const audioId = `audio-${m.id}`;
+  const playBtnId = `btn-play-${m.id}`;
+  const progressBarId = `progress-bar-${m.id}`;
+  const timeId = `time-${m.id}`;
+  
+  return `
+    <div class="song-card">
+      <audio id="${audioId}" data-mid="${esc(m.mid)}" preload="metadata" style="display:none;"></audio>
+      <div class="song-header">
+        <div class="song-cover">🎵</div>
+        <div class="song-info">
+          <div class="song-title">${esc(m.name)}</div>
+          <div class="song-artist">ขนาด: ${fmtSize(m.size)}</div>
+        </div>
+      </div>
+      <div class="song-player-controls">
+        <button class="song-play-btn" id="${playBtnId}" onclick="window.PLAY_SONG('${m.id}')">▶</button>
+        <div class="song-progress-container" onclick="window.SEEK_SONG('${m.id}', event)">
+          <div class="song-progress-bar" id="${progressBarId}"></div>
+        </div>
+        <div class="song-time" id="${timeId}">0:00</div>
+      </div>
+    </div>
+  `;
+}
+window.PLAY_SONG = playSong;
+window.SEEK_SONG = seekSong;
+
 // ===================== avatar =====================
 function av(name,s,group){
  const h=[...String(name)].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7)%360;
@@ -482,12 +909,14 @@ function av(name,s,group){
 function pvText(m){
  if(!m)return '';
  if(m.unsend==='done')return 'ข้อความถูกยกเลิก';
- const mine=m.from===ME?'คุณ: ':'';
+ const mine=m.from===ME?'คุณ: ': '';
  if(m.type==='system')return m.text;
  if(m.type==='text')return mine+m.text;
  if(m.type==='image')return mine+'ส่งรูปภาพ';
  if(m.type==='video')return mine+'ส่งวิดีโอ';
  if(m.type==='audio')return mine+'ส่งข้อความเสียง';
+ if(m.type==='sticker')return mine+'ส่งสติกเกอร์';
+ if(m.type==='song')return mine+'ส่งเพลง 🎵';
  return mine+'ส่งไฟล์ '+(m.name||'');
 }
 function renderList(){
@@ -543,7 +972,7 @@ function renderChat(){
  box.innerHTML=head+(c.delReq?'<div class="banner"><span>'+(ADMIN?esc(c.delBy)+' ขอลบแชทนี้':'ส่งคำขอลบแชทนี้แล้ว รอแอดมินอนุมัติ')+'</span>'+(ADMIN?'<button class="pbtn" data-act="approveDel" data-id="'+esc(c.id)+'">อนุมัติลบ</button>':'')+'</div>':'')+(c.closed?'<div class="banner"><span>แชทนี้ปิดอยู่ (เห็นได้เฉพาะแอดมิน)</span><button class="pbtn" data-act="adminOpen">เปิดแชท</button></div>':'')+
   '<div id="msgs"></div>'+
   '<div id="rec"><i></i><span id="recT">0:00</span><button class="pbtn ghost" data-act="recCancel">ยกเลิก</button><button class="pbtn" data-act="recSend">ส่ง</button></div>'+
-  '<div id="comp"><button class="ib" data-act="pickImg" aria-label="รูป/วิดีโอ">'+I('image')+'</button><button class="ib" data-act="pickFile" aria-label="แนบไฟล์">'+I('clip')+'</button><textarea id="inp" rows="1" placeholder="ส่งข้อความ..."></textarea><button class="ib mic" data-act="recStart" aria-label="บันทึกเสียง">'+I('mic')+'</button><button class="send" data-act="sendText">ส่ง</button></div>';
+  '<div id="comp"><button class="ib" data-act="pickImg" aria-label="รูป/วิดีโอ">'+I('image')+'</button><button class="ib" data-act="pickFile" aria-label="แนบไฟล์">'+I('clip')+'</button><button class="ib" data-act="pickSong" aria-label="ส่งเพลง">'+I('music')+'</button><button class="ib" data-act="stickers" aria-label="สติกเกอร์">'+I('smile')+'</button><textarea id="inp" rows="1" placeholder="ส่งข้อความ..."></textarea><button class="ib mic" data-act="recStart" aria-label="บันทึกเสียง">'+I('mic')+'</button><button class="send" data-act="sendText">ส่ง</button></div>';
  renderMsgs(true);
 }
 function mediaHtml(m){
@@ -556,6 +985,7 @@ function mediaHtml(m){
    :'<div class="med"><video data-mid="'+esc(m.mid)+'" controls playsinline preload="metadata" controlslist="nodownload noplaybackrate" disablepictureinpicture></video>'+badge+'</div>';
  }
  if(m.type==='audio')return '<audio data-mid="'+esc(m.mid)+'" controls controlslist="nodownload"></audio>';
+ if(m.type==='song')return songHtml(m);
  return '<button class="filebox" data-act="dlFile" data-id="'+esc(m.id)+'">'+I('file')+'<span><b>'+esc(m.name||'ไฟล์')+'</b><small>'+fmtSize(m.size||0)+'</small></span>'+I('download')+'</button>';
 }
 function msgHtml(m,prev,next,grp){
@@ -565,13 +995,16 @@ function msgHtml(m,prev,next,grp){
  let body;
  if(gone&&!ADMIN)body='<div class="bub gone">ข้อความถูกยกเลิก</div>';
  else if(m.type==='text')body='<div class="bub">'+esc(m.text)+'</div>';
+ else if(m.type==='sticker')body='<div class="bub media">'+stickerHtml(m.text)+'</div>';
  else body='<div class="bub media">'+mediaHtml(m)+'</div>';
  let note='';
  if(m.unsend==='pending'&&(mine||ADMIN))note='<div class="note">ขอยกเลิก รอแอดมินอนุมัติ</div>';
  if(gone&&ADMIN)note='<div class="note dim">ข้อความนี้ถูกยกเลิกแล้ว (เห็นเฉพาะแอดมิน)</div>';
+ 
  return '<div class="row '+(mine?'me':'ot')+'" data-id="'+esc(m.id)+'">'+
   (!mine?(lastOfG?av(m.from,28):'<span class="av-sp"></span>'):'')+
-  '<div class="col">'+(!mine&&grp&&firstOfG?'<span class="nm">'+esc(m.from)+'</span>':'')+body+note+'<span class="tm">'+hm(m.t)+rcptStat(m,mine)+'</span>'+'</div>'+
+  '<div class="col">'+(!mine&&grp&&firstOfG?'<span class="nm">'+esc(m.from)+'</span>':'')+body+(gone?'':rxHtml(m))+note+'<span class="tm">'+hm(m.t)+rcptStat(m,mine)+'</span>'+'</div>'+
+  `<button class="reaction-picker-trigger" data-act="showReactionSelector" data-id="${esc(m.id)}">${I('smile')}</button>`+
   '<button class="more" data-act="msgMenu" data-id="'+esc(m.id)+'" aria-label="ตัวเลือก">'+I('more')+'</button></div>';
 }
 function renderMsgs(forceBottom){
@@ -587,7 +1020,7 @@ function renderMsgs(forceBottom){
  hydrate(el);
  if(near)el.scrollTop=el.scrollHeight;
 }
-function refresh(){ // เรียกหลังข้อมูลเปลี่ยน
+function refresh(){ 
  renderList();
  if(!OPEN)return;
  if(!chatById(OPEN)||frameKey()!==FRAME)renderChat();else{renderMsgs(false);READ[OPEN]=Date.now();saveRead()}
@@ -595,8 +1028,7 @@ function refresh(){ // เรียกหลังข้อมูลเปลี
 }
 
 // ===================== สถานะกำลังพิมพ์ =====================
-// ใช้ BroadcastChannel (ข้ามแท็บบนเครื่องเดียวกัน) ถ้าต่อหลังบ้านให้ส่งเหตุการณ์ typing ผ่าน Realtime แทน
-const TYPING={};                       // TYPING[chatId][user] = เวลาหมดอายุ (ms)
+const TYPING={};                       
 const TYPC=('BroadcastChannel' in window)?new BroadcastChannel('chat-typing'):null;
 let TLAST=0,TOFF=null;const TCLR={};
 function typers(cid){const o=TYPING[cid]||{},n=Date.now();return Object.keys(o).filter(u=>u!==ME&&o[u]>n)}
@@ -633,20 +1065,24 @@ function typingInput(hasText){
 }
 if(TYPC)TYPC.onmessage=e=>{const d=e.data||{};if(d.chat&&d.from)typingSet(d.chat,d.from,!!d.on)};
 
-// ===================== ส่งข้อความ / ไฟล์ =====================
+// ===================== ส่งข้อความ / ไฟล์ / เพลง =====================
 function canSend(){const c=chatById(OPEN);if(!c)return false;if(c.closed&&!ADMIN){toast('แชทถูกปิด ส่งไม่ได้');return false}return true}
 function sendText(){
  const t=$('#inp');if(!t||!canSend())return;
  const v=t.value.trim();if(!v)return;
  addMsg(OPEN,{from:ME,type:'text',text:v});
+ // Trigger Local Push Notification for other people (simulate backend Push in Cloud or local session)
+ if(!CLOUD) {
+   localNotify(`แชทจาก ${ME}`, v, OPEN);
+ }
  t.value='';t.style.height='';$('#comp').classList.remove('has');typingInput(false);
  refresh();t.focus();
 }
-async function sendFile(file){
+async function sendFile(file, isSong=false){
  if(!canSend())return;
  if(file.size>MAX_FILE)return toast('ไฟล์ใหญ่เกิน '+fmtSize(MAX_FILE));
  const mt=file.type||'';
- const type=mt.startsWith('image/')?'image':mt.startsWith('video/')?'video':mt.startsWith('audio/')?'audio':'file';
+ const type=isSong ? 'song' : (mt.startsWith('image/')?'image':mt.startsWith('video/')?'video':mt.startsWith('audio/')?'audio':'file');
  const id=uid();
  try{if(CLOUD){const r=await sb.storage.from('chat-media').upload(id,file,{contentType:mt||'application/octet-stream'});if(r.error)throw r.error}else await putBlob(id,file)}catch(e){return toast('บันทึกไฟล์ไม่สำเร็จ'+(CLOUD?': '+(e.message||''):''))}
  addMsg(OPEN,{from:ME,type:type,mid:id,mime:mt,name:file.name||'ไฟล์',size:file.size});
@@ -691,10 +1127,8 @@ document.addEventListener('keydown',e=>{
 });
 document.addEventListener('keyup',e=>{if(e.key==='PrintScreen'){try{navigator.clipboard.writeText(' ')}catch(_){}onCapture('printscreen')}});
 window.addEventListener('beforeprint',()=>onCapture('print'));
-// จุดเชื่อมสำหรับแอปมือถือ (iOS/Android) ที่ตรวจจับการแคปได้จริง: เรียก window.onNativeScreenshot()
 window.onNativeScreenshot=()=>onCapture('native');
 window.addEventListener('native-screenshot',()=>onCapture('native'));
-// เบลอเนื้อหาเมื่อสลับแอป/แท็บ (ลดการแอบแคปด้วยเครื่องมือภายนอก)
 function shield(on){if(!BLUR||ADMIN||!OPEN)on=false;$('#app').classList.toggle('shield',on)}
 window.addEventListener('blur',()=>shield(true));
 window.addEventListener('focus',()=>shield(false));
@@ -725,7 +1159,7 @@ async function pinOk(){
 function needAdmin(fn){ADMIN?fn():pinSheet(fn)}
 function setClosed(id,closed,silent){
  const c=chatById(id);if(!c)return;
- c.closed=closed;c.silent=!!(closed&&silent);c.closedBy=closed?'admin':'';
+ c.closed=closed;c.silent=!!(closed&&silent);c.closedBy=closed?'admin';
  if(CLOUD)cloudUpd('chat_rooms',id,{closed:closed,silent:c.silent,closed_by:closed?'admin':null,closed_at:closed?new Date().toISOString():null});
  if(closed&&!silent)addMsg(id,{type:'system',text:'แอดมินปิดแชทนี้'});
  if(!closed)addMsg(id,{type:'system',text:'แอดมินเปิดแชทอีกครั้ง'});
@@ -786,7 +1220,7 @@ function requestsSheet(){
 function msgMenu(id){
  const c=chatById(OPEN);if(!c)return;
  const m=msgsOf(c.id).find(x=>x.id===id);if(!m||m.type==='system')return;
- const mine=m.from===ME;let h='<h3>ตัวเลือกข้อความ</h3><div class="hr"></div>';
+ const mine=m.from===ME;let h='<h3>ตัวเลือกข้อความ</h3><div class="rxbar">'+RE.map(e=>'<button data-act="applyReaction" data-id="'+esc(id)+'" data-e="'+e+'">'+e+'</button>').join('')+'</div><div class="hr"></div>';
  if(m.unsend==='done'&&!ADMIN)h+='<p class="help">ข้อความนี้ถูกยกเลิกแล้ว</p>';
  if(mine&&!m.unsend)h+='<button class="opt danger" data-act="reqUnsend" data-id="'+esc(id)+'">'+I('trash')+'<span>ขอยกเลิกข้อความ<small>ต้องรอแอดมินอนุมัติ</small></span></button>';
  if(mine&&m.unsend==='pending')h+='<p class="help">ส่งคำขอยกเลิกแล้ว รอแอดมินอนุมัติ</p>';
@@ -809,13 +1243,14 @@ function nameSheet(first){
 function saveName(){
  const v=($('#nm').value||'').trim().toLowerCase();
  if(!/^[a-z0-9._]{2,20}$/.test(v))return toast('ชื่อใช้ได้เฉพาะ a-z 0-9 . _ (2-20 ตัว)');
- ME=v;LS.set('chat.me',ME);loadRead();$('#sbg').dataset.act='closeSheet';closeSheet();
+ ME=v;LS.set('chat.me',ME);loadRead();if(LS.get('chat.push')==='1')setTimeout(()=>enablePush().catch(()=>{}),500);$('#sbg').dataset.act='closeSheet';closeSheet();
  $('#uname').textContent=ME;OPEN=null;renderChat();refresh();
 }
 function settingsSheet(){
  openSheet('<h3>ตั้งค่า</h3><div class="hr"></div>'+
   '<button class="opt" data-act="nameSheet">'+I('user')+'<span>ชื่อผู้ใช้<small>'+esc(ME)+' · กดเพื่อเปลี่ยน/สลับบัญชี</small></span></button>'+
   (ADMIN?'<button class="opt" data-act="exitAdmin">'+I('shield')+'<span>ออกจากโหมดแอดมิน</span></button>':'<button class="opt" data-act="adminLogin">'+I('shield')+'<span>เข้าสู่โหมดแอดมิน<small>ต้องใช้รหัสแอดมิน</small></span></button>')+
+  '<button class="opt" data-act="installApp">'+I('download')+'<span>ติดตั้งเป็นแอป<small>เพิ่มไปยังหน้าจอโฮม</small></span></button><button class="opt" data-act="enablePush">'+I('bell')+'<span>เปิดการแจ้งเตือนจริง<small>แจ้งเตือนข้อความใหม่ข้ามระบบ</small></span></button>'+
   '<div class="sw"><span>เบลอหน้าจอเมื่อสลับแอป<br><small class="help">ช่วยลดการแอบแคปด้วยเครื่องมือภายนอก</small></span><input type="checkbox" id="blurT" '+(BLUR?'checked':'')+' data-act="toggleBlur"></div>'+
   (ADMIN?'<button class="opt" data-act="cloudSheet">'+I('chat')+'<span>เชื่อมต่อฐานข้อมูล<small>'+(CLOUD?'เชื่อมต่อแล้ว (เรียลไทม์)':'ยังไม่เชื่อมต่อ ใช้โหมดในเครื่อง')+'</small></span></button>':'')+'<div class="hr"></div><button class="opt danger" data-act="resetAll">'+I('trash')+'<span>ล้างข้อมูลทั้งหมดในเครื่องนี้</span></button>');
 }
@@ -861,8 +1296,6 @@ async function dlFile(id){
 }
 
 // ===================== โทร (WebRTC) =====================
-// สัญญาณใช้ BroadcastChannel จึงโทรได้ระหว่างแท็บ/หน้าต่างบนเบราว์เซอร์เดียวกัน
-// ถ้าจะโทรข้ามเครื่อง ต้องเปลี่ยน sig() ไปใช้เซิร์ฟเวอร์สัญญาณ (เช่น Supabase Realtime / WebSocket)
 const SIG=('BroadcastChannel' in window)?new BroadcastChannel('chat-sig'):null;
 let PC=null,LOC=null,CALL=null,PEND=[],CT=null,CT0=0,RING=null;
 function sig(o){const p=Object.assign({from:ME},o);if(CLOUD&&RLCH)RLCH.send({type:'broadcast',event:'sig',payload:p});else if(SIG)SIG.postMessage(p)}
@@ -952,7 +1385,11 @@ const A={
  focusSearch(){$('#cs').focus()},
  newChat:newChatSheet,startDM:startDM,startGroup:startGroup,
  settings:settingsSheet,cloudSheet:cloudSheet,saveCloud:saveCloud,cloudOff:cloudOff,nameSheet(){nameSheet(false)},saveName:saveName,
- info:infoSheet,readInfo:readInfo,reqDelChat:reqDelChat,approveDel:approveDel,rejectDel:rejectDel,delChatNow:delChatNow,
+ info:infoSheet,readInfo:readInfo,
+ applyReaction(t){applyReaction(t.dataset.id, t.dataset.e)},
+ toggleReact(t){applyReaction(t.dataset.id, t.dataset.e)},
+ showReactionSelector(t){showReactionSelector(t.dataset.id, t)},
+ stickers:stickers,sendSticker:sendSticker,installApp:installApp,enablePush:enablePush,reqDelChat:reqDelChat,approveDel:approveDel,rejectDel:rejectDel,delChatNow:delChatNow,
  requests:requestsSheet,
  adminLogin(){pinSheet()},pinOk:pinOk,
  exitAdmin(){setAdmin(false);closeSheet();toast('ออกจากโหมดแอดมินแล้ว')},
@@ -978,7 +1415,7 @@ const A={
  viewImg(t){viewImg(t.dataset.mid)},
  dlFile(t){dlFile(t.dataset.id)},
  sendText:sendText,
- pickImg(){$('#fi1').click()},pickFile(){$('#fi2').click()},
+ pickImg(){$('#fi1').click()},pickFile(){$('#fi2').click()},pickSong(){$('#fi_song').click()},
  recStart:recStart,recCancel(){recStop(false)},recSend(){recStop(true)},
  call(){startCall(false)},vcall(){startCall(true)},
  callAcc:acceptCall,callEnd(){endCall(true)},
@@ -1000,6 +1437,7 @@ document.addEventListener('change',function(e){
  const t=e.target;
  if(t.type==='checkbox'&&t.dataset.act==='toggleBlur')A.toggleBlur(t);
  if(t.id==='fi1'||t.id==='fi2'){const fs=Array.from(t.files||[]);t.value='';sendFiles(fs)}
+ if(t.id==='fi_song'){const fs=Array.from(t.files||[]);t.value='';if(fs[0])sendFile(fs[0], true)}
 });
 document.addEventListener('input',function(e){
  const t=e.target;
@@ -1018,7 +1456,6 @@ document.addEventListener('keydown',function(e){
  if(!OPEN)return;e.preventDefault();
  if(n==='drop'&&e.dataTransfer&&e.dataTransfer.files.length)sendFiles(Array.from(e.dataTransfer.files));
 }));
-// ซิงก์ข้อมูลข้ามแท็บ
 window.addEventListener('storage',function(e){
  if(e.key==='chat.db'){load();refresh()}
  if(e.key==='chat.read.'+ME)loadRead();
