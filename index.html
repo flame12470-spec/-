@@ -41,6 +41,7 @@ img,video{-webkit-user-drag:none;-webkit-touch-callout:none}
 .uname b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .uname .ico{font-size:16px}
 .adm{background:var(--accent);color:#fff;font-size:11px;font-weight:600;padding:2px 10px;border-radius:99px}
+.rt{width:10px;height:10px;border-radius:50%;background:var(--muted);flex:none}.rt.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}.rt.err{background:var(--danger)}
 .s-head .sp{flex:1}
 .ib{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:26px;position:relative;flex:none}
 .ib:hover{background:var(--hover)}
@@ -232,6 +233,7 @@ body.recording #comp{display:none}
     <div class="s-head">
       <button class="uname" data-act="settings"><b id="uname"></b><span id="unameC"></span></button>
       <span class="adm hide" id="admTag">แอดมิน</span>
+      <button class="rt" id="rtDot" data-act="cloudSheet" aria-label="สถานะการเชื่อมต่อ"></button>
       <span class="sp"></span>
       <button class="ib" data-act="newChat" aria-label="แชทใหม่" id="btnNew"></button>
     </div>
@@ -287,8 +289,8 @@ const SS={get:k=>{try{return sessionStorage.getItem(k)}catch(e){return null}},se
 
 // ===================== โหมดคลาวด์ (Supabase) =====================
 // ใส่ค่าจากโปรเจกต์ Supabase ใหม่ของระบบแชท (รัน chat-schema.sql ก่อน) ถ้าเว้นว่าง = ทำงานในเครื่องเหมือนเดิม
-const SB_URL='';
-const SB_KEY='';
+const SB_URL='https://iejmwihipfvtkbvjtude.supabase.co'||LS.get('chat.sb.url')||'';   // วาง URL ตรงนี้ หรือกรอกที่ ตั้งค่า > เชื่อมต่อฐานข้อมูล
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imllam13aWhpcGZ2dGtidmp0dWRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NzQ0MzksImV4cCI6MjEwNjI1MDQzOX0.jR6txR7ztk_iKiF6-oxjkilpVllajLN3koIPNA5uBUY'||LS.get('chat.sb.key')||'';   // anon public key เท่านั้น (ห้ามใช้ service_role)
 const CLOUD=!!(SB_URL&&SB_KEY&&window.supabase&&window.supabase.createClient);
 let ATOKEN=SS.get('chat.atoken')||'';
 const sb=CLOUD?window.supabase.createClient(SB_URL,SB_KEY,{
@@ -375,6 +377,36 @@ async function cloudInsert(cid,x){
   refresh();toast('ส่งไม่สำเร็จ: '+(e.message||e));
  }
 }
+const chatToRow=c=>({id:c.id,type:c.type,name:c.name||null,members:c.members});
+function rt(s,msg){const d=$('#rtDot');if(!d)return;d.className='rt'+(s==='on'?' on':s==='err'?' err':'');d.title=s==='on'?'เชื่อมต่อฐานข้อมูลแล้ว (เรียลไทม์)':s==='err'?'ต่อฐานข้อมูลไม่ได้: '+(msg||''):'โหมดในเครื่อง (ยังไม่ได้เชื่อมต่อฐานข้อมูล)'}
+function cloudUpd(t,id,p){sb.from(t).update(p).eq('id',id).then(r=>{if(r.error)toast('บันทึกไม่สำเร็จ: '+r.error.message)})}
+function cloudChat(c){CHATP[c.id]=sb.from('chats').upsert(chatToRow(c),{onConflict:'id',ignoreDuplicates:true}).then(r=>{if(r.error)toast('สร้างแชทไม่สำเร็จ: '+r.error.message)})}
+function onChatRow(r){if(!r||!r.id)return;const c=rowToChat(r),i=DB.chats.findIndex(x=>x.id===c.id);if(i>-1)DB.chats[i]=c;else DB.chats.push(c);refresh()}
+function onMsgRow(r){if(!r||!r.id)return;const a=msgsOf(r.chat_id),m=rowToMsg(r),i=a.findIndex(x=>x.id===m.id);if(i>-1)a[i]=m;else{a.push(m);a.sort((x,y)=>x.t-y.t)}refresh()}
+async function loadCloud(){
+ const [c,m]=await Promise.all([sb.from('chats').select('*'),sb.from('messages').select('*').order('created_at',{ascending:false}).limit(1000)]);
+ if(c.error||m.error)throw(c.error||m.error);
+ DB.chats=c.data.map(rowToChat);DB.msgs={};
+ m.data.reverse().forEach(r=>msgsOf(r.chat_id).push(rowToMsg(r)));
+ refresh();
+}
+function cloudInit(){
+ RLCH=sb.channel('chat-rt')
+  .on('postgres_changes',{event:'*',schema:'public',table:'chats'},p=>onChatRow(p.new))
+  .on('postgres_changes',{event:'*',schema:'public',table:'messages'},p=>onMsgRow(p.new))
+  .on('broadcast',{event:'typing'},e=>{const d=e.payload||{};if(d.chat&&d.from)typingSet(d.chat,d.from,!!d.on)})
+  .on('broadcast',{event:'sig'},e=>onSigMsg(e.payload))
+  .subscribe(async st=>{
+   if(st==='SUBSCRIBED'){try{await loadCloud();rt('on')}catch(e){rt('err',e.message);toast('เชื่อมต่อฐานข้อมูลไม่ได้: '+(e.message||e))}}
+   else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT')rt('err',st);
+   else if(st==='CLOSED')rt('err','หลุดการเชื่อมต่อ');
+  });
+}
+function cloudSheet(){
+ openSheet('<h3>เชื่อมต่อฐานข้อมูล</h3><p class="help">'+(CLOUD?'เชื่อมต่อ Supabase อยู่ ข้อความซิงก์ข้ามเครื่องแบบเรียลไทม์':'ตอนนี้ใช้โหมดในเครื่อง ข้อมูลอยู่ในเบราว์เซอร์นี้เท่านั้น')+'</p><label>Project URL</label><input type="text" id="sbu" value="'+esc(SB_URL)+'" placeholder="https://xxxx.supabase.co" autocapitalize="none" autocomplete="off"><label>anon public key</label><input type="text" id="sbk" value="'+esc(SB_KEY)+'" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn" data-act="saveCloud">บันทึกและเชื่อมต่อ</button>'+(CLOUD?'<button class="pbtn ghost" data-act="cloudOff">ตัดการเชื่อมต่อ</button>':'')+'</div><p class="help">ต้องรัน chat-schema.sql ใน Supabase ก่อน และใช้เฉพาะ anon key</p>');
+}
+function saveCloud(){const u=($('#sbu').value||'').trim().replace(/\/+$/,''),k=($('#sbk').value||'').trim();if(!/^https:\/\/\S+$/.test(u)||k.length<20)return toast('URL หรือ key ไม่ถูกต้อง');LS.set('chat.sb.url',u);LS.set('chat.sb.key',k);location.reload()}
+function cloudOff(){try{localStorage.removeItem('chat.sb.url');localStorage.removeItem('chat.sb.key')}catch(e){}location.reload()}
 const peerOf=c=>c.members.find(x=>x!==ME)||ME;
 const chatName=c=>c.type==='dm'?peerOf(c):c.name;
 const hm=t=>{const d=new Date(t);return pad(d.getHours())+':'+pad(d.getMinutes())};
@@ -394,7 +426,7 @@ const idb=()=>_idb||(_idb=new Promise((res,rej)=>{const r=indexedDB.open('chat-m
 const putBlob=(k,b)=>idb().then(d=>new Promise((res,rej)=>{const t=d.transaction('m','readwrite');t.objectStore('m').put(b,k);t.oncomplete=res;t.onerror=()=>rej(t.error)}));
 const getBlob=k=>idb().then(d=>new Promise((res,rej)=>{const q=d.transaction('m').objectStore('m').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}));
 const URLS={};
-async function urlFor(mid){if(URLS[mid])return URLS[mid];const b=await getBlob(mid);if(!b)return null;return URLS[mid]=URL.createObjectURL(b)}
+async function urlFor(mid){if(URLS[mid])return URLS[mid];if(CLOUD){const r=await sb.storage.from('chat-media').createSignedUrl(mid,86400);return r.data?(URLS[mid]=r.data.signedUrl):null}const b=await getBlob(mid);if(!b)return null;return URLS[mid]=URL.createObjectURL(b)}
 function hydrate(root){
  root.querySelectorAll('[data-mid]').forEach(el=>{
   if(el.dataset.ok)return;
@@ -550,9 +582,9 @@ function typingSet(cid,user,on){
  renderList();if(cid===OPEN)updateTypingBubble(true);
 }
 function typingPing(on){
- if(!TYPC||!OPEN)return;
+ if(!(CLOUD?RLCH:TYPC)||!OPEN)return;
  const c=chatById(OPEN);if(!c||(c.closed&&!ADMIN))return;
- TYPC.postMessage({chat:OPEN,from:ME,on:on});
+ const p={chat:OPEN,from:ME,on:on};if(CLOUD)RLCH.send({type:'broadcast',event:'typing',payload:p});else TYPC.postMessage(p);
 }
 function typingInput(hasText){
  if(!hasText){clearTimeout(TOFF);if(TLAST){TLAST=0;typingPing(false)}return}
@@ -577,7 +609,7 @@ async function sendFile(file){
  const mt=file.type||'';
  const type=mt.startsWith('image/')?'image':mt.startsWith('video/')?'video':mt.startsWith('audio/')?'audio':'file';
  const id=uid();
- try{await putBlob(id,file)}catch(e){return toast('บันทึกไฟล์ไม่สำเร็จ')}
+ try{if(CLOUD){const r=await sb.storage.from('chat-media').upload(id,file,{contentType:mt||'application/octet-stream'});if(r.error)throw r.error}else await putBlob(id,file)}catch(e){return toast('บันทึกไฟล์ไม่สำเร็จ'+(CLOUD?': '+(e.message||''):''))}
  addMsg(OPEN,{from:ME,type:type,mid:id,mime:mt,name:file.name||'ไฟล์',size:file.size});
  refresh();
 }
@@ -607,6 +639,7 @@ function onCapture(src){
  if(ADMIN||!OPEN)return;
  const c=chatById(OPEN);if(!c||c.closed)return;
  c.closed=true;c.silent=false;c.closedBy='capture';c.closedAt=Date.now();c.closedSrc=src||'';
+ if(CLOUD)cloudUpd('chats',c.id,{closed:true,silent:false,closed_by:'capture',closed_at:new Date().toISOString()});
  addMsg(c.id,{type:'system',warn:1,text:ME+' แคปหน้าจอ — ระบบปิดแชทอัตโนมัติแล้ว รอแอดมินเปิดให้'});
  if(CALL)endCall(true);
  closeSheet();$('#lb').classList.remove('on');
@@ -632,7 +665,7 @@ document.addEventListener('dragstart',e=>{if(e.target.closest('.med,#lb'))e.prev
 
 // ===================== แอดมิน =====================
 function setAdmin(on){
- ADMIN=!!on;on?SS.set('chat.admin','1'):SS.del('chat.admin');
+ ADMIN=!!on;on?SS.set('chat.admin','1'):SS.del('chat.admin');if(!on){ATOKEN='';SS.del('chat.atoken')}
  $('#admTag').classList.toggle('hide',!ADMIN);
  refresh();
 }
@@ -641,9 +674,11 @@ function pinSheet(next){
  openSheet('<h3>ยืนยันรหัสแอดมิน</h3><p class="help">กรอกรหัสแอดมินเพื่อดำเนินการ</p><label>รหัสแอดมิน</label><input type="password" id="pin" inputmode="numeric" autocomplete="off" maxlength="12"><div class="acts"><button class="pbtn" data-act="pinOk">ยืนยัน</button></div>');
  setTimeout(()=>{const p=$('#pin');if(p)p.focus()},100);
 }
-function pinOk(){
+async function pinOk(){
  const v=($('#pin')||{}).value;
- if(v!==ADMIN_PIN){toast('รหัสแอดมินไม่ถูกต้อง');const p=$('#pin');if(p){p.value='';p.focus()}return}
+ let ok=v===ADMIN_PIN;
+ if(CLOUD){ok=false;try{const r=await sb.rpc('chat_admin_login',{pin:v||''});if(!r.error&&r.data){ATOKEN=r.data;SS.set('chat.atoken',ATOKEN);ok=true}}catch(e){}}
+ if(!ok){toast('รหัสแอดมินไม่ถูกต้อง');const p=$('#pin');if(p){p.value='';p.focus()}return}
  closeSheet();setAdmin(true);toast('เข้าสู่โหมดแอดมินแล้ว');
  const f=PINNEXT;PINNEXT=null;if(f)f();
 }
@@ -651,12 +686,13 @@ function needAdmin(fn){ADMIN?fn():pinSheet(fn)}
 function setClosed(id,closed,silent){
  const c=chatById(id);if(!c)return;
  c.closed=closed;c.silent=!!(closed&&silent);c.closedBy=closed?'admin':'';
+ if(CLOUD)cloudUpd('chats',id,{closed:closed,silent:c.silent,closed_by:closed?'admin':null,closed_at:closed?new Date().toISOString():null});
  if(closed&&!silent)addMsg(id,{type:'system',text:'แอดมินปิดแชทนี้'});
  if(!closed)addMsg(id,{type:'system',text:'แอดมินเปิดแชทอีกครั้ง'});
  save();refresh();
 }
 function decide(id,ok){
- for(const c of DB.chats){const m=msgsOf(c.id).find(x=>x.id===id);if(m){if(ok)m.unsend='done';else delete m.unsend;save();break}}
+ for(const c of DB.chats){const m=msgsOf(c.id).find(x=>x.id===id);if(m){if(ok)m.unsend='done';else delete m.unsend;save();if(CLOUD)cloudUpd('messages',id,{unsend:ok?'done':null});break}}
  refresh();
 }
 function chatAdminSheet(){
@@ -709,7 +745,7 @@ function settingsSheet(){
   '<button class="opt" data-act="nameSheet">'+I('user')+'<span>ชื่อผู้ใช้<small>'+esc(ME)+' · กดเพื่อเปลี่ยน/สลับบัญชี</small></span></button>'+
   (ADMIN?'<button class="opt" data-act="exitAdmin">'+I('shield')+'<span>ออกจากโหมดแอดมิน</span></button>':'<button class="opt" data-act="adminLogin">'+I('shield')+'<span>เข้าสู่โหมดแอดมิน<small>ต้องใช้รหัสแอดมิน</small></span></button>')+
   '<div class="sw"><span>เบลอหน้าจอเมื่อสลับแอป<br><small class="help">ช่วยลดการแอบแคปด้วยเครื่องมือภายนอก</small></span><input type="checkbox" id="blurT" '+(BLUR?'checked':'')+' data-act="toggleBlur"></div>'+
-  '<div class="hr"></div><button class="opt danger" data-act="resetAll">'+I('trash')+'<span>ล้างข้อมูลทั้งหมดในเครื่องนี้</span></button>');
+  '<button class="opt" data-act="cloudSheet">'+I('chat')+'<span>เชื่อมต่อฐานข้อมูล<small>'+(CLOUD?'เชื่อมต่อแล้ว (เรียลไทม์)':'ยังไม่เชื่อมต่อ ใช้โหมดในเครื่อง')+'</small></span></button><div class="hr"></div><button class="opt danger" data-act="resetAll">'+I('trash')+'<span>ล้างข้อมูลทั้งหมดในเครื่องนี้</span></button>');
 }
 function newChatSheet(){
  openSheet('<h3>แชทใหม่</h3><label>ชื่อผู้ใช้ที่ต้องการคุยด้วย</label><input type="text" id="np" placeholder="เช่น somchai" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn" data-act="startDM">เริ่มแชท</button></div><div class="hr"></div><p class="help">หรือสร้างกลุ่ม</p><label>ชื่อกลุ่ม</label><input type="text" id="gn" placeholder="ชื่อกลุ่ม" autocomplete="off"><label>สมาชิก (คั่นด้วย ,)</label><input type="text" id="gm" placeholder="a, b, c" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn ghost" data-act="startGroup">สร้างกลุ่ม</button></div>');
@@ -720,7 +756,7 @@ function startDM(){
  if(!/^[a-z0-9._]{2,20}$/.test(p))return toast('ชื่อผู้ใช้ไม่ถูกต้อง');
  if(p===ME)return toast('คุยกับตัวเองไม่ได้');
  const id='dm:'+[ME,p].sort().join('|');
- if(!chatById(id)){DB.chats.push({id:id,type:'dm',name:'',members:[ME,p],closed:false,silent:false});msgsOf(id);save()}
+ if(!chatById(id)){DB.chats.push({id:id,type:'dm',name:'',members:[ME,p],closed:false,silent:false});msgsOf(id);save();if(CLOUD)cloudChat(chatById(id))}
  closeSheet();openChat(id);
 }
 function startGroup(){
@@ -729,6 +765,8 @@ function startGroup(){
  const bad=ms.find(s=>!/^[a-z0-9._]{2,20}$/.test(s));if(bad)return toast('ชื่อสมาชิกไม่ถูกต้อง: '+bad);
  const id='g-'+uid();
  DB.chats.push({id:id,type:'group',name:n,members:Array.from(new Set([ME].concat(ms))),closed:false,silent:false});
+
+ if(CLOUD)cloudChat(chatById(id));
  addMsg(id,{type:'system',text:ME+' สร้างกลุ่ม “'+n+'”'});
  closeSheet();openChat(id);
 }
@@ -755,7 +793,7 @@ async function dlFile(id){
 // ถ้าจะโทรข้ามเครื่อง ต้องเปลี่ยน sig() ไปใช้เซิร์ฟเวอร์สัญญาณ (เช่น Supabase Realtime / WebSocket)
 const SIG=('BroadcastChannel' in window)?new BroadcastChannel('chat-sig'):null;
 let PC=null,LOC=null,CALL=null,PEND=[],CT=null,CT0=0,RING=null;
-function sig(o){if(SIG)SIG.postMessage(Object.assign({from:ME},o))}
+function sig(o){const p=Object.assign({from:ME},o);if(CLOUD&&RLCH)RLCH.send({type:'broadcast',event:'sig',payload:p});else if(SIG)SIG.postMessage(p)}
 function callUI(state,name,video){
  $('#call').classList.add('on');
  $('#cav').innerHTML=av(name,96);$('#cn').textContent=name;
@@ -778,7 +816,7 @@ async function startCall(video){
  const c=chatById(OPEN);if(!c||c.type!=='dm')return;
  if(c.closed&&!ADMIN)return toast('แชทถูกปิด โทรไม่ได้');
  if(CALL)return;
- if(!SIG)return toast('เบราว์เซอร์ไม่รองรับการโทรในโหมดนี้');
+ if(!SIG&&!CLOUD)return toast('เบราว์เซอร์ไม่รองรับการโทรในโหมดนี้');
  CALL={chat:c.id,peer:peerOf(c),video:video,out:true,connected:false};PEND=[];
  callUI('out',CALL.peer,video);
  try{
@@ -815,8 +853,8 @@ function endCall(send){
  if(was&&was.connected&&was.out){const s=Math.floor((Date.now()-CT0)/1000);addMsg(was.chat,{type:'system',text:'การโทรสิ้นสุด '+pad(Math.floor(s/60))+':'+pad(s%60)});refresh()}
  CALL=null;PEND=[];
 }
-if(SIG)SIG.onmessage=async ev=>{
- const d=ev.data||{};if(d.to!==ME)return;
+const onSigMsg=async d=>{
+ d=d||{};if(d.to!==ME)return;
  if(d.t==='offer'){
   const c=chatById(d.chat);
   if(CALL||!c||(c.closed&&!ADMIN)){sig({t:'end',to:d.from});return}
@@ -830,6 +868,7 @@ if(SIG)SIG.onmessage=async ev=>{
   if(CALL){const w=CALL;toast(w.connected?'อีกฝ่ายวางสาย':w.out?'อีกฝ่ายไม่รับสาย':'ผู้โทรยกเลิก');endCall(false)}
  }
 };
+if(SIG)SIG.onmessage=ev=>onSigMsg(ev.data);
 
 // ===================== events =====================
 const A={
@@ -840,7 +879,7 @@ const A={
  home(){closeChatView()},
  focusSearch(){$('#cs').focus()},
  newChat:newChatSheet,startDM:startDM,startGroup:startGroup,
- settings:settingsSheet,nameSheet(){nameSheet(false)},saveName:saveName,
+ settings:settingsSheet,cloudSheet:cloudSheet,saveCloud:saveCloud,cloudOff:cloudOff,nameSheet(){nameSheet(false)},saveName:saveName,
  info:infoSheet,
  requests:requestsSheet,
  adminLogin(){pinSheet()},pinOk:pinOk,
@@ -855,12 +894,12 @@ const A={
  reject(t){decide(t.dataset.id,false);closeSheet();toast('ปฏิเสธคำขอแล้ว')},
  reqUnsend(t){
   const c=chatById(OPEN),m=c&&msgsOf(c.id).find(x=>x.id===t.dataset.id);
-  if(m&&m.from===ME&&!m.unsend){m.unsend='pending';m.reqAt=Date.now();save();refresh();toast('ส่งคำขอยกเลิกให้แอดมินแล้ว')}
+  if(m&&m.from===ME&&!m.unsend){m.unsend='pending';m.reqAt=Date.now();save();if(CLOUD)cloudUpd('messages',m.id,{unsend:'pending'});refresh();toast('ส่งคำขอยกเลิกให้แอดมินแล้ว')}
   closeSheet();
  },
  toggleLock(t){
   const c=chatById(OPEN),m=c&&msgsOf(c.id).find(x=>x.id===t.dataset.id);
-  if(m&&ADMIN){m.locked=!m.locked;save();refresh();toast(m.locked?'ล็อกแล้ว':'ปลดล็อกแล้ว')}
+  if(m&&ADMIN){m.locked=!m.locked;save();if(CLOUD)cloudUpd('messages',m.id,{locked:m.locked});refresh();toast(m.locked?'ล็อกแล้ว':'ปลดล็อกแล้ว')}
   closeSheet();
  },
  msgMenu(t){msgMenu(t.dataset.id)},
@@ -923,6 +962,7 @@ function init(){
  $('#admTag').classList.toggle('hide',!ADMIN);
  $('#uname').textContent=ME||'ผู้ใช้';
  renderList();renderChat();
+ if(CLOUD)cloudInit();else rt('off');
  if(!ME)nameSheet(true);
 }
 init();
