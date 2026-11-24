@@ -1,402 +1,899 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>จองล็อค ตลาดนัดผสาน นักธุรกิจน้อย น.พ.</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0f17">
+<title>ระบบแชท</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0a0a0a;--muted:#6b6b6b;--line:#e8e8e8;--bg:#fff;--soft:#f6f6f6;--red:#c8102e;--orange:#f08a24;--green:#16a34a;--line-green:#06c755;--radius:28px}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'IBM Plex Sans Thai','Inter',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}
-button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
-[hidden]{display:none!important}
-.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
-.eyebrow{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);font-weight:500}
-.h2{font-size:clamp(26px,3.4vw,36px);font-weight:700;margin:6px 0 4px}
-.sub{color:var(--muted);font-size:15px}
-section.blk{padding:72px 0 0}
-
-/* ---------- Nav ---------- */
-.nav{position:fixed;inset:0 0 auto 0;z-index:50;transition:.3s;color:#fff}
-.nav.solid{background:rgba(255,255,255,.9);backdrop-filter:blur(14px);color:var(--ink);border-bottom:1px solid var(--line)}
-.nav .in{display:flex;align-items:center;justify-content:space-between;height:76px;padding:0 48px;gap:12px}
-.brand{display:flex;align-items:center;gap:12px;font-weight:600}
-.brand .dot{width:38px;height:38px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-size:20px}
-.nav.solid .brand .dot{background:var(--ink);color:#fff}
-
-/* ---------- Buttons ---------- */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 26px;border-radius:999px;font-weight:600;font-size:15px;transition:.2s;white-space:nowrap}
-.btn:hover{transform:translateY(-2px)}
-.btn[disabled]{opacity:.5;pointer-events:none}
-.btn-white{background:#fff;color:var(--ink)}
-.btn-ghost{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;backdrop-filter:blur(8px)}
-.btn-dark{background:var(--ink);color:#fff}
-.btn-red{background:var(--red);color:#fff}
-.btn-out{border:1px solid var(--line);background:#fff;color:var(--ink)}
-.btn-sm{padding:8px 16px;font-size:13px}
-
-/* ---------- Hero ---------- */
-.hero{position:relative;min-height:88vh;display:flex;align-items:center;color:#fff;
-  background:radial-gradient(circle at 15% 25%,#f08a24 0,transparent 45%),radial-gradient(circle at 85% 20%,#c8102e 0,transparent 42%),radial-gradient(circle at 55% 105%,#16a34a 0,transparent 55%),#111}
-.hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.65))}
-.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:160px;background:linear-gradient(transparent,#fff)}
-.hero .wrap{position:relative;z-index:2;padding-top:90px}
-.hero h1{font-family:Inter,'IBM Plex Sans Thai',sans-serif;font-size:clamp(40px,8vw,96px);line-height:1.08;font-weight:700;letter-spacing:-.02em;margin:22px 0 28px}
-.hero p{font-size:clamp(16px,2vw,22px);max-width:720px;opacity:.9;margin-bottom:38px}
-.hero .row{display:flex;flex-wrap:wrap;gap:14px}
-
-/* ---------- Layout ---------- */
-.head{margin-bottom:28px}
-.layout{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;align-items:start}
-.panel{border:1px solid var(--line);border-radius:var(--radius);padding:28px;background:#fff;box-shadow:0 8px 30px rgba(0,0,0,.05)}
-.panel+.panel{margin-top:24px}
-.panel h3{font-size:20px;margin-bottom:14px}
-.stats{display:grid;gap:10px;grid-template-columns:repeat(3,1fr);margin-bottom:18px}
-.ev{border:1px solid var(--line);border-radius:22px;padding:18px;background:#fff;text-align:center}
-.ev b{display:block;font-size:30px;line-height:1.2}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-bottom:16px}
-.legend i{display:inline-block;width:11px;height:11px;border-radius:4px;margin-right:6px;vertical-align:-1px}
-
-/* ---------- Map ---------- */
-.map{background:var(--soft);border-radius:22px;padding:14px 8px;overflow-x:auto}
-.map-grid{display:grid;grid-template-columns:minmax(84px,1fr) 62px 38px 62px minmax(84px,1fr);min-width:430px}
-.zone{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;font-size:12px;color:var(--muted);padding:8px 6px;margin:4px;border-radius:18px;background:#fff;border:1px solid var(--line)}
-.zone .emoji{font-size:1.9rem;line-height:1}
-.zone.stage{background:var(--ink);color:#fff;border-color:var(--ink)}
-.zone.court{background:#e8f0ff;color:#1c3d7a}
-.zone.field{background:#e6f7ec;color:#14532d}
-.zone.school{background:#fff4e0;color:#7a4a00}
-.zones{display:flex;flex-direction:column;gap:6px;justify-content:center}
-.col{display:flex;flex-direction:column;gap:6px;padding:4px 0}
-.road{background:#4a4a4a;position:relative}
-.road::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;transform:translateX(-50%);background:repeating-linear-gradient(180deg,#f3e6b3 0 20px,transparent 20px 40px)}
-.cross{grid-column:1/-1;height:26px;background:#4a4a4a;position:relative;margin:8px 0}
-.cross::after{content:"";position:absolute;left:0;right:0;top:50%;height:3px;transform:translateY(-50%);background:repeating-linear-gradient(90deg,#f3e6b3 0 18px,transparent 18px 34px)}
-.stall{height:36px;border-radius:12px;border:1px solid transparent;background:#d9f5e3;color:#14532d;font-weight:700;font-size:13px;transition:.15s;font-family:Inter,sans-serif}
-.stall:hover:not(:disabled){background:var(--green);color:#fff;transform:scale(1.07)}
-.stall.fruit{box-shadow:inset 4px 0 0 var(--orange)}
-.stall.sel{background:var(--ink);color:#fff}
-.stall.booked{background:var(--red);color:#fff;cursor:not-allowed;opacity:.9}
-.stall.mine{outline:3px solid var(--orange);outline-offset:1px}
-
-/* ---------- Form ---------- */
-form.f{display:grid;gap:16px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-label.l{font-size:13px;font-weight:600;display:grid;gap:7px}
-input,select,textarea{font:inherit;padding:13px 16px;border-radius:14px;border:1px solid var(--line);background:var(--soft);outline:0;transition:.2s;width:100%}
-input:focus,select:focus,textarea:focus{border-color:var(--ink);background:#fff}
-textarea{min-height:90px;resize:vertical}
-.chips{display:flex;gap:8px;flex-wrap:wrap;min-height:38px;align-items:center}
-.chip{padding:7px 16px;border-radius:999px;background:var(--ink);color:#fff;font-size:14px;font-weight:600;font-family:Inter,sans-serif}
-.total{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:#fff;border-radius:20px;padding:16px 22px}
-.total b{font-size:24px;font-family:Inter,sans-serif}
-.tag{display:inline-block;font-size:11px;padding:2px 10px;border-radius:999px;background:var(--soft);color:var(--muted)}
-.tag.new{background:#fee2e2;color:var(--red)}
-.tag.done{background:#dcfce7;color:#166534}
-.err{color:var(--red);font-size:14px;min-height:1.3em}
-.list-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
-.list-row:last-child{border:0}
-.list-row b{display:block}.list-row small{color:var(--muted)}
-.code{font-family:Inter,sans-serif;font-size:34px;font-weight:800;letter-spacing:.08em;text-align:center;background:var(--soft);border-radius:20px;padding:16px;margin:14px 0}
-.result{margin-top:16px;border:1px solid var(--line);border-radius:22px;padding:18px;background:var(--soft)}
-
-/* ---------- Modal / toast ---------- */
-.modal{position:fixed;inset:0;z-index:200;background:rgba(10,10,20,.65);backdrop-filter:blur(4px);display:none;padding:16px;overflow:auto}
-.modal.open{display:flex}
-.mbox{position:relative;margin:auto;background:#fff;border-radius:24px;max-width:min(94vw,720px);width:100%;overflow:hidden;box-shadow:0 40px 90px -20px rgba(0,0,0,.6)}
-.mbox .mt{padding:28px}
-.mbox h3{font-size:22px;margin-bottom:10px}
-.mx{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:18px;z-index:3}
-.tbl{overflow:auto;max-height:55vh;margin-top:14px}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-th{background:var(--soft);position:sticky;top:0;font-weight:600}
-.toast{position:fixed;bottom:28px;left:50%;transform:translate(-50%,140px);background:var(--ink);color:#fff;padding:14px 26px;border-radius:999px;transition:.4s;z-index:300;max-width:90vw;text-align:center}
-.toast.show{transform:translate(-50%,0)}
-
-/* ---------- Footer ---------- */
-footer.ft{margin-top:90px;border-top:1px solid var(--line);padding:40px 0 30px;background:#fafafa;text-align:center}
-.copy{font-size:13px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
-.copy a{color:var(--muted)}.copy a:hover{color:var(--ink);text-decoration:underline}
-
-@media(max-width:900px){
-  .layout,.two{grid-template-columns:1fr}
-  .nav .in{padding:0 16px}.wrap{padding:0 20px}
-  .stats{grid-template-columns:repeat(3,1fr)}
-  .ev b{font-size:22px}
+:root{
+  --bg:#0b0f17;--line:#1d232e;--hover:#141a24;--sel:#1b2230;--text:#f1f4f9;--muted:#8b95a7;
+  --me:#4f46e5;--other:#232a36;--accent:#4f5bf5;--danger:#ff5a6a;--ok:#2ecc71;--warn:#ffb020;
+  --sab:env(safe-area-inset-bottom,0px);--sat:env(safe-area-inset-top,0px);
 }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Prompt',system-ui,-apple-system,sans-serif;overflow:hidden;line-height:1.5}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;touch-action:manipulation}
+input,textarea{font:inherit;font-size:16px;color:var(--text)}
+.hide{display:none!important}
+.ico{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.16em;flex:none}
+img,video{-webkit-user-drag:none;-webkit-touch-callout:none}
+
+/* ---------- layout ---------- */
+#app{display:grid;grid-template-columns:76px 380px 1fr;height:100dvh;transition:filter .15s}
+#app.shield{filter:blur(22px)}
+#rail{display:flex;flex-direction:column;align-items:center;gap:8px;padding:calc(18px + var(--sat)) 0 calc(18px + var(--sab));border-right:1px solid var(--line)}
+#rail .logo{font-size:30px;margin:10px 0 24px}
+#rail .rb{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:28px;position:relative}
+#rail .rb:hover{background:var(--hover)}
+#rail .rb.on{background:var(--sel)}
+#rail .sp{flex:1}
+#side{display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--line);height:100dvh}
+#main{display:flex;flex-direction:column;min-width:0;height:100dvh;position:relative}
+
+/* ---------- list ---------- */
+.s-head{display:flex;align-items:center;gap:10px;padding:calc(18px + var(--sat)) 20px 8px}
+.uname{display:flex;align-items:center;gap:6px;font-size:24px;font-weight:700;min-width:0}
+.uname b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.uname .ico{font-size:16px}
+.adm{background:var(--accent);color:#fff;font-size:11px;font-weight:600;padding:2px 10px;border-radius:99px}
+.s-head .sp{flex:1}
+.ib{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:26px;position:relative;flex:none}
+.ib:hover{background:var(--hover)}
+.searchbox{margin:8px 20px 6px;display:flex;align-items:center;gap:12px;background:#222a36;border-radius:99px;padding:0 18px;height:50px;color:var(--muted)}
+.searchbox input{flex:1;background:none;border:0;outline:0;min-width:0}
+.searchbox input::placeholder{color:var(--muted)}
+.s-sub{display:flex;justify-content:space-between;align-items:center;padding:14px 22px 6px}
+.s-sub b{font-size:18px}
+.s-sub button{color:var(--muted);font-size:14px;font-weight:600;display:flex;gap:6px;align-items:center}
+.dotn{min-width:18px;height:18px;border-radius:99px;background:var(--danger);color:#fff;font-size:11px;display:grid;place-items:center;padding:0 5px}
+#clist{flex:1;overflow-y:auto;padding:4px 8px calc(20px + var(--sab));-webkit-overflow-scrolling:touch}
+.ci{display:flex;align-items:center;gap:14px;width:100%;padding:10px 12px;border-radius:14px;text-align:left}
+.ci:hover{background:var(--hover)}
+.ci.on{background:var(--sel)}
+.ci .tx{flex:1;min-width:0}
+.ci .tt{display:flex;gap:8px;align-items:center}
+.ci .tt b{font-weight:500;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ci .pv{color:var(--muted);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ci.un .pv,.ci.un .tt b{color:var(--text);font-weight:700}
+.ci .un-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex:none}
+.tg{font-size:11px;padding:1px 8px;border-radius:99px;background:#3a2330;color:#ff9aa8;white-space:nowrap}
+.tg.s{background:#2a2f3a;color:var(--muted)}
+.av{display:grid;place-items:center;border-radius:50%;color:#fff;font-weight:600;flex:none;overflow:hidden}
+.av .ico{font-size:55%}
+.empty-list{color:var(--muted);text-align:center;padding:40px 20px;font-size:14px}
+
+/* ---------- empty main ---------- */
+#empty{margin:auto;text-align:center;padding:20px}
+#empty .circ{width:96px;height:96px;border:2px solid #fff;border-radius:50%;display:grid;place-items:center;font-size:44px;margin:0 auto 18px}
+#empty h2{font-size:24px;font-weight:600}
+#empty p{color:var(--muted);margin:6px 0 18px}
+.pbtn{background:var(--accent);color:#fff;font-weight:600;padding:11px 22px;border-radius:12px}
+.pbtn:hover{filter:brightness(1.1)}
+.pbtn.ghost{background:#222a36}
+.pbtn.red{background:var(--danger)}
+.pbtn.ok{background:var(--ok);color:#06210f}
+
+/* ---------- chat ---------- */
+#chat{display:flex;flex-direction:column;height:100%;min-height:0}
+.ch{display:flex;align-items:center;gap:12px;padding:calc(12px + var(--sat)) 18px 12px;border-bottom:1px solid var(--line)}
+.ch .ttl{flex:1;min-width:0}
+.ch .ttl b{display:block;font-size:17px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ch .ttl small{color:var(--muted);font-size:13px}
+.only-m{display:none}
+#msgs{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:3px;-webkit-overflow-scrolling:touch}
+.sys{align-self:center;text-align:center;color:var(--muted);font-size:13px;padding:10px 18px;max-width:80%}
+.sys.warn{color:#ffb4bd;background:#2a1a20;border-radius:14px;margin:8px 0}
+.day{align-self:center;color:var(--muted);font-size:12px;margin:12px 0 6px}
+.row{display:flex;align-items:flex-end;gap:8px;max-width:100%}
+.row.me{flex-direction:row-reverse}
+.av-sp{width:28px;flex:none}
+.col{display:flex;flex-direction:column;min-width:0;max-width:min(72%,520px)}
+.row.me .col{align-items:flex-end}
+.nm{color:var(--muted);font-size:12px;margin:6px 0 2px 4px}
+.bub{padding:9px 15px;border-radius:20px;background:var(--other);overflow-wrap:anywhere;white-space:pre-wrap;font-size:15px}
+.row.me .bub{background:var(--me)}
+.bub.media{padding:0;background:none}
+.bub.gone{background:none;border:1px dashed #3a4252;color:var(--muted);font-style:italic}
+.note{font-size:11px;color:var(--warn);margin:2px 6px}
+.note.dim{color:var(--muted)}
+.tm{font-size:11px;color:var(--muted);margin:2px 6px 6px}
+.more{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--muted);opacity:0;flex:none;margin-bottom:6px}
+.row:hover .more{opacity:1}
+@media(hover:none){.more{opacity:.7}}
+.more:hover{background:var(--hover)}
+.med{position:relative;border-radius:18px;overflow:hidden;background:#111621;max-width:100%}
+.med img{display:block;max-width:100%;max-height:340px;min-width:140px;min-height:100px;object-fit:cover;cursor:zoom-in;user-select:none;-webkit-user-select:none}
+.med video{display:block;max-width:100%;max-height:340px;min-width:200px;background:#000}
+.med .lk{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.65);color:#fff;font-size:11px;padding:2px 9px;border-radius:99px}
+.lockmed{display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:18px;background:#1a202b;color:var(--muted);font-size:14px;border:1px dashed #323a4a}
+.lockmed .ico{font-size:22px}
+audio{max-width:100%;height:42px;filter:invert(.9) hue-rotate(180deg)}
+.filebox{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:18px;background:var(--other);text-align:left}
+.row.me .filebox{background:var(--me)}
+.filebox .ico{font-size:26px}
+.filebox small{display:block;opacity:.75;font-size:12px}
+.filebox b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;max-width:240px}
+
+/* composer */
+#comp{display:flex;align-items:flex-end;gap:6px;margin:10px 16px calc(12px + var(--sab));border:1px solid #2b3342;border-radius:26px;padding:6px 8px}
+#comp textarea{flex:1;background:none;border:0;outline:0;resize:none;max-height:140px;min-height:40px;padding:9px 6px;line-height:1.5}
+#comp textarea::placeholder{color:var(--muted)}
+#comp .ib{width:42px;height:42px}
+#comp .send{color:var(--accent);font-weight:700;padding:0 14px;height:42px}
+#comp:not(.has) .send{display:none}
+#comp.has .mic{display:none}
+#rec{display:none;align-items:center;gap:12px;margin:10px 16px calc(12px + var(--sab));border:1px solid var(--danger);border-radius:26px;padding:8px 14px}
+#rec.on{display:flex}
+#rec i{width:12px;height:12px;border-radius:50%;background:var(--danger);animation:bl 1s infinite}
+@keyframes bl{50%{opacity:.25}}
+#rec span{flex:1}
+body.recording #comp{display:none}
+.banner{background:#2a1a20;color:#ffb4bd;padding:10px 18px;font-size:14px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+.banner .pbtn{padding:6px 14px;font-size:13px}
+.lockview{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;gap:10px}
+.lockview .ico{font-size:64px;color:var(--muted)}
+.lockview h3{font-size:22px}
+.lockview p{color:var(--muted);margin-bottom:10px}
+.blankbar{padding:calc(12px + var(--sat)) 18px}
+.blank{flex:1}
+
+/* ---------- สถานะกำลังพิมพ์ ---------- */
+.typing{display:flex;gap:5px;align-items:center;padding:14px 16px}
+.typing i{width:8px;height:8px;border-radius:50%;background:#9aa6bb;animation:tp 1.2s infinite ease-in-out}
+.typing i:nth-child(2){animation-delay:.18s}
+.typing i:nth-child(3){animation-delay:.36s}
+@keyframes tp{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+.ci .pv.ty{color:var(--accent);font-weight:600}
+#typ:empty{display:none}
+.typrow{margin-top:4px}
+#chSub.ty{color:var(--accent)}
+
+/* ---------- sheet / toast / lightbox / call ---------- */
+#sbg{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:100;opacity:0;pointer-events:none;transition:.2s}
+#sbg.on{opacity:1;pointer-events:auto}
+#sheet{position:fixed;left:50%;top:50%;width:min(480px,92vw);max-height:86dvh;overflow:auto;background:#161c27;border:1px solid #232b39;border-radius:22px;z-index:101;padding:24px 22px 20px;transform:translate(-50%,-46%);opacity:0;pointer-events:none;transition:.2s}
+#sheet.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+#sheet h3{font-size:20px;margin-bottom:4px;padding-right:36px}
+#sheet .xx{position:absolute;top:14px;right:14px;width:38px;height:38px;display:grid;place-items:center;font-size:22px;color:var(--muted)}
+#sheet label{display:block;color:var(--muted);font-size:13px;margin:14px 0 6px}
+#sheet input[type=text],#sheet input[type=password]{width:100%;background:#222a36;border:2px solid transparent;border-radius:14px;padding:12px 14px;outline:0}
+#sheet input:focus{border-color:var(--accent)}
+.opt{display:flex;align-items:center;gap:14px;width:100%;padding:14px 10px;border-radius:12px;text-align:left;font-size:16px}
+.opt:hover{background:#1e2533}
+.opt .ico{font-size:22px;color:var(--muted)}
+.opt.danger{color:var(--danger)}.opt.danger .ico{color:var(--danger)}
+.opt small{display:block;color:var(--muted);font-size:12px}
+.hr{height:1px;background:var(--line);margin:12px 0}
+.acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.acts .pbtn{padding:8px 16px;font-size:14px}
+.reqc{background:#1b2230;border-radius:14px;padding:12px 14px;margin-top:10px}
+.reqc small{color:var(--muted)}
+.sw{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
+.sw input{width:22px;height:22px;accent-color:var(--accent)}
+.help{color:var(--muted);font-size:12px;margin-top:8px}
+#toast{position:fixed;left:50%;bottom:calc(90px + var(--sab));transform:translate(-50%,16px);background:#e8ecf3;color:#0b0f17;padding:10px 20px;border-radius:99px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:300;max-width:90vw;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+#lb.on{display:flex}
+#lb img{max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-select:none}
+#lb button{position:absolute;top:calc(14px + var(--sat));right:14px;font-size:30px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.12);display:grid;place-items:center}
+#call{position:fixed;inset:0;background:#05070b;z-index:250;display:none;flex-direction:column;align-items:center;justify-content:center}
+#call.on{display:flex}
+#rv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#05070b}
+#lv{position:absolute;right:16px;top:calc(16px + var(--sat));width:min(30vw,160px);aspect-ratio:3/4;object-fit:cover;border-radius:16px;background:#111;transform:scaleX(-1);z-index:2}
+.cinfo{position:relative;z-index:2;text-align:center;margin-bottom:auto;margin-top:12vh;text-shadow:0 2px 10px #000}
+.cinfo .av{margin:0 auto 14px}
+.cinfo h3{font-size:26px}
+.cinfo p{color:#cfd6e4}
+.cbtn{position:relative;z-index:2;display:flex;gap:22px;margin-bottom:calc(40px + var(--sab))}
+.cbtn button{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.16);backdrop-filter:blur(8px);display:grid;place-items:center;font-size:28px;position:relative}
+.cbtn button.off{background:#fff;color:#111}
+.cbtn .end{background:var(--danger)}
+.cbtn .end .ico{transform:rotate(135deg)}
+.cbtn .acc{background:var(--ok)}
+.cbtn .hide{display:none}
+
+/* ---------- responsive ---------- */
+@media(max-width:1100px){#app{grid-template-columns:64px 320px 1fr}#rail .rb{width:46px;height:46px}}
+@media(max-width:760px){
+  #app{grid-template-columns:1fr}
+  #rail{display:none}
+  #main{display:none}
+  body.chat-open #side{display:none}
+  body.chat-open #main{display:flex}
+  .only-m{display:grid}
+  .col{max-width:80%}
+  #msgs{padding:12px}
+}
+@media(min-width:1500px){#app{grid-template-columns:84px 440px 1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{body{display:none!important}}
 </style>
 </head>
 <body>
 
-<header class="nav" id="nav"><div class="in">
-  <a class="brand" href="#top"><span class="dot">🛍️</span>ตลาดนัดผสาน</a>
-  <a class="btn btn-ghost btn-sm" href="#booking" id="navBtn">จองล็อค</a>
-</div></header>
+<div id="app">
+  <nav id="rail" aria-label="เมนู">
+    <div class="logo" id="logoI"></div>
+    <button class="rb on" data-act="home" aria-label="แชท" id="rbChat"></button>
+    <button class="rb" data-act="focusSearch" aria-label="ค้นหา" id="rbSearch"></button>
+    <button class="rb" data-act="newChat" aria-label="แชทใหม่" id="rbNew"></button>
+    <button class="rb" data-act="requests" aria-label="คำขอและแอดมิน" id="rbAdm"></button>
+    <div class="sp"></div>
+    <button class="rb" data-act="settings" aria-label="ตั้งค่า" id="rbSet"></button>
+  </nav>
 
-<section class="hero" id="top"><div class="wrap">
-  <div class="eyebrow" style="color:#fff;opacity:.85">ช้อป ชิม ชิล · ถนนคนชิล ครั้งที่ 3</div>
-  <h1>ตลาดนัดผสาน<br>นักธุรกิจน้อย น.พ.</h1>
-  <p>จองล็อคขายของออนไลน์ เลือกล็อคจากแผนผังจริง กรอกข้อมูลร้าน แล้วรับรหัสจองได้ทันที</p>
-  <div class="row"><a class="btn btn-white" href="#booking">จองล็อคเลย →</a><a class="btn btn-ghost" href="#lookup">ตรวจสอบการจอง</a></div>
-</div></section>
-
-<main class="wrap">
-  <section class="blk" id="booking">
-    <div class="head"><div class="eyebrow">Stall Booking</div><h2 class="h2">เลือกล็อคขายของ</h2><p class="sub">แตะล็อคสีเขียวบนแผนผังเพื่อเลือก (เลือกได้หลายล็อค) แล้วกรอกข้อมูลร้านค้า</p></div>
-    <div class="layout">
-      <div class="panel">
-        <div class="stats">
-          <div class="ev"><b id="statFree">0</b><span class="sub">ว่าง</span></div>
-          <div class="ev"><b id="statBooked">0</b><span class="sub">จองแล้ว</span></div>
-          <div class="ev"><b id="statTotal">0</b><span class="sub">ทั้งหมด</span></div>
-        </div>
-        <div class="legend">
-          <span><i style="background:#d9f5e3"></i>ว่าง</span>
-          <span><i style="background:var(--ink)"></i>กำลังเลือก</span>
-          <span><i style="background:var(--red)"></i>จองแล้ว</span>
-          <span><i style="background:#d9f5e3;box-shadow:inset 3px 0 0 var(--orange)"></i>โซนผลไม้ (A1–A12)</span>
-        </div>
-        <div class="map"><div class="map-grid" id="map"></div></div>
-      </div>
-
-      <div>
-        <div class="panel">
-          <h3>ข้อมูลการจอง</h3>
-          <form class="f" id="bookForm" novalidate>
-            <div class="l" style="display:grid;gap:7px;font-size:13px;font-weight:600">ล็อคที่เลือก<div class="chips" id="chips"><span class="sub" style="font-weight:400">ยังไม่ได้เลือกล็อค</span></div></div>
-            <div class="two">
-              <label class="l">ชื่อ–นามสกุล *<input id="fName" autocomplete="name" placeholder="สมชาย ใจดี"></label>
-              <label class="l">ชั้น / ห้อง *<input id="fClass" placeholder="ม.2/3"></label>
-            </div>
-            <div class="two">
-              <label class="l">เบอร์โทร *<input id="fPhone" type="tel" inputmode="numeric" maxlength="10" placeholder="0812345678"></label>
-              <label class="l">ชื่อร้าน *<input id="fShop" placeholder="ชานมไข่มุกน้องมิ้น"></label>
-            </div>
-            <label class="l">ประเภทสินค้า *
-              <select id="fType"><option value="">-- เลือกประเภท --</option><option>อาหารคาว</option><option>ขนม / ของหวาน</option><option>เครื่องดื่ม</option><option>ผลไม้</option><option>ของใช้ / เครื่องเขียน</option><option>เสื้อผ้า / เครื่องประดับ</option><option>งานฝีมือ / DIY</option><option>อื่น ๆ</option></select></label>
-            <label class="l">รายละเอียดสินค้า / หมายเหตุ<textarea id="fNote" placeholder="เช่น ต้องการใช้ไฟฟ้า"></textarea></label>
-            <div class="total"><span>ค่าล็อครวม (<span id="qty">0</span> ล็อค)</span><b id="total">0 บาท</b></div>
-            <div class="err" id="err"></div>
-            <div><button class="btn btn-red" type="submit" id="submit" disabled style="width:100%">ยืนยันการจอง</button></div>
-          </form>
-        </div>
-      </div>
+  <section id="side">
+    <div class="s-head">
+      <button class="uname" data-act="settings"><b id="uname"></b><span id="unameC"></span></button>
+      <span class="adm hide" id="admTag">แอดมิน</span>
+      <span class="sp"></span>
+      <button class="ib" data-act="newChat" aria-label="แชทใหม่" id="btnNew"></button>
     </div>
+    <div class="searchbox"><span id="srI"></span><input id="cs" placeholder="ค้นหา" autocomplete="off"></div>
+    <div class="s-sub"><b>ข้อความ</b><button data-act="requests">คำขอ <span class="dotn hide" id="reqN"></span></button></div>
+    <div id="clist"></div>
   </section>
 
-  <section class="blk" id="lookup">
-    <div class="head"><div class="eyebrow">My Booking</div><h2 class="h2">ตรวจสอบ / ยกเลิกการจอง</h2><p class="sub">ใช้รหัสจองและเบอร์โทรที่ลงทะเบียนไว้</p></div>
-    <div class="panel" style="max-width:720px">
-      <form class="f" id="lookupForm" novalidate>
-        <div class="two">
-          <label class="l">รหัสจอง<input id="qCode" placeholder="PS-AB12"></label>
-          <label class="l">เบอร์โทร<input id="qPhone" type="tel" inputmode="numeric" maxlength="10" placeholder="0812345678"></label>
-        </div>
-        <div><button class="btn btn-dark" type="submit">ค้นหา</button></div>
-      </form>
-      <div id="lookupResult"></div>
+  <section id="main">
+    <div id="empty">
+      <div class="circ" id="emI"></div>
+      <h2>ข้อความของคุณ</h2>
+      <p>ส่งรูปภาพ วิดีโอ เสียง และข้อความส่วนตัวให้กับเพื่อนหรือกลุ่ม</p>
+      <button class="pbtn" data-act="newChat">ส่งข้อความ</button>
     </div>
+    <div id="chat" class="hide"></div>
   </section>
-</main>
+</div>
 
-<footer class="ft"><div class="wrap"><div class="copy">
-  <span>© 2026 ตลาดนัดผสาน นักธุรกิจน้อย น.พ. · ถนนคนชิล ครั้งที่ 3</span>
-  <span>·</span><a href="#" id="btnAdmin">เข้าสู่ระบบเจ้าหน้าที่</a>
-</div></div></footer>
+<input type="file" id="fi1" accept="image/*,video/*" multiple hidden>
+<input type="file" id="fi2" multiple hidden>
 
-<!-- สำเร็จ -->
-<div class="modal" id="mDone"><div class="mbox" style="max-width:480px"><button class="mx" onclick="closeModal('mDone')" aria-label="ปิด">✕</button><div class="mt">
-  <div class="eyebrow">Booking Confirmed</div><h3>จองสำเร็จ 🎉</h3>
-  <p class="sub">กรุณาจดรหัสจองไว้ใช้ตรวจสอบหรือยกเลิก</p>
-  <div class="code" id="doneCode"></div><p id="doneInfo"></p>
-  <button class="btn btn-dark" style="width:100%;margin-top:20px" onclick="closeModal('mDone')">รับทราบ</button>
-</div></div></div>
-
-<!-- เจ้าหน้าที่ -->
-<div class="modal" id="mAdmin"><div class="mbox" style="max-width:900px"><button class="mx" onclick="closeModal('mAdmin')" aria-label="ปิด">✕</button><div class="mt">
-  <div class="eyebrow">Staff</div><h3>แผงควบคุมเจ้าหน้าที่</h3>
-  <div id="adminLogin" style="max-width:360px">
-    <form class="f" id="adminForm" novalidate>
-      <label class="l">รหัสผ่าน<input id="adminPass" type="password" placeholder="รหัสผ่านเจ้าหน้าที่"></label>
-      <div class="err" id="adminErr"></div>
-      <div><button class="btn btn-dark" type="submit">เข้าสู่ระบบ</button></div>
-    </form>
+<div id="sbg" data-act="closeSheet"></div><div id="sheet" role="dialog" aria-modal="true"></div>
+<div id="lb"><button data-act="closeLb" aria-label="ปิด" id="lbX"></button><img id="lbImg" alt="" draggable="false"></div>
+<div id="call">
+  <video id="rv" autoplay playsinline></video>
+  <video id="lv" autoplay playsinline muted></video>
+  <div class="cinfo"><div id="cav"></div><h3 id="cn"></h3><p id="cst"></p></div>
+  <div class="cbtn">
+    <button id="cMic" data-act="callMic" aria-label="ไมค์"></button>
+    <button id="cCam" data-act="callCam" aria-label="กล้อง"></button>
+    <button class="acc hide" id="cAcc" data-act="callAcc" aria-label="รับสาย"></button>
+    <button class="end" id="cEnd" data-act="callEnd" aria-label="วางสาย"></button>
   </div>
-  <div id="adminPanel" hidden>
-    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-dark btn-sm" id="btnCsv">ดาวน์โหลด CSV</button><button class="btn btn-out btn-sm" style="color:var(--red)" id="btnReset">ล้างข้อมูลทั้งหมด</button></div>
-    <div class="tbl"><table><thead><tr><th>รหัส</th><th>ล็อค</th><th>ชื่อ</th><th>ชั้น</th><th>เบอร์</th><th>ร้าน / สินค้า</th><th>ยอด</th><th></th></tr></thead><tbody id="adminRows"></tbody></table></div>
-  </div>
-</div></div></div>
-
-<div class="toast" id="toast"></div>
+</div>
+<div id="toast" role="status"></div>
 
 <script>
-/* ================= ตั้งค่า ================= */
-const CONFIG = {
-  PRICE_PER_STALL: 100,        // ค่าล็อคต่อ 1 ล็อค (บาท) — ใส่ 0 ถ้าไม่เก็บ
-  MAX_PER_PERSON: 3,           // จำนวนล็อคสูงสุดต่อ 1 การจอง
-  ADMIN_PASSWORD: 'admin1234', // *** เปลี่ยนก่อนใช้งานจริง ***
-  STORAGE_KEY: 'ps_market_bookings_v1'
+(function(){
+'use strict';
+// ===================== ตั้งค่า =====================
+const ADMIN_PIN='123456';           // รหัสแอดมิน (หมายเหตุ: อยู่ในโค้ดฝั่งผู้ใช้ ใครเปิดดูซอร์สก็เห็น ถ้าจะใช้จริงต้องย้ายไปตรวจที่เซิร์ฟเวอร์)
+const MAX_FILE=100*1024*1024;       // ขนาดไฟล์สูงสุด 100MB
+const ICE=[{urls:'stun:stun.l.google.com:19302'}];
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){return false}return true}};
+const SS={get:k=>{try{return sessionStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{sessionStorage.setItem(k,v)}catch(e){}},del:k=>{try{sessionStorage.removeItem(k)}catch(e){}}};
+
+// ===================== ไอคอน =====================
+const IC={
+ chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+ search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+ compose:'<path d="M12 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M18 3l3 3-9 9-4 1 1-4z"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ chev:'<path d="M6 9l6 6 6-6"/>',
+ back:'<path d="M15 5l-7 7 7 7"/>',
+ phone:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+ video:'<rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10l5-3v10l-5-3z"/>',
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/>',
+ mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
+ image:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.7"/><path d="M4 18l5-5 4 4 3-3 4 4"/>',
+ clip:'<path d="M20 11l-8.5 8.5a5 5 0 0 1-7-7L13 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L14 7"/>',
+ lock:'<rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+ unlock:'<rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/>',
+ shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+ users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.2c2.6.2 4.5 2.2 4.5 5"/>',
+ x:'<path d="M6 6l12 12M18 6L6 18"/>',
+ more:'<circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>',
+ check:'<path d="M5 12l5 5 9-10"/>',
+ trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14"/>',
+ eyeoff:'<path d="M3 3l18 18M10.5 5.2A9 9 0 0 1 12 5c5 0 9 4.5 10 7a12 12 0 0 1-3 4M6.5 7A12 12 0 0 0 2 12c1 2.5 5 7 10 7a9 9 0 0 0 4-1"/>',
+ file:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/>',
+ download:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',
+ gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',
+ send:'<path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/>',
+ camera:'<rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/>'
+};
+const I=n=>'<svg class="ico" viewBox="0 0 24 24">'+(IC[n]||'')+'</svg>';
+
+// ===================== state =====================
+let DB={chats:[],msgs:{}},ME=LS.get('chat.me')||'',ADMIN=SS.get('chat.admin')==='1',OPEN=null,FRAME='',FILTER='';
+let BLUR=LS.get('chat.blur')!=='0',PINNEXT=null;
+let READ={};
+function loadRead(){try{READ=JSON.parse(LS.get('chat.read.'+ME)||'{}')}catch(e){READ={}}}
+function saveRead(){LS.set('chat.read.'+ME,JSON.stringify(READ))}
+function load(){
+ try{const d=JSON.parse(LS.get('chat.db')||'null');if(d&&d.chats)DB=d}catch(e){}
+ if(!DB.msgs)DB.msgs={};
+ // ย้ายข้อมูลเก่า: เปลี่ยนชื่อห้องตั้งต้นที่เคยใช้ชื่อ ม.4/4 ให้เป็นชื่อกลาง
+ const oldRoom=DB.chats.find(c=>c.id==='room-44');
+ if(oldRoom){
+  if(/ม\.4\/4/.test(oldRoom.name))oldRoom.name='ห้องแชทรวม';
+  (DB.msgs['room-44']||[]).forEach(m=>{if(m.type==='system'&&/ม\.4\/4/.test(m.text||''))m.text='ยินดีต้อนรับสู่ห้องแชทรวม'});
+  save();
+ }
+ if(!DB.chats.length){
+  DB.chats.push({id:'room-main',type:'group',name:'ห้องแชทรวม',members:['*'],closed:false,silent:false});
+  DB.msgs['room-main']=[{id:uid(),t:Date.now(),type:'system',text:'ยินดีต้อนรับสู่ห้องแชทรวม'}];
+  save();
+ }
+}
+function save(){if(LS.set('chat.db',JSON.stringify(DB))===false)toast('พื้นที่จัดเก็บเต็ม')}
+const chatById=id=>DB.chats.find(c=>c.id===id);
+const msgsOf=id=>DB.msgs[id]||(DB.msgs[id]=[]);
+function addMsg(cid,m){const x=Object.assign({id:uid(),t:Date.now()},m);msgsOf(cid).push(x);save();return x}
+const peerOf=c=>c.members.find(x=>x!==ME)||ME;
+const chatName=c=>c.type==='dm'?peerOf(c):c.name;
+const hm=t=>{const d=new Date(t);return pad(d.getHours())+':'+pad(d.getMinutes())};
+const dayKey=t=>{const d=new Date(t);return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()};
+const dayLbl=t=>{const d=new Date(t);return dayKey(t)===dayKey(Date.now())?'วันนี้':d.getDate()+' '+TH[d.getMonth()]};
+const fmtSize=n=>n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
+function visible(){
+ const L=DB.chats.filter(c=>ADMIN||c.members.includes('*')||c.members.includes(ME));
+ const lt=c=>{const m=msgsOf(c.id);return m.length?m[m.length-1].t:0};
+ return L.sort((a,b)=>lt(b)-lt(a));
+}
+const toast=t=>{const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2800)};
+
+// ===================== สื่อ (IndexedDB) =====================
+let _idb;
+const idb=()=>_idb||(_idb=new Promise((res,rej)=>{const r=indexedDB.open('chat-media',1);r.onupgradeneeded=()=>r.result.createObjectStore('m');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}));
+const putBlob=(k,b)=>idb().then(d=>new Promise((res,rej)=>{const t=d.transaction('m','readwrite');t.objectStore('m').put(b,k);t.oncomplete=res;t.onerror=()=>rej(t.error)}));
+const getBlob=k=>idb().then(d=>new Promise((res,rej)=>{const q=d.transaction('m').objectStore('m').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}));
+const URLS={};
+async function urlFor(mid){if(URLS[mid])return URLS[mid];const b=await getBlob(mid);if(!b)return null;return URLS[mid]=URL.createObjectURL(b)}
+function hydrate(root){
+ root.querySelectorAll('[data-mid]').forEach(el=>{
+  if(el.dataset.ok)return;
+  urlFor(el.dataset.mid).then(u=>{if(u){el.src=u;el.dataset.ok='1'}}).catch(()=>{});
+ });
+}
+
+// ===================== avatar =====================
+function av(name,s,group){
+ const h=[...String(name)].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7)%360;
+ const ch=(String(name).replace(/[^A-Za-z0-9ก-๙]/g,'')[0]||'?').toUpperCase();
+ return '<span class="av" style="width:'+s+'px;height:'+s+'px;background:hsl('+h+',42%,36%);font-size:'+Math.round(s*.42)+'px">'+(group?I('users'):esc(ch))+'</span>';
+}
+
+// ===================== รายการแชท =====================
+function pvText(m){
+ if(!m)return '';
+ if(m.unsend==='done')return 'ข้อความถูกยกเลิก';
+ const mine=m.from===ME?'คุณ: ':'';
+ if(m.type==='system')return m.text;
+ if(m.type==='text')return mine+m.text;
+ if(m.type==='image')return mine+'ส่งรูปภาพ';
+ if(m.type==='video')return mine+'ส่งวิดีโอ';
+ if(m.type==='audio')return mine+'ส่งข้อความเสียง';
+ return mine+'ส่งไฟล์ '+(m.name||'');
+}
+function renderList(){
+ const q=FILTER.trim().toLowerCase();
+ const L=visible().filter(c=>!q||chatName(c).toLowerCase().includes(q));
+ $('#clist').innerHTML=L.length?L.map(c=>{
+  const ms=msgsOf(c.id),last=ms[ms.length-1],locked=c.closed&&!ADMIN;
+  const un=!locked&&last&&last.from&&last.from!==ME&&last.t>(READ[c.id]||0)&&c.id!==OPEN;
+  let pv=locked?(c.silent?'':'แชทถูกปิด'):pvText(last);
+  const ty=!locked&&typers(c.id).length>0;if(ty)pv='กำลังพิมพ์...';
+  return '<button class="ci'+(c.id===OPEN?' on':'')+(un?' un':'')+'" data-act="open" data-id="'+esc(c.id)+'">'+av(locked&&c.silent?'?':chatName(c),56,c.type==='group'&&!(locked&&c.silent))+
+   '<div class="tx"><div class="tt"><b>'+(locked&&c.silent?'':esc(chatName(c)))+'</b>'+(c.closed?(ADMIN?'<span class="tg">'+(c.silent?'ปิดแบบเงียบ':'ปิดอยู่')+'</span>':''):'')+'</div><div class="pv'+(ty?' ty':'')+'">'+esc(pv)+(last&&!locked&&!ty?' · '+hm(last.t):'')+'</div></div>'+(un?'<span class="un-dot"></span>':'')+'</button>';
+ }).join(''):'<div class="empty-list">ยังไม่มีแชท กดปุ่มแชทใหม่เพื่อเริ่มต้น</div>';
+ const n=pendingReqs().length;const b=$('#reqN');b.textContent=n;b.classList.toggle('hide',!(ADMIN&&n));
+}
+function pendingReqs(){
+ const out=[];
+ DB.chats.forEach(c=>msgsOf(c.id).forEach(m=>{if(m.unsend==='pending')out.push({c:c,m:m})}));
+ return out;
+}
+
+// ===================== หน้าแชท =====================
+const frameKey=()=>{const c=chatById(OPEN);return c?[c.id,c.closed,c.silent,ADMIN,c.type].join('|'):''};
+function openChat(id){
+ OPEN=id;READ[id]=Date.now();saveRead();
+ document.body.classList.add('chat-open');
+ renderChat();renderList();
+}
+function closeChatView(){
+ OPEN=null;FRAME='';document.body.classList.remove('chat-open');renderChat();renderList();
+}
+function renderChat(){
+ const c=chatById(OPEN),box=$('#chat');
+ if(!c){$('#empty').classList.remove('hide');box.classList.add('hide');box.innerHTML='';FRAME='';return}
+ $('#empty').classList.add('hide');box.classList.remove('hide');
+ const locked=c.closed&&!ADMIN;
+ FRAME=frameKey();
+ if(locked&&c.silent){
+  box.innerHTML='<div class="blankbar"><button class="ib only-m" data-act="back" aria-label="กลับ">'+I('back')+'</button></div><div class="blank"></div>';
+  return;
+ }
+ const dm=c.type==='dm';
+ const head='<header class="ch"><button class="ib only-m" data-act="back" aria-label="กลับ">'+I('back')+'</button>'+av(chatName(c),44,c.type==='group')+
+  '<div class="ttl"><b>'+esc(chatName(c))+'</b><small id="chSub">'+subText(c)+'</small></div>'+
+  (dm&&!locked&&!c.closed?'<button class="ib" data-act="call" aria-label="โทรด้วยเสียง">'+I('phone')+'</button><button class="ib" data-act="vcall" aria-label="วิดีโอคอล">'+I('video')+'</button>':'')+
+  (ADMIN?'<button class="ib" data-act="chatAdmin" aria-label="แอดมิน">'+I('shield')+'</button>':'')+
+  '<button class="ib" data-act="info" aria-label="ข้อมูล">'+I('info')+'</button></header>';
+ if(locked){
+  box.innerHTML=head+'<div class="lockview">'+I('lock')+'<h3>แชทนี้ถูกปิด</h3><p>'+(c.closedBy==='capture'?'ตรวจพบการแคปหน้าจอ ระบบปิดแชททันที':'แอดมินปิดแชทนี้')+'<br>เฉพาะแอดมินเท่านั้นที่เปิดแชทได้</p><button class="pbtn" data-act="adminOpen">เปิดแชทโดยแอดมิน</button></div>';
+  return;
+ }
+ box.innerHTML=head+(c.closed?'<div class="banner"><span>แชทนี้ปิดอยู่ (เห็นได้เฉพาะแอดมิน)</span><button class="pbtn" data-act="adminOpen">เปิดแชท</button></div>':'')+
+  '<div id="msgs"></div>'+
+  '<div id="rec"><i></i><span id="recT">0:00</span><button class="pbtn ghost" data-act="recCancel">ยกเลิก</button><button class="pbtn" data-act="recSend">ส่ง</button></div>'+
+  '<div id="comp"><button class="ib" data-act="pickImg" aria-label="รูป/วิดีโอ">'+I('image')+'</button><button class="ib" data-act="pickFile" aria-label="แนบไฟล์">'+I('clip')+'</button><textarea id="inp" rows="1" placeholder="ส่งข้อความ..."></textarea><button class="ib mic" data-act="recStart" aria-label="บันทึกเสียง">'+I('mic')+'</button><button class="send" data-act="sendText">ส่ง</button></div>';
+ renderMsgs(true);
+}
+function mediaHtml(m){
+ const hid=m.locked&&!ADMIN;
+ if(m.type==='image'||m.type==='video'){
+  if(hid)return '<div class="lockmed">'+I('eyeoff')+'<span>'+(m.type==='image'?'ภาพ':'วิดีโอ')+'นี้ถูกล็อกโดยแอดมิน</span></div>';
+  const badge=m.locked?'<span class="lk">'+I('lock')+' ล็อกอยู่</span>':'';
+  return m.type==='image'
+   ?'<div class="med"><img data-mid="'+esc(m.mid)+'" data-act="viewImg" alt="" draggable="false">'+badge+'</div>'
+   :'<div class="med"><video data-mid="'+esc(m.mid)+'" controls playsinline preload="metadata" controlslist="nodownload noplaybackrate" disablepictureinpicture></video>'+badge+'</div>';
+ }
+ if(m.type==='audio')return '<audio data-mid="'+esc(m.mid)+'" controls controlslist="nodownload"></audio>';
+ return '<button class="filebox" data-act="dlFile" data-id="'+esc(m.id)+'">'+I('file')+'<span><b>'+esc(m.name||'ไฟล์')+'</b><small>'+fmtSize(m.size||0)+'</small></span>'+I('download')+'</button>';
+}
+function msgHtml(m,prev,next,grp){
+ if(m.type==='system')return '<div class="sys'+(m.warn?' warn':'')+'">'+esc(m.text)+'</div>';
+ const mine=m.from===ME,lastOfG=!next||next.type==='system'||next.from!==m.from,firstOfG=!prev||prev.type==='system'||prev.from!==m.from;
+ const gone=m.unsend==='done';
+ let body;
+ if(gone&&!ADMIN)body='<div class="bub gone">ข้อความถูกยกเลิก</div>';
+ else if(m.type==='text')body='<div class="bub">'+esc(m.text)+'</div>';
+ else body='<div class="bub media">'+mediaHtml(m)+'</div>';
+ let note='';
+ if(m.unsend==='pending'&&(mine||ADMIN))note='<div class="note">ขอยกเลิก รอแอดมินอนุมัติ</div>';
+ if(gone&&ADMIN)note='<div class="note dim">ข้อความนี้ถูกยกเลิกแล้ว (เห็นเฉพาะแอดมิน)</div>';
+ return '<div class="row '+(mine?'me':'ot')+'" data-id="'+esc(m.id)+'">'+
+  (!mine?(lastOfG?av(m.from,28):'<span class="av-sp"></span>'):'')+
+  '<div class="col">'+(!mine&&grp&&firstOfG?'<span class="nm">'+esc(m.from)+'</span>':'')+body+note+(lastOfG?'<span class="tm">'+hm(m.t)+'</span>':'')+'</div>'+
+  '<button class="more" data-act="msgMenu" data-id="'+esc(m.id)+'" aria-label="ตัวเลือก">'+I('more')+'</button></div>';
+}
+function renderMsgs(forceBottom){
+ const el=$('#msgs'),c=chatById(OPEN);if(!el||!c)return;
+ const near=forceBottom||el.scrollHeight-el.scrollTop-el.clientHeight<140;
+ const ms=msgsOf(c.id),grp=c.type==='group';let h='',pd='';
+ ms.forEach((m,i)=>{
+  const dk=dayKey(m.t);if(dk!==pd){h+='<div class="day">'+dayLbl(m.t)+'</div>';pd=dk}
+  h+=msgHtml(m,ms[i-1],ms[i+1],grp);
+ });
+ el.innerHTML=(h||'<div class="sys">ยังไม่มีข้อความ ลองส่งข้อความแรกเลย</div>')+'<div id="typ"></div>';
+ updateTypingBubble(false);
+ hydrate(el);
+ if(near)el.scrollTop=el.scrollHeight;
+}
+function refresh(){ // เรียกหลังข้อมูลเปลี่ยน
+ renderList();
+ if(!OPEN)return;
+ if(!chatById(OPEN)||frameKey()!==FRAME)renderChat();else{renderMsgs(false);READ[OPEN]=Date.now();saveRead()}
+}
+
+// ===================== สถานะกำลังพิมพ์ =====================
+// ใช้ BroadcastChannel (ข้ามแท็บบนเครื่องเดียวกัน) ถ้าต่อหลังบ้านให้ส่งเหตุการณ์ typing ผ่าน Realtime แทน
+const TYPING={};                       // TYPING[chatId][user] = เวลาหมดอายุ (ms)
+const TYPC=('BroadcastChannel' in window)?new BroadcastChannel('chat-typing'):null;
+let TLAST=0,TOFF=null;const TCLR={};
+function typers(cid){const o=TYPING[cid]||{},n=Date.now();return Object.keys(o).filter(u=>u!==ME&&o[u]>n)}
+function subText(c){
+ const t=typers(c.id);
+ if(t.length&&!(c.closed&&!ADMIN))return c.type==='dm'?'กำลังพิมพ์...':t.join(', ')+' กำลังพิมพ์...';
+ return (c.type==='dm'?'@'+peerOf(c):(c.members.includes('*')?'ทุกคน':c.members.length+' คน'))+(c.closed?' · ปิดอยู่':'');
+}
+function updateTypingBubble(scroll){
+ const el=$('#typ'),c=chatById(OPEN);if(!el||!c)return;
+ const t=(c.closed&&!ADMIN)?[]:typers(c.id),box=$('#msgs');
+ const near=box&&box.scrollHeight-box.scrollTop-box.clientHeight<160;
+ el.innerHTML=t.length?'<div class="row ot typrow">'+av(t[0],28)+'<div class="col">'+(c.type==='group'?'<span class="nm">'+esc(t.join(', '))+' กำลังพิมพ์</span>':'')+'<div class="bub typing" aria-label="กำลังพิมพ์"><i></i><i></i><i></i></div></div></div>':'';
+ const s=$('#chSub');if(s){s.textContent=subText(c);s.classList.toggle('ty',t.length>0)}
+ if(scroll&&near&&box)box.scrollTop=box.scrollHeight;
+}
+function typingSet(cid,user,on){
+ if(user===ME)return;
+ const o=TYPING[cid]||(TYPING[cid]={}),key=cid+'|'+user;
+ clearTimeout(TCLR[key]);
+ if(on){o[user]=Date.now()+4000;TCLR[key]=setTimeout(()=>typingSet(cid,user,false),4100)}else delete o[user];
+ renderList();if(cid===OPEN)updateTypingBubble(true);
+}
+function typingPing(on){
+ if(!TYPC||!OPEN)return;
+ const c=chatById(OPEN);if(!c||(c.closed&&!ADMIN))return;
+ TYPC.postMessage({chat:OPEN,from:ME,on:on});
+}
+function typingInput(hasText){
+ if(!hasText){clearTimeout(TOFF);if(TLAST){TLAST=0;typingPing(false)}return}
+ const n=Date.now();
+ if(n-TLAST>2000){TLAST=n;typingPing(true)}
+ clearTimeout(TOFF);TOFF=setTimeout(()=>{TLAST=0;typingPing(false)},3000);
+}
+if(TYPC)TYPC.onmessage=e=>{const d=e.data||{};if(d.chat&&d.from)typingSet(d.chat,d.from,!!d.on)};
+
+// ===================== ส่งข้อความ / ไฟล์ =====================
+function canSend(){const c=chatById(OPEN);if(!c)return false;if(c.closed&&!ADMIN){toast('แชทถูกปิด ส่งไม่ได้');return false}return true}
+function sendText(){
+ const t=$('#inp');if(!t||!canSend())return;
+ const v=t.value.trim();if(!v)return;
+ addMsg(OPEN,{from:ME,type:'text',text:v});
+ t.value='';t.style.height='';$('#comp').classList.remove('has');typingInput(false);
+ refresh();t.focus();
+}
+async function sendFile(file){
+ if(!canSend())return;
+ if(file.size>MAX_FILE)return toast('ไฟล์ใหญ่เกิน '+fmtSize(MAX_FILE));
+ const mt=file.type||'';
+ const type=mt.startsWith('image/')?'image':mt.startsWith('video/')?'video':mt.startsWith('audio/')?'audio':'file';
+ const id=uid();
+ try{await putBlob(id,file)}catch(e){return toast('บันทึกไฟล์ไม่สำเร็จ')}
+ addMsg(OPEN,{from:ME,type:type,mid:id,mime:mt,name:file.name||'ไฟล์',size:file.size});
+ refresh();
+}
+async function sendFiles(list){for(const f of list)await sendFile(f)}
+
+// ----- บันทึกเสียง -----
+let REC=null,RCH=[],RSTREAM=null,RT=null,RT0=0,RSEND=false;
+async function recStart(){
+ if(!canSend())return;
+ if(!navigator.mediaDevices||!window.MediaRecorder)return toast('อุปกรณ์นี้ไม่รองรับการบันทึกเสียง');
+ try{RSTREAM=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){return toast('ไม่ได้รับอนุญาตใช้ไมโครโฟน')}
+ RCH=[];RSEND=false;REC=new MediaRecorder(RSTREAM);
+ REC.ondataavailable=e=>{if(e.data&&e.data.size)RCH.push(e.data)};
+ REC.onstop=async()=>{
+  RSTREAM.getTracks().forEach(t=>t.stop());clearInterval(RT);
+  document.body.classList.remove('recording');const r=$('#rec');if(r)r.classList.remove('on');
+  if(RSEND&&RCH.length){const b=new Blob(RCH,{type:REC.mimeType||'audio/webm'});await sendFile(new File([b],'voice-'+Date.now()+'.'+((REC.mimeType||'').includes('mp4')?'m4a':'webm'),{type:b.type}))}
+  REC=null;
+ };
+ REC.start();RT0=Date.now();document.body.classList.add('recording');$('#rec').classList.add('on');
+ RT=setInterval(()=>{const s=Math.floor((Date.now()-RT0)/1000);const e=$('#recT');if(e)e.textContent=Math.floor(s/60)+':'+pad(s%60)},250);
+}
+function recStop(send){if(!REC)return;RSEND=send;try{REC.stop()}catch(e){}}
+
+// ===================== การป้องกันการแคปหน้าจอ =====================
+function onCapture(src){
+ if(ADMIN||!OPEN)return;
+ const c=chatById(OPEN);if(!c||c.closed)return;
+ c.closed=true;c.silent=false;c.closedBy='capture';c.closedAt=Date.now();c.closedSrc=src||'';
+ addMsg(c.id,{type:'system',warn:1,text:ME+' แคปหน้าจอ — ระบบปิดแชทอัตโนมัติแล้ว รอแอดมินเปิดให้'});
+ if(CALL)endCall(true);
+ closeSheet();$('#lb').classList.remove('on');
+ refresh();
+}
+document.addEventListener('keydown',e=>{
+ const k=(e.key||'').toLowerCase();
+ if(e.key==='PrintScreen'){try{navigator.clipboard.writeText(' ')}catch(_){}onCapture('printscreen')}
+ else if(e.metaKey&&e.shiftKey&&(k==='s'||e.code==='Digit3'||e.code==='Digit4'||e.code==='Digit5'))onCapture('shortcut');
+});
+document.addEventListener('keyup',e=>{if(e.key==='PrintScreen'){try{navigator.clipboard.writeText(' ')}catch(_){}onCapture('printscreen')}});
+window.addEventListener('beforeprint',()=>onCapture('print'));
+// จุดเชื่อมสำหรับแอปมือถือ (iOS/Android) ที่ตรวจจับการแคปได้จริง: เรียก window.onNativeScreenshot()
+window.onNativeScreenshot=()=>onCapture('native');
+window.addEventListener('native-screenshot',()=>onCapture('native'));
+// เบลอเนื้อหาเมื่อสลับแอป/แท็บ (ลดการแอบแคปด้วยเครื่องมือภายนอก)
+function shield(on){if(!BLUR||ADMIN||!OPEN)on=false;$('#app').classList.toggle('shield',on)}
+window.addEventListener('blur',()=>shield(true));
+window.addEventListener('focus',()=>shield(false));
+document.addEventListener('visibilitychange',()=>shield(document.hidden));
+document.addEventListener('contextmenu',e=>{if(e.target.closest('.med,#lb'))e.preventDefault()});
+document.addEventListener('dragstart',e=>{if(e.target.closest('.med,#lb'))e.preventDefault()});
+
+// ===================== แอดมิน =====================
+function setAdmin(on){
+ ADMIN=!!on;on?SS.set('chat.admin','1'):SS.del('chat.admin');
+ $('#admTag').classList.toggle('hide',!ADMIN);
+ refresh();
+}
+function pinSheet(next){
+ PINNEXT=next||null;
+ openSheet('<h3>ยืนยันรหัสแอดมิน</h3><p class="help">กรอกรหัสแอดมินเพื่อดำเนินการ</p><label>รหัสแอดมิน</label><input type="password" id="pin" inputmode="numeric" autocomplete="off" maxlength="12"><div class="acts"><button class="pbtn" data-act="pinOk">ยืนยัน</button></div>');
+ setTimeout(()=>{const p=$('#pin');if(p)p.focus()},100);
+}
+function pinOk(){
+ const v=($('#pin')||{}).value;
+ if(v!==ADMIN_PIN){toast('รหัสแอดมินไม่ถูกต้อง');const p=$('#pin');if(p){p.value='';p.focus()}return}
+ closeSheet();setAdmin(true);toast('เข้าสู่โหมดแอดมินแล้ว');
+ const f=PINNEXT;PINNEXT=null;if(f)f();
+}
+function needAdmin(fn){ADMIN?fn():pinSheet(fn)}
+function setClosed(id,closed,silent){
+ const c=chatById(id);if(!c)return;
+ c.closed=closed;c.silent=!!(closed&&silent);c.closedBy=closed?'admin':'';
+ if(closed&&!silent)addMsg(id,{type:'system',text:'แอดมินปิดแชทนี้'});
+ if(!closed)addMsg(id,{type:'system',text:'แอดมินเปิดแชทอีกครั้ง'});
+ save();refresh();
+}
+function decide(id,ok){
+ for(const c of DB.chats){const m=msgsOf(c.id).find(x=>x.id===id);if(m){if(ok)m.unsend='done';else delete m.unsend;save();break}}
+ refresh();
+}
+function chatAdminSheet(){
+ const c=chatById(OPEN);if(!c)return;
+ openSheet('<h3>จัดการแชทนี้ (แอดมิน)</h3><p class="help">'+esc(chatName(c))+(c.closed?' · ปิดอยู่':' · เปิดอยู่')+'</p><div class="hr"></div>'+
+  (c.closed?'<button class="opt" data-act="doOpen">'+I('unlock')+'<span>เปิดแชท</span></button>':
+   '<button class="opt" data-act="doClose">'+I('lock')+'<span>ปิดแชท<small>แจ้งในแชทว่าแอดมินปิด</small></span></button><button class="opt" data-act="doCloseSilent">'+I('eyeoff')+'<span>ปิดแชทแบบเงียบ<small>ผู้ใช้จะไม่เห็นอะไรเลย ไม่มีข้อความแจ้ง</small></span></button>')+
+  '<div class="hr"></div><button class="opt" data-act="exitAdmin">'+I('x')+'<span>ออกจากโหมดแอดมิน</span></button>');
+}
+function requestsSheet(){
+ needAdmin(()=>{
+  const R=pendingReqs(),C=DB.chats.filter(c=>c.closed);
+  openSheet('<h3>คำขอและการจัดการ</h3><p class="help">คำขอยกเลิกข้อความที่รอแอดมินอนุมัติ</p>'+
+   (R.length?R.map(r=>'<div class="reqc"><b>'+esc(r.m.from)+'</b> <small>ใน '+esc(chatName(r.c))+'</small><div>'+esc(pvText(Object.assign({},r.m,{unsend:''})))+'</div><div class="acts"><button class="pbtn ok" data-act="approve" data-id="'+esc(r.m.id)+'">อนุมัติ</button><button class="pbtn ghost" data-act="reject" data-id="'+esc(r.m.id)+'">ปฏิเสธ</button></div></div>').join(''):'<div class="reqc"><small>ไม่มีคำขอที่รออยู่</small></div>')+
+   '<div class="hr"></div><p class="help">แชทที่ปิดอยู่</p>'+
+   (C.length?C.map(c=>'<div class="reqc"><b>'+esc(chatName(c))+'</b> <small>'+(c.silent?'ปิดแบบเงียบ':c.closedBy==='capture'?'ปิดเพราะแคปหน้าจอ':'ปิดโดยแอดมิน')+'</small><div class="acts"><button class="pbtn" data-act="openById" data-id="'+esc(c.id)+'">เปิดแชท</button></div></div>').join(''):'<div class="reqc"><small>ไม่มีแชทที่ปิดอยู่</small></div>'));
+ });
+}
+function msgMenu(id){
+ const c=chatById(OPEN);if(!c)return;
+ const m=msgsOf(c.id).find(x=>x.id===id);if(!m||m.type==='system')return;
+ const mine=m.from===ME;let h='<h3>ตัวเลือกข้อความ</h3><div class="hr"></div>';
+ if(m.unsend==='done'&&!ADMIN)h+='<p class="help">ข้อความนี้ถูกยกเลิกแล้ว</p>';
+ if(mine&&!m.unsend)h+='<button class="opt danger" data-act="reqUnsend" data-id="'+esc(id)+'">'+I('trash')+'<span>ขอยกเลิกข้อความ<small>ต้องรอแอดมินอนุมัติ</small></span></button>';
+ if(mine&&m.unsend==='pending')h+='<p class="help">ส่งคำขอยกเลิกแล้ว รอแอดมินอนุมัติ</p>';
+ if(ADMIN){
+  if(m.unsend==='pending')h+='<button class="opt" data-act="approve" data-id="'+esc(id)+'">'+I('check')+'<span>อนุมัติการยกเลิก</span></button><button class="opt" data-act="reject" data-id="'+esc(id)+'">'+I('x')+'<span>ปฏิเสธคำขอ</span></button>';
+  else if(m.unsend!=='done')h+='<button class="opt danger" data-act="approve" data-id="'+esc(id)+'">'+I('trash')+'<span>ยกเลิกข้อความนี้ (แอดมิน)</span></button>';
+  if(m.type==='image'||m.type==='video')h+='<button class="opt" data-act="toggleLock" data-id="'+esc(id)+'">'+I(m.locked?'unlock':'eyeoff')+'<span>'+(m.locked?'ปลดล็อก':'ล็อก')+(m.type==='image'?'ภาพ':'วิดีโอ')+'<small>'+(m.locked?'ให้ทุกคนดูได้อีกครั้ง':'ซ่อนจากทุกคน เห็นเฉพาะแอดมิน')+'</small></span></button>';
+ }else if(!mine&&!(m.unsend==='done'))h+='<p class="help">ไม่มีตัวเลือกสำหรับข้อความนี้</p>';
+ openSheet(h);
+}
+
+// ===================== ชีต / ตั้งค่า / แชทใหม่ =====================
+function openSheet(h){$('#sheet').innerHTML='<button class="xx" data-act="closeSheet" aria-label="ปิด">'+I('x')+'</button>'+h;$('#sheet').classList.add('on');$('#sbg').classList.add('on');$('#sheet').scrollTop=0}
+function closeSheet(){$('#sheet').classList.remove('on');$('#sbg').classList.remove('on')}
+function nameSheet(first){
+ openSheet('<h3>'+(first?'ตั้งชื่อผู้ใช้':'เปลี่ยนชื่อผู้ใช้')+'</h3><p class="help">ใช้ a-z 0-9 . _ ความยาว 2-20 ตัว</p><label>ชื่อผู้ใช้</label><input type="text" id="nm" value="'+esc(ME)+'" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn" data-act="saveName">บันทึก</button></div>');
+ if(first){$('#sheet .xx').classList.add('hide');$('#sbg').dataset.act=''}
+ setTimeout(()=>{const n=$('#nm');if(n)n.focus()},100);
+}
+function saveName(){
+ const v=($('#nm').value||'').trim().toLowerCase();
+ if(!/^[a-z0-9._]{2,20}$/.test(v))return toast('ชื่อใช้ได้เฉพาะ a-z 0-9 . _ (2-20 ตัว)');
+ ME=v;LS.set('chat.me',ME);loadRead();$('#sbg').dataset.act='closeSheet';closeSheet();
+ $('#uname').textContent=ME;OPEN=null;renderChat();refresh();
+}
+function settingsSheet(){
+ openSheet('<h3>ตั้งค่า</h3><div class="hr"></div>'+
+  '<button class="opt" data-act="nameSheet">'+I('user')+'<span>ชื่อผู้ใช้<small>'+esc(ME)+' · กดเพื่อเปลี่ยน/สลับบัญชี</small></span></button>'+
+  (ADMIN?'<button class="opt" data-act="exitAdmin">'+I('shield')+'<span>ออกจากโหมดแอดมิน</span></button>':'<button class="opt" data-act="adminLogin">'+I('shield')+'<span>เข้าสู่โหมดแอดมิน<small>ต้องใช้รหัสแอดมิน</small></span></button>')+
+  '<div class="sw"><span>เบลอหน้าจอเมื่อสลับแอป<br><small class="help">ช่วยลดการแอบแคปด้วยเครื่องมือภายนอก</small></span><input type="checkbox" id="blurT" '+(BLUR?'checked':'')+' data-act="toggleBlur"></div>'+
+  '<div class="hr"></div><button class="opt danger" data-act="resetAll">'+I('trash')+'<span>ล้างข้อมูลทั้งหมดในเครื่องนี้</span></button>');
+}
+function newChatSheet(){
+ openSheet('<h3>แชทใหม่</h3><label>ชื่อผู้ใช้ที่ต้องการคุยด้วย</label><input type="text" id="np" placeholder="เช่น somchai" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn" data-act="startDM">เริ่มแชท</button></div><div class="hr"></div><p class="help">หรือสร้างกลุ่ม</p><label>ชื่อกลุ่ม</label><input type="text" id="gn" placeholder="ชื่อกลุ่ม" autocomplete="off"><label>สมาชิก (คั่นด้วย ,)</label><input type="text" id="gm" placeholder="a, b, c" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn ghost" data-act="startGroup">สร้างกลุ่ม</button></div>');
+ setTimeout(()=>{const n=$('#np');if(n)n.focus()},100);
+}
+function startDM(){
+ const p=($('#np').value||'').trim().toLowerCase();
+ if(!/^[a-z0-9._]{2,20}$/.test(p))return toast('ชื่อผู้ใช้ไม่ถูกต้อง');
+ if(p===ME)return toast('คุยกับตัวเองไม่ได้');
+ const id='dm:'+[ME,p].sort().join('|');
+ if(!chatById(id)){DB.chats.push({id:id,type:'dm',name:'',members:[ME,p],closed:false,silent:false});msgsOf(id);save()}
+ closeSheet();openChat(id);
+}
+function startGroup(){
+ const n=($('#gn').value||'').trim(),ms=($('#gm').value||'').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+ if(!n)return toast('ตั้งชื่อกลุ่มก่อน');
+ const bad=ms.find(s=>!/^[a-z0-9._]{2,20}$/.test(s));if(bad)return toast('ชื่อสมาชิกไม่ถูกต้อง: '+bad);
+ const id='g-'+uid();
+ DB.chats.push({id:id,type:'group',name:n,members:Array.from(new Set([ME].concat(ms))),closed:false,silent:false});
+ addMsg(id,{type:'system',text:ME+' สร้างกลุ่ม “'+n+'”'});
+ closeSheet();openChat(id);
+}
+function infoSheet(){
+ const c=chatById(OPEN);if(!c)return;
+ openSheet('<h3>'+esc(chatName(c))+'</h3><p class="help">'+(c.type==='dm'?'แชทส่วนตัว':'แชทกลุ่ม')+'</p><div class="hr"></div><p class="help">สมาชิก</p>'+
+  (c.members.includes('*')?'<div class="reqc"><small>เปิดให้ทุกคนที่ใช้ระบบนี้</small></div>':c.members.map(m=>'<div class="reqc" style="display:flex;gap:12px;align-items:center">'+av(m,32)+'<b>'+esc(m)+'</b></div>').join(''))+
+  '<div class="hr"></div><p class="help">ข้อความที่ส่งแล้วจะลบเองไม่ได้ ต้องกด “ขอยกเลิกข้อความ” และรอแอดมินอนุมัติ</p>');
+}
+
+// ===================== รูป / ดาวน์โหลด =====================
+async function viewImg(mid){
+ const u=await urlFor(mid);if(!u)return;
+ $('#lbImg').src=u;$('#lb').classList.add('on');
+}
+async function dlFile(id){
+ const c=chatById(OPEN);const m=c&&msgsOf(c.id).find(x=>x.id===id);if(!m)return;
+ const u=await urlFor(m.mid);if(!u)return toast('ไม่พบไฟล์');
+ const a=document.createElement('a');a.href=u;a.download=m.name||'file';document.body.appendChild(a);a.click();a.remove();
+}
+
+// ===================== โทร (WebRTC) =====================
+// สัญญาณใช้ BroadcastChannel จึงโทรได้ระหว่างแท็บ/หน้าต่างบนเบราว์เซอร์เดียวกัน
+// ถ้าจะโทรข้ามเครื่อง ต้องเปลี่ยน sig() ไปใช้เซิร์ฟเวอร์สัญญาณ (เช่น Supabase Realtime / WebSocket)
+const SIG=('BroadcastChannel' in window)?new BroadcastChannel('chat-sig'):null;
+let PC=null,LOC=null,CALL=null,PEND=[],CT=null,CT0=0,RING=null;
+function sig(o){if(SIG)SIG.postMessage(Object.assign({from:ME},o))}
+function callUI(state,name,video){
+ $('#call').classList.add('on');
+ $('#cav').innerHTML=av(name,96);$('#cn').textContent=name;
+ $('#cst').textContent=state==='in'?(video?'วิดีโอคอลเรียกเข้า':'สายเรียกเข้า'):state==='out'?'กำลังโทร...':'';
+ $('#cAcc').classList.toggle('hide',state!=='in');
+ $('#cMic').classList.toggle('hide',state==='in');$('#cCam').classList.toggle('hide',state==='in'||!video);
+ $('#cMic').classList.remove('off');$('#cCam').classList.remove('off');
+}
+async function mkPC(video){
+ if(!navigator.mediaDevices||!window.RTCPeerConnection)throw Error('อุปกรณ์ไม่รองรับการโทร');
+ LOC=await navigator.mediaDevices.getUserMedia({audio:true,video:video?{facingMode:'user'}:false});
+ $('#lv').srcObject=LOC;$('#lv').style.display=video?'block':'none';
+ PC=new RTCPeerConnection({iceServers:ICE});
+ LOC.getTracks().forEach(t=>PC.addTrack(t,LOC));
+ PC.ontrack=e=>{$('#rv').srcObject=e.streams[0]};
+ PC.onicecandidate=e=>{if(e.candidate&&CALL)sig({t:'ice',to:CALL.peer,c:e.candidate})};
+ PC.onconnectionstatechange=()=>{if(!PC)return;if(['failed','closed'].includes(PC.connectionState))endCall(false)};
+}
+async function startCall(video){
+ const c=chatById(OPEN);if(!c||c.type!=='dm')return;
+ if(c.closed&&!ADMIN)return toast('แชทถูกปิด โทรไม่ได้');
+ if(CALL)return;
+ if(!SIG)return toast('เบราว์เซอร์ไม่รองรับการโทรในโหมดนี้');
+ CALL={chat:c.id,peer:peerOf(c),video:video,out:true,connected:false};PEND=[];
+ callUI('out',CALL.peer,video);
+ try{
+  await mkPC(video);
+  const off=await PC.createOffer();await PC.setLocalDescription(off);
+  sig({t:'offer',to:CALL.peer,chat:c.id,video:video,sdp:PC.localDescription});
+  RING=setTimeout(()=>{if(CALL&&!CALL.connected){addMsg(CALL.chat,{type:'system',text:'การโทรไม่มีผู้รับสาย'});endCall(true);refresh()}},40000);
+ }catch(e){toast(e.message||'เริ่มการโทรไม่สำเร็จ (ต้องใช้ https และอนุญาตกล้อง/ไมค์)');endCall(false)}
+}
+async function acceptCall(){
+ if(!CALL||CALL.out)return;
+ try{
+  await mkPC(CALL.video);
+  await PC.setRemoteDescription(CALL.offer);
+  for(const c of PEND)try{await PC.addIceCandidate(c)}catch(e){}PEND=[];
+  const ans=await PC.createAnswer();await PC.setLocalDescription(ans);
+  sig({t:'answer',to:CALL.peer,sdp:PC.localDescription});
+  connected();
+ }catch(e){toast(e.message||'รับสายไม่สำเร็จ');endCall(true)}
+}
+function connected(){
+ CALL.connected=true;clearTimeout(RING);CT0=Date.now();
+ $('#cAcc').classList.add('hide');$('#cMic').classList.remove('hide');if(CALL.video)$('#cCam').classList.remove('hide');
+ clearInterval(CT);CT=setInterval(()=>{const s=Math.floor((Date.now()-CT0)/1000);$('#cst').textContent=pad(Math.floor(s/60))+':'+pad(s%60)},500);
+ $('#cst').textContent='00:00';
+}
+function endCall(send){
+ if(send&&CALL)sig({t:'end',to:CALL.peer});
+ clearTimeout(RING);clearInterval(CT);
+ const was=CALL;
+ if(LOC)LOC.getTracks().forEach(t=>t.stop());LOC=null;
+ if(PC){try{PC.close()}catch(e){}}PC=null;
+ $('#rv').srcObject=null;$('#lv').srcObject=null;$('#call').classList.remove('on');
+ if(was&&was.connected&&was.out){const s=Math.floor((Date.now()-CT0)/1000);addMsg(was.chat,{type:'system',text:'การโทรสิ้นสุด '+pad(Math.floor(s/60))+':'+pad(s%60)});refresh()}
+ CALL=null;PEND=[];
+}
+if(SIG)SIG.onmessage=async ev=>{
+ const d=ev.data||{};if(d.to!==ME)return;
+ if(d.t==='offer'){
+  const c=chatById(d.chat);
+  if(CALL||!c||(c.closed&&!ADMIN)){sig({t:'end',to:d.from});return}
+  CALL={chat:d.chat,peer:d.from,video:d.video,offer:d.sdp,out:false,connected:false};PEND=[];
+  callUI('in',d.from,d.video);
+ }else if(d.t==='answer'&&PC&&CALL&&CALL.out){
+  try{await PC.setRemoteDescription(d.sdp);for(const c of PEND)try{await PC.addIceCandidate(c)}catch(e){}PEND=[];connected()}catch(e){}
+ }else if(d.t==='ice'){
+  if(PC&&PC.remoteDescription){try{await PC.addIceCandidate(d.c)}catch(e){}}else PEND.push(d.c);
+ }else if(d.t==='end'){
+  if(CALL){const w=CALL;toast(w.connected?'อีกฝ่ายวางสาย':w.out?'อีกฝ่ายไม่รับสาย':'ผู้โทรยกเลิก');endCall(false)}
+ }
 };
 
-/* ============== ล็อค (ตามผังโปสเตอร์) ============== */
-const range = (a, b) => { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; };
-const LEFT_TOP    = [45,43,42,41,40,39,38,37,36,35,34].map(n => 'A' + n);
-const LEFT_BOTTOM = range(23,33).reverse().map(n => 'A' + n);
-const RIGHT       = range(1,22).map(n => 'A' + n);
-const ALL_STALLS  = [...LEFT_TOP, ...LEFT_BOTTOM, ...RIGHT];
-const isFruit = id => { const n = +id.slice(1); return n >= 1 && n <= 12; };
-const num = id => +id.slice(1);
-
-/* ================= สถานะ ================= */
-let bookings = load(), selected = new Set(), lastMine = new Set();
-const $ = id => document.getElementById(id);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fmtBaht = n => n.toLocaleString('th-TH') + ' บาท';
-function load(){ try { return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY)) || []; } catch(e){ return []; } }
-function save(){ try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(bookings)); } catch(e){ toast('ไม่สามารถบันทึกข้อมูลได้'); } }
-const bookedMap = () => { const m = {}; bookings.forEach(b => b.stalls.forEach(s => m[s] = b)); return m; };
-function toast(msg){ const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 3200); }
-function openModal(id){ $(id).classList.add('open'); document.body.style.overflow = 'hidden'; }
-function closeModal(id){ $(id).classList.remove('open'); document.body.style.overflow = ''; }
-document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); }));
-addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal.open').forEach(m => closeModal(m.id)); });
-
-/* nav โปร่ง → ขาวเมื่อเลื่อน */
-const nav = $('nav'); const sc = () => nav.classList.toggle('solid', scrollY > 60); sc(); addEventListener('scroll', sc);
-
-/* ================= แผนผัง ================= */
-function stallBtn(id, m){
-  const b = m[id], cls = ['stall'];
-  if (b) cls.push('booked'); else if (selected.has(id)) cls.push('sel');
-  if (isFruit(id)) cls.push('fruit');
-  if (lastMine.has(id)) cls.push('mine');
-  return `<button type="button" class="${cls.join(' ')}" data-id="${id}" title="${b ? 'จองแล้ว' : 'ว่าง'}" ${b ? 'disabled' : ''}>${id}</button>`;
-}
-const zone = (cls, emoji, text) => `<div class="zone ${cls}"><span class="emoji">${emoji}</span>${text}</div>`;
-const col = (ids, m) => `<div class="col">${ids.map(i => stallBtn(i, m)).join('')}</div>`;
-
-function renderMap(){
-  const m = bookedMap();
-  $('map').innerHTML = `
-    <div class="zones">${zone('', '☂️🌳', 'โซนนั่งพัก')}${zone('stage', '🎸🎤🥁', 'เวทีการแสดง')}</div>
-    ${col(LEFT_TOP, m)}<div class="road"></div>${col(RIGHT.slice(0, 12), m)}
-    <div class="zones">${zone('court', '⚽', 'สนามกีฬา')}</div>
-    <div class="cross"></div>
-    <div class="zones">${zone('school', '🏫', 'อาคารเรียน')}</div>
-    ${col(LEFT_BOTTOM, m)}<div class="road"></div>${col(RIGHT.slice(12), m)}
-    <div class="zones">${zone('field', '🏟️', 'สนามหญ้า')}${zone('', '🏛️', 'อาคารหลัก')}</div>`;
-  const booked = Object.keys(m).length;
-  $('statTotal').textContent = ALL_STALLS.length;
-  $('statBooked').textContent = booked;
-  $('statFree').textContent = ALL_STALLS.length - booked;
-}
-function renderForm(){
-  const ids = [...selected].sort((a,b) => num(a) - num(b));
-  $('chips').innerHTML = ids.length ? ids.map(i => `<span class="chip">${i}</span>`).join('') : '<span class="sub" style="font-weight:400">ยังไม่ได้เลือกล็อค</span>';
-  $('qty').textContent = ids.length;
-  $('total').textContent = fmtBaht(ids.length * CONFIG.PRICE_PER_STALL);
-  $('submit').disabled = !ids.length;
-}
-const refresh = () => { renderMap(); renderForm(); };
-
-$('map').addEventListener('click', e => {
-  const btn = e.target.closest('.stall'); if (!btn || btn.disabled) return;
-  const id = btn.dataset.id;
-  if (selected.has(id)) selected.delete(id);
-  else {
-    if (selected.size >= CONFIG.MAX_PER_PERSON) return toast(`เลือกได้สูงสุด ${CONFIG.MAX_PER_PERSON} ล็อคต่อการจอง`);
-    selected.add(id);
-  }
-  $('err').textContent = ''; refresh();
-});
-
-/* ================= จอง ================= */
-function genCode(){
-  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let code;
-  do { code = 'PS-' + Array.from({length:4}, () => c[Math.floor(Math.random()*c.length)]).join(''); } while (bookings.some(b => b.code === code));
-  return code;
-}
-const fail = msg => { $('err').textContent = msg; };
-
-$('bookForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const v = { name:$('fName').value.trim(), cls:$('fClass').value.trim(), phone:$('fPhone').value.trim(), shop:$('fShop').value.trim(), type:$('fType').value, note:$('fNote').value.trim() };
-  if (!selected.size) return fail('กรุณาเลือกล็อคอย่างน้อย 1 ล็อค');
-  if (!v.name || !v.cls || !v.shop || !v.type) return fail('กรุณากรอกข้อมูลที่มี * ให้ครบ');
-  if (!/^0\d{9}$/.test(v.phone)) return fail('เบอร์โทรต้องเป็นตัวเลข 10 หลักและขึ้นต้นด้วย 0');
-
-  bookings = load();
-  const m = bookedMap(), clash = [...selected].filter(s => m[s]);
-  if (clash.length){ clash.forEach(s => selected.delete(s)); refresh(); return fail(`ล็อค ${clash.join(', ')} ถูกจองไปแล้ว กรุณาเลือกใหม่`); }
-
-  const stalls = [...selected].sort((a,b) => num(a) - num(b));
-  const rec = { code: genCode(), stalls, ...v, total: stalls.length * CONFIG.PRICE_PER_STALL, at: new Date().toISOString() };
-  bookings.push(rec); save();
-  lastMine = new Set(stalls); selected = new Set();
-  e.target.reset(); $('err').textContent = ''; refresh();
-  $('doneCode').textContent = rec.code;
-  $('doneInfo').innerHTML = `ล็อค <b>${stalls.join(', ')}</b> · ร้าน ${esc(rec.shop)}<br>ค่าล็อครวม <b>${fmtBaht(rec.total)}</b>`;
-  openModal('mDone');
-});
-['fPhone','qPhone'].forEach(id => $(id).addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g,'')));
-
-/* ================= ค้นหา / ยกเลิก ================= */
-$('lookupForm').addEventListener('submit', e => {
-  e.preventDefault(); bookings = load();
-  const code = $('qCode').value.trim().toUpperCase(), phone = $('qPhone').value.trim(), out = $('lookupResult');
-  const b = bookings.find(x => x.code === code && x.phone === phone);
-  if (!b){ out.innerHTML = '<p class="err" style="margin-top:16px">ไม่พบการจอง ตรวจสอบรหัสจองและเบอร์โทรอีกครั้ง</p>'; return; }
-  lastMine = new Set(b.stalls); renderMap();
-  out.innerHTML = `<div class="result"><span class="tag done">จองแล้ว</span>
-    <h3 style="margin:8px 0 4px">${b.code} · ล็อค ${b.stalls.join(', ')}</h3>
-    <p class="sub">${esc(b.name)} (${esc(b.cls)}) · ร้าน ${esc(b.shop)} · ${esc(b.type)}<br>ค่าล็อค ${fmtBaht(b.total)}</p>
-    <button class="btn btn-out btn-sm" style="color:var(--red);margin-top:14px" id="btnCancel">ยกเลิกการจองนี้</button></div>`;
-  $('btnCancel').onclick = () => {
-    if (!confirm('ยืนยันยกเลิกการจอง ' + b.code + ' ?')) return;
-    bookings = load().filter(x => x.code !== b.code); save();
-    lastMine = new Set(); out.innerHTML = '<p class="sub" style="margin-top:16px">ยกเลิกการจองเรียบร้อยแล้ว</p>'; refresh(); toast('ยกเลิกแล้ว');
-  };
-});
-
-/* ================= เจ้าหน้าที่ ================= */
-let isAdmin = false;
-$('btnAdmin').onclick = e => { e.preventDefault(); $('adminPass').value=''; $('adminErr').textContent=''; openModal('mAdmin'); if (isAdmin) showAdmin(); };
-$('adminForm').addEventListener('submit', e => {
-  e.preventDefault();
-  if ($('adminPass').value === CONFIG.ADMIN_PASSWORD){ isAdmin = true; showAdmin(); }
-  else $('adminErr').textContent = 'รหัสผ่านไม่ถูกต้อง';
-});
-function showAdmin(){ $('adminLogin').hidden = true; $('adminPanel').hidden = false; bookings = load(); renderAdmin(); }
-function renderAdmin(){
-  $('adminRows').innerHTML = bookings.slice().sort((a,b) => a.at.localeCompare(b.at)).map(b => `
-    <tr><td><b>${b.code}</b></td><td>${b.stalls.join(', ')}</td><td>${esc(b.name)}</td><td>${esc(b.cls)}</td><td>${esc(b.phone)}</td>
-    <td>${esc(b.shop)}<br><small class="sub">${esc(b.type)}${b.note ? ' · ' + esc(b.note) : ''}</small></td>
-    <td>${b.total.toLocaleString('th-TH')}</td><td><button class="btn btn-out btn-sm" style="color:var(--red)" data-del="${b.code}">ลบ</button></td></tr>`).join('')
-    || '<tr><td colspan="8" class="sub">ยังไม่มีการจอง</td></tr>';
-}
-$('adminRows').addEventListener('click', e => {
-  const code = e.target.dataset.del; if (!code || !confirm('ลบการจอง ' + code + ' ?')) return;
-  bookings = load().filter(b => b.code !== code); save(); renderAdmin(); refresh();
-});
-$('btnReset').onclick = () => { if (!confirm('ล้างข้อมูลการจองทั้งหมด? ไม่สามารถกู้คืนได้')) return; bookings = []; save(); renderAdmin(); refresh(); };
-$('btnCsv').onclick = () => {
-  const q = s => '"' + String(s).replace(/"/g,'""') + '"';
-  const head = ['รหัส','ล็อค','ชื่อ','ชั้น','เบอร์','ร้าน','ประเภท','หมายเหตุ','ยอด(บาท)','เวลาจอง'];
-  const lines = [head.map(q).join(',')].concat(bookings.map(b =>
-    [b.code, b.stalls.join(' '), b.name, b.cls, "'" + b.phone, b.shop, b.type, b.note, b.total, new Date(b.at).toLocaleString('th-TH')].map(q).join(',')));
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob(['\ufeff' + lines.join('\n')], {type:'text/csv;charset=utf-8'}));
-  a.download = 'รายชื่อจองล็อค.csv'; a.click(); URL.revokeObjectURL(a.href);
+// ===================== events =====================
+const A={
+ closeSheet:closeSheet,
+ closeLb(){$('#lb').classList.remove('on');$('#lbImg').removeAttribute('src')},
+ open(t){openChat(t.dataset.id)},
+ back(){closeChatView()},
+ home(){closeChatView()},
+ focusSearch(){$('#cs').focus()},
+ newChat:newChatSheet,startDM:startDM,startGroup:startGroup,
+ settings:settingsSheet,nameSheet(){nameSheet(false)},saveName:saveName,
+ info:infoSheet,
+ requests:requestsSheet,
+ adminLogin(){pinSheet()},pinOk:pinOk,
+ exitAdmin(){setAdmin(false);closeSheet();toast('ออกจากโหมดแอดมินแล้ว')},
+ chatAdmin:chatAdminSheet,
+ doOpen(){setClosed(OPEN,false);closeSheet()},
+ doClose(){setClosed(OPEN,true,false);closeSheet()},
+ doCloseSilent(){setClosed(OPEN,true,true);closeSheet()},
+ adminOpen(){needAdmin(()=>setClosed(OPEN,false))},
+ openById(t){setClosed(t.dataset.id,false);closeSheet();toast('เปิดแชทแล้ว')},
+ approve(t){decide(t.dataset.id,true);closeSheet();toast('อนุมัติการยกเลิกแล้ว')},
+ reject(t){decide(t.dataset.id,false);closeSheet();toast('ปฏิเสธคำขอแล้ว')},
+ reqUnsend(t){
+  const c=chatById(OPEN),m=c&&msgsOf(c.id).find(x=>x.id===t.dataset.id);
+  if(m&&m.from===ME&&!m.unsend){m.unsend='pending';m.reqAt=Date.now();save();refresh();toast('ส่งคำขอยกเลิกให้แอดมินแล้ว')}
+  closeSheet();
+ },
+ toggleLock(t){
+  const c=chatById(OPEN),m=c&&msgsOf(c.id).find(x=>x.id===t.dataset.id);
+  if(m&&ADMIN){m.locked=!m.locked;save();refresh();toast(m.locked?'ล็อกแล้ว':'ปลดล็อกแล้ว')}
+  closeSheet();
+ },
+ msgMenu(t){msgMenu(t.dataset.id)},
+ viewImg(t){viewImg(t.dataset.mid)},
+ dlFile(t){dlFile(t.dataset.id)},
+ sendText:sendText,
+ pickImg(){$('#fi1').click()},pickFile(){$('#fi2').click()},
+ recStart:recStart,recCancel(){recStop(false)},recSend(){recStop(true)},
+ call(){startCall(false)},vcall(){startCall(true)},
+ callAcc:acceptCall,callEnd(){endCall(true)},
+ callMic(t){if(LOC){const a=LOC.getAudioTracks()[0];if(a){a.enabled=!a.enabled;t.classList.toggle('off',!a.enabled)}}},
+ callCam(t){if(LOC){const v=LOC.getVideoTracks()[0];if(v){v.enabled=!v.enabled;t.classList.toggle('off',!v.enabled)}}},
+ toggleBlur(t){BLUR=t.checked;LS.set('chat.blur',BLUR?'1':'0')},
+ resetAll(){
+  if(!confirm('ล้างข้อความและข้อมูลทั้งหมดในเครื่องนี้?'))return;
+  try{localStorage.removeItem('chat.db')}catch(e){}
+  try{indexedDB.deleteDatabase('chat-media')}catch(e){}
+  location.reload();
+ }
 };
+document.addEventListener('click',function(e){
+ const t=e.target.closest('[data-act]');if(!t||t.type==='checkbox'||!t.dataset.act)return;
+ const f=A[t.dataset.act];if(f){e.preventDefault();try{const r=f(t,e);if(r&&r.catch)r.catch(x=>toast(x.message||String(x)))}catch(x){toast(x.message||String(x))}}
+});
+document.addEventListener('change',function(e){
+ const t=e.target;
+ if(t.type==='checkbox'&&t.dataset.act==='toggleBlur')A.toggleBlur(t);
+ if(t.id==='fi1'||t.id==='fi2'){const fs=Array.from(t.files||[]);t.value='';sendFiles(fs)}
+});
+document.addEventListener('input',function(e){
+ const t=e.target;
+ if(t.id==='cs'){FILTER=t.value;renderList()}
+ if(t.id==='inp'){t.style.height='auto';t.style.height=Math.min(t.scrollHeight,140)+'px';$('#comp').classList.toggle('has',!!t.value.trim());typingInput(!!t.value.trim())}
+});
+document.addEventListener('keydown',function(e){
+ if(e.key==='Enter'&&!e.shiftKey&&e.target.id==='inp'&&!e.isComposing){e.preventDefault();sendText()}
+ if(e.key==='Enter'&&e.target.id==='pin'){e.preventDefault();pinOk()}
+ if(e.key==='Enter'&&e.target.id==='nm'){e.preventDefault();saveName()}
+ if(e.key==='Enter'&&e.target.id==='np'){e.preventDefault();startDM()}
+ if(e.key==='Escape'){closeSheet();A.closeLb()}
+});
+// ลากไฟล์มาวางในแชท
+['dragover','drop'].forEach(n=>$('#main').addEventListener(n,function(e){
+ if(!OPEN)return;e.preventDefault();
+ if(n==='drop'&&e.dataTransfer&&e.dataTransfer.files.length)sendFiles(Array.from(e.dataTransfer.files));
+}));
+// ซิงก์ข้อมูลข้ามแท็บ
+window.addEventListener('storage',function(e){
+ if(e.key==='chat.db'){load();refresh()}
+ if(e.key==='chat.read.'+ME)loadRead();
+});
 
-addEventListener('storage', e => { if (e.key === CONFIG.STORAGE_KEY){ bookings = load(); const m = bookedMap(); selected.forEach(s => { if (m[s]) selected.delete(s); }); refresh(); } });
-refresh();
+// ===================== เริ่มต้น =====================
+function init(){
+ $('#logoI').innerHTML=I('chat');$('#rbChat').innerHTML=I('chat');$('#rbSearch').innerHTML=I('search');$('#rbNew').innerHTML=I('plus');
+ $('#rbAdm').innerHTML=I('shield');$('#rbSet').innerHTML=I('gear');$('#unameC').innerHTML=I('chev');$('#btnNew').innerHTML=I('compose');
+ $('#srI').innerHTML=I('search');$('#emI').innerHTML=I('send');$('#lbX').innerHTML=I('x');
+ $('#cMic').innerHTML=I('mic');$('#cCam').innerHTML=I('video');$('#cAcc').innerHTML=I('phone');$('#cEnd').innerHTML=I('phone');
+ load();loadRead();
+ $('#admTag').classList.toggle('hide',!ADMIN);
+ $('#uname').textContent=ME||'ผู้ใช้';
+ renderList();renderChat();
+ if(!ME)nameSheet(true);
+}
+init();
+})();
 </script>
 </body>
 </html>
