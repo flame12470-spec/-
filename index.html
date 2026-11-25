@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0f17">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ระบบแชท">
+<link id="appIcon" rel="apple-touch-icon" href="">
+<link id="appManifest" rel="manifest" href="">
 <title>ระบบแชท</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -275,6 +281,7 @@ body.recording #comp{display:none}
     <button class="rb" data-act="focusSearch" aria-label="ค้นหา" id="rbSearch"></button>
     <button class="rb" data-act="newChat" aria-label="แชทใหม่" id="rbNew"></button>
     <button class="rb" data-act="requests" aria-label="คำขอและแอดมิน" id="rbAdm"></button>
+    <button class="rb" data-act="pwaSheet" aria-label="เพิ่มลงหน้าจอหลักและแจ้งเตือน" title="เพิ่มลงหน้าจอหลัก / แจ้งเตือน" id="rbApp"></button>
     <div class="sp"></div>
     <button class="rb" data-act="settings" aria-label="ตั้งค่า" id="rbSet"></button>
   </nav>
@@ -284,6 +291,7 @@ body.recording #comp{display:none}
       <span class="adm hide" id="admTag">แอดมิน</span>
       <button class="rt hide" id="rtDot" data-act="cloudSheet" aria-label="สถานะการเชื่อมต่อ"></button>
       <span class="sp"></span>
+      <button class="ib" data-act="pwaSheet" aria-label="เพิ่มลงหน้าจอหลักและแจ้งเตือน" title="เพิ่มเป็นแอป / แจ้งเตือน" id="btnApp"></button>
       <button class="ib" data-act="newChat" aria-label="แชทใหม่" id="btnNew"></button>
     </div>
     <div class="searchbox"><span id="srI"></span><input id="cs" placeholder="ค้นหา" autocomplete="off"></div>
@@ -445,15 +453,125 @@ const IC={
  smile:'<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5s1.5 2 3.5 2 3.5-2 3.5-2"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/>',
  sticker:'<path d="M4 7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7a6 6 0 0 1-6 6H7a3 3 0 0 1-3-3z"/><path d="M14 20v-4a2 2 0 0 1 2-2h4"/><circle cx="9.5" cy="10" r="1" fill="currentColor"/><circle cx="14.5" cy="10" r="1" fill="currentColor"/><path d="M9.5 14a3.5 3.5 0 0 0 5 0"/>',
  speaker:'<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>',
- flip:'<path d="M20 10c0-4.4-3.6-8-8-8-3.4 0-6.3 2.1-7.4 5M4 4v3h3"/><path d="M4 14c0 4.4 3.6 8 8 8 3.4 0 6.3-2.1 7.4-5M20 20v-3h-3"/>'
+ flip:'<path d="M20 10c0-4.4-3.6-8-8-8-3.4 0-6.3 2.1-7.4 5M4 4v3h3"/><path d="M4 14c0 4.4 3.6 8 8 8 3.4 0 6.3-2.1 7.4-5M20 20v-3h-3"/>',
+ bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+ app:'<rect x="5" y="2" width="14" height="20" rx="3"/><path d="M12 18h.01"/><path d="M12 7v6M9.5 10.5L12 13l2.5-2.5"/>'
 };
 const I=n=>'<svg class="ico" viewBox="0 0 24 24">'+(IC[n]||'')+'</svg>';
 
 // ===================== state =====================
 let DB={chats:[],msgs:{}},ME=LS.get('chat.me')||'',ADMIN=SS.get('chat.admin')==='1',OPEN=null,FRAME='',FILTER='';
-let BLUR=LS.get('chat.blur')!=='0',PINNEXT=null;
-let READ={},REACTS={};
+let BLUR=LS.get('chat.blur')!=='0',NOTIF=LS.get('chat.notif')!=='0',NSOUND=LS.get('chat.nsound')!=='0',PINNEXT=null;
+let READ={},REACTS={},DEFERRED_PROMPT=null;
 let STK_OPEN=false,STK_PACK=STICKER_PACKS[0].id,RX_TARGET=null,LB_MSG_ID=null;
+
+// ===================== PWA & การแจ้งเตือน (Home Screen App + Notifications) =====================
+const APP_ICON_SVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#0b0f17"/></linearGradient></defs><rect width="512" height="512" rx="115" fill="url(#bg)"/><path d="M112 136h288a24 24 0 0 1 24 24v176a24 24 0 0 1-24 24H212l-76 64v-64h-24a24 24 0 0 1-24-24V160a24 24 0 0 1 24-24z" fill="none" stroke="#ffffff" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/><circle cx="196" cy="248" r="18" fill="#ffffff"/><circle cx="256" cy="248" r="18" fill="#ffffff"/><circle cx="316" cy="248" r="18" fill="#ffffff"/></svg>';
+const APP_ICON_URL='data:image/svg+xml;utf8,'+encodeURIComponent(APP_ICON_SVG);
+
+function setupPWA(){
+ try{
+  const ic=$('#appIcon');if(ic)ic.href=APP_ICON_URL;
+  const manifest={
+   name:'ระบบแชท',
+   short_name:'ระบบแชท',
+   description:'แชทข้อความ รูปภาพ สติ๊กเกอร์ และโทรด้วยเสียง/วิดีโอคอล',
+   start_url:location.href.split('#')[0],
+   display:'standalone',
+   orientation:'portrait',
+   background_color:'#0b0f17',
+   theme_color:'#0b0f17',
+   icons:[{src:APP_ICON_URL,sizes:'512x512',type:'image/svg+xml',purpose:'any maskable'}]
+  };
+  const mBlob=new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
+  const mf=$('#appManifest');if(mf)mf.href=URL.createObjectURL(mBlob);
+ }catch(e){}
+ if('serviceWorker' in navigator && /^https?:/.test(location.protocol)){
+  try{
+   const swCode="self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));self.addEventListener('notificationclick',e=>{e.notification.close();e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{if(cs.length)return cs[0].focus()}))});";
+   const swBlob=new Blob([swCode],{type:'application/javascript'});
+   navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
+  }catch(e){}
+ }
+}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();DEFERRED_PROMPT=e});
+
+function playDing(){
+ if(!NSOUND)return;
+ try{
+  const Ctx=window.AudioContext||window.webkitAudioContext;
+  if(!Ctx)return;
+  if(!ACTX)ACTX=new Ctx();
+  const o=ACTX.createOscillator(),g=ACTX.createGain();
+  o.type='sine';
+  o.frequency.setValueAtTime(587.33,ACTX.currentTime);
+  o.frequency.setValueAtTime(880,ACTX.currentTime+0.09);
+  g.gain.setValueAtTime(0.06,ACTX.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ACTX.currentTime+0.32);
+  o.connect(g);g.connect(ACTX.destination);
+  o.start();o.stop(ACTX.currentTime+0.34);
+ }catch(e){}
+}
+
+function updateAppBadge(){
+ const unread=visible().filter(c=>{
+  const ms=msgsOf(c.id),last=ms[ms.length-1],locked=c.closed&&!ADMIN;
+  return !locked&&last&&last.from&&last.from!==ME&&last.t>(READ[c.id]||0)&&c.id!==OPEN;
+ }).length;
+ document.title=(unread?'('+unread+') ':'')+'ระบบแชท';
+ try{if(navigator.setAppBadge){if(unread)navigator.setAppBadge(unread);else navigator.clearAppBadge()}}catch(e){}
+}
+
+function notifyUser(title,body,cid){
+ playDing();
+ if(!NOTIF)return;
+ const isBg=document.hidden||!document.hasFocus()||cid!==OPEN;
+ if(isBg&&cid!==OPEN)toast('💬 '+title+': '+body);
+ if(!('Notification' in window)||Notification.permission!=='granted')return;
+ if(!document.hidden&&document.hasFocus()&&cid===OPEN)return;
+ try{
+  const n=new Notification(title,{body:body,icon:APP_ICON_URL,badge:APP_ICON_URL,tag:cid||'chat-notif',renotify:true});
+  n.onclick=()=>{window.focus();if(cid)openChat(cid);n.close()};
+ }catch(e){
+  if(navigator.serviceWorker&&navigator.serviceWorker.ready){
+   navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,{body:body,icon:APP_ICON_URL,tag:cid||'chat-notif'})).catch(()=>{});
+  }
+ }
+}
+
+async function reqNotifPerm(){
+ if(!('Notification' in window))return toast('เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือนของระบบ (ใช้เสียงและการแจ้งเตือนในแอปแทน)');
+ try{
+  const p=await Notification.requestPermission();
+  if(p==='granted'){
+   NOTIF=true;LS.set('chat.notif','1');
+   toast('เปิดรับการแจ้งเตือนสำเร็จ');
+   try{new Notification('ระบบแชท',{body:'เปิดการแจ้งเตือนข้อความและสายเรียกเข้าแล้ว',icon:APP_ICON_URL})}catch(e){}
+  }else{
+   toast('ไม่ได้รับอนุญาตแจ้งเตือน กรุณาเปิดในตั้งค่าเบราว์เซอร์/อุปกรณ์');
+  }
+  settingsSheet();
+ }catch(e){toast('ไม่สามารถขอสิทธิ์แจ้งเตือนได้ในหน้าต่างตัวอย่าง แนะนำให้เปิดแอปเต็มจอหรือเพิ่มลงหน้าจอหลัก')}
+}
+
+async function pwaSheet(){
+ if(DEFERRED_PROMPT){
+  try{
+   DEFERRED_PROMPT.prompt();
+   const r=await DEFERRED_PROMPT.userChoice;
+   if(r&&r.outcome==='accepted'){DEFERRED_PROMPT=null;closeSheet();return toast('กำลังติดตั้งแอปลงหน้าจอหลัก')}
+  }catch(e){}
+ }
+ const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ const isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+ openSheet('<h3>เพิ่มไปที่หน้าจอหลัก (ทำเป็นแอป)</h3>'+
+  '<div style="display:flex;align-items:center;gap:14px;margin:12px 0;padding:12px;background:#1b2230;border-radius:16px"><img src="'+APP_ICON_URL+'" style="width:56px;height:56px;border-radius:14px" alt=""><div><b style="font-size:16px">ระบบแชท (Web App)</b><small style="display:block;color:var(--muted)">เปิดแบบเต็มจอเหมือนแอปจริง + แจ้งเตือนข้อความและสายเรียกเข้า</small></div></div>'+
+  (isStandalone?'<div class="reqc"><b style="color:var(--ok)">✓ คุณกำลังเปิดใช้งานในโหมดแอปหน้าจอหลักแล้ว</b></div>':
+  '<div class="reqc"><b>📱 สำหรับ iPhone / iPad (Safari)</b><p class="help" style="margin-top:4px">1. กดปุ่ม <b>แชร์ (Share)</b> ด้านล่างของ Safari<br>2. เลื่อนลงแล้วกด <b>“เพิ่มไปยังหน้าจอโฮม” (Add to Home Screen)</b><br>3. กด <b>เพิ่ม (Add)</b> ที่มุมขวาบน (iOS 16.4+ รองรับการแจ้งเตือนเมื่อเปิดจากหน้าจอหลัก)</p></div>'+
+  '<div class="reqc"><b>🤖 สำหรับ Android (Chrome) / คอมพิวเตอร์</b><p class="help" style="margin-top:4px">1. กดเมนู <b>⋮</b> มุมขวาบนของเบราว์เซอร์<br>2. เลือก <b>“ติดตั้งแอป” (Install app)</b> หรือ <b>“เพิ่มลงในหน้าจอหลัก”</b></p></div>')+
+  '<div class="hr"></div><p class="help">การแจ้งเตือนข้อความและสายเรียกเข้า</p>'+
+  '<div class="acts"><button class="pbtn" data-act="reqNotifPerm">อนุญาตการแจ้งเตือน</button><button class="pbtn ghost" data-act="testNotif">ทดสอบแจ้งเตือน</button></div>');
+}
 
 function loadRead(){try{READ=JSON.parse(LS.get('chat.read.'+ME)||'{}')}catch(e){READ={}}}
 function saveRead(){LS.set('chat.read.'+ME,JSON.stringify(READ))}
@@ -501,7 +619,19 @@ function rt(s,msg){const d=$('#rtDot');if(!d)return;d.className='rt'+(s==='on'?'
 function cloudUpd(t,id,p){sb.from(t).update(p).eq('id',id).then(r=>{if(r.error)toast('บันทึกไม่สำเร็จ: '+r.error.message)})}
 function cloudChat(c){CHATP[c.id]=sb.from('chat_rooms').upsert(chatToRow(c),{onConflict:'id',ignoreDuplicates:true}).then(r=>{if(r.error)toast('สร้างแชทไม่สำเร็จ: '+r.error.message)})}
 function onChatRow(r){if(!r||!r.id)return;const c=rowToChat(r),i=DB.chats.findIndex(x=>x.id===c.id);if(i>-1)DB.chats[i]=c;else DB.chats.push(c);refresh()}
-function onMsgRow(r){if(!r||!r.id)return;const a=msgsOf(r.chat_id),m=rowToMsg(r),i=a.findIndex(x=>x.id===m.id);if(i>-1)a[i]=m;else{a.push(m);a.sort((x,y)=>x.t-y.t)}refresh()}
+function onMsgRow(r){
+ if(!r||!r.id)return;
+ const a=msgsOf(r.chat_id),m=rowToMsg(r),i=a.findIndex(x=>x.id===m.id),isNew=i===-1;
+ if(i>-1)a[i]=m;else{a.push(m);a.sort((x,y)=>x.t-y.t)}
+ refresh();
+ if(isNew&&m.from&&m.from!==ME&&m.type!=='system'){
+  const c=chatById(r.chat_id);
+  if(c&&!(c.closed&&!ADMIN)&&(c.members.includes('*')||c.members.includes(ME))){
+   const sender=c.type==='group'?chatName(c)+' ('+m.from+')':m.from;
+   notifyUser(sender,pvText(m).replace(/^คุณ:\s*/,''),r.chat_id);
+  }
+ }
+}
 async function loadCloud(){
  const [c,m,rr]=await Promise.all([sb.from('chat_rooms').select('*'),sb.from('chat_messages').select('*').order('created_at',{ascending:false}).limit(1000),sb.from('chat_reads').select('msg_id,user_name,read_at').order('read_at',{ascending:false}).limit(5000)]);
  if(c.error||m.error)throw(c.error||m.error);
@@ -555,11 +685,13 @@ function toggleReact(mid,emoji){
 function onReactPayload(d){
  if(!d||!d.mid||!d.user)return;
  const map=REACTS[d.mid]||(REACTS[d.mid]={});
+ const isNew=d.emoji&&map[d.user]!==d.emoji&&d.user!==ME;
  if(d.emoji)map[d.user]=d.emoji;
  else delete map[d.user];
  saveReacts();
  if(LB_MSG_ID===d.mid)renderLbRx(d.mid);
  if(d.chat===OPEN||!d.chat)renderMsgs(false);
+ if(isNew)notifyUser(d.user,'แสดงความรู้สึก '+d.emoji+' ต่อข้อความ',d.chat);
 }
 function rxHtml(m){
  if(!m||m.type==='system'||m.unsend==='done')return '';
@@ -696,6 +828,7 @@ function renderList(){
    '<div class="tx"><div class="tt"><b>'+(locked&&c.silent?'':esc(chatName(c)))+'</b>'+(c.closed?(ADMIN?'<span class="tg">'+(c.silent?'ปิดแบบเงียบ':'ปิดอยู่')+'</span>':''):'')+'</div><div class="pv'+(ty?' ty':'')+'">'+esc(pv)+(last&&!locked&&!ty?' · '+hm(last.t):'')+'</div></div>'+(un?'<span class="un-dot"></span>':'')+'</button>';
  }).join(''):'<div class="empty-list">ยังไม่มีแชท กดปุ่มแชทใหม่เพื่อเริ่มต้น</div>';
  const n=pendingReqs().length+pendingDels().length;const b=$('#reqN');b.textContent=n;b.classList.toggle('hide',!(ADMIN&&n));
+ updateAppBadge();
 }
 const pendingDels=()=>DB.chats.filter(c=>c.delReq==='pending');
 function pendingReqs(){
@@ -1040,8 +1173,14 @@ function saveName(){
  $('#uname').textContent=ME;OPEN=null;renderChat();refresh();
 }
 function settingsSheet(){
+ const perm=('Notification' in window)?Notification.permission:'unsupported';
+ const permTxt=perm==='granted'?'อนุญาตแล้ว (พร้อมแจ้งเตือน)':perm==='denied'?'ถูกบล็อก (เปิดในตั้งค่าเบราว์เซอร์)':'ยังไม่ได้ขอสิทธิ์ กดเพื่อเปิด';
  openSheet('<h3>ตั้งค่า</h3><div class="hr"></div>'+
   '<button class="opt" data-act="nameSheet">'+I('user')+'<span>ชื่อผู้ใช้<small>'+esc(ME)+' · กดเพื่อเปลี่ยน/สลับบัญชี</small></span></button>'+
+  '<button class="opt" data-act="pwaSheet">'+I('app')+'<span>เพิ่มลงหน้าจอหลัก (ทำเป็นแอป)<small>ติดตั้งเป็นไอคอนแอปบนมือถือและคอมพิวเตอร์</small></span></button>'+
+  '<button class="opt" data-act="reqNotifPerm">'+I('bell')+'<span>สิทธิ์การแจ้งเตือนของระบบ<small>สถานะ: '+permTxt+'</small></span></button>'+
+  '<div class="sw"><span>แจ้งเตือนข้อความและสายเรียกเข้า<br><small class="help">แจ้งเตือนเมื่อมีข้อความใหม่ รีแอคชัน หรือมีคนโทรมา</small></span><input type="checkbox" id="notifT" '+(NOTIF?'checked':'')+' data-act="toggleNotif"></div>'+
+  '<div class="sw"><span>เสียงแจ้งเตือนข้อความเข้า<br><small class="help">ส่งเสียงเตือนเมื่อได้รับข้อความใหม่</small></span><input type="checkbox" id="nsoundT" '+(NSOUND?'checked':'')+' data-act="toggleNSound"></div>'+
   (ADMIN?'<button class="opt" data-act="exitAdmin">'+I('shield')+'<span>ออกจากโหมดแอดมิน</span></button>':'<button class="opt" data-act="adminLogin">'+I('shield')+'<span>เข้าสู่โหมดแอดมิน<small>ต้องใช้รหัสแอดมิน</small></span></button>')+
   '<div class="sw"><span>เบลอหน้าจอเมื่อสลับแอป<br><small class="help">ช่วยลดการแอบแคปด้วยเครื่องมือภายนอก</small></span><input type="checkbox" id="blurT" '+(BLUR?'checked':'')+' data-act="toggleBlur"></div>'+
   (ADMIN?'<button class="opt" data-act="cloudSheet">'+I('chat')+'<span>เชื่อมต่อฐานข้อมูล<small>'+(CLOUD?'เชื่อมต่อแล้ว (เรียลไทม์)':'ยังไม่เชื่อมต่อ ใช้โหมดในเครื่อง')+'</small></span></button>':'')+'<div class="hr"></div><button class="opt danger" data-act="resetAll">'+I('trash')+'<span>ล้างข้อมูลทั้งหมดในเครื่องนี้</span></button>');
@@ -1226,6 +1365,7 @@ const onSigMsg=async d=>{
   CALL={chat:d.chat,peer:d.from,title:d.title||d.from,video:d.video,offer:d.sdp,out:false,connected:false};PEND=[];
   callUI('in',CALL.title,d.video);
   playTone('in');
+  notifyUser('📞 '+CALL.title,d.video?'มีวิดีโอคอลเรียกเข้า...':'มีสายเรียกเข้า...',d.chat);
  }else if(d.t==='answer'&&PC&&CALL&&CALL.out){
   CALL.peer=d.from;
   try{await PC.setRemoteDescription(d.sdp);for(const c of PEND)try{await PC.addIceCandidate(c)}catch(e){}PEND=[];connected()}catch(e){}
@@ -1290,6 +1430,17 @@ const A={
  callSpk(t){const rv=$('#rv');if(rv){rv.muted=!rv.muted;t.classList.toggle('off',rv.muted)}},
  callCam(t){if(LOC){const v=LOC.getVideoTracks()[0];if(v){v.enabled=!v.enabled;t.classList.toggle('off',!v.enabled)}}},
  callFlip:flipCam,
+ pwaSheet:pwaSheet,
+ reqNotifPerm:reqNotifPerm,
+ testNotif(){
+  playDing();
+  if('Notification' in window && Notification.permission==='granted'){
+   try{new Notification('ระบบแชท (ทดสอบ)',{body:'การแจ้งเตือนและเสียงเตือนพร้อมใช้งานแล้ว!',icon:APP_ICON_URL})}catch(e){}
+  }
+  toast('🔔 ทดสอบการแจ้งเตือนและเสียงเตือนเรียบร้อย!');
+ },
+ toggleNotif(t){NOTIF=t.checked;LS.set('chat.notif',NOTIF?'1':'0');if(NOTIF&&'Notification' in window&&Notification.permission==='default')reqNotifPerm()},
+ toggleNSound(t){NSOUND=t.checked;LS.set('chat.nsound',NSOUND?'1':'0');if(NSOUND)playDing()},
  toggleBlur(t){BLUR=t.checked;LS.set('chat.blur',BLUR?'1':'0')},
  resetAll(){
   try{localStorage.removeItem('chat.db');localStorage.removeItem('chat.reacts')}catch(e){}
@@ -1309,7 +1460,7 @@ document.addEventListener('dblclick',function(e){
 });
 document.addEventListener('change',function(e){
  const t=e.target;
- if(t.type==='checkbox'&&t.dataset.act==='toggleBlur')A.toggleBlur(t);
+ if(t.type==='checkbox'&&t.dataset.act&&A[t.dataset.act])A[t.dataset.act](t);
  if(t.id==='fi1'||t.id==='fi2'){const fs=Array.from(t.files||[]);t.value='';sendFiles(fs)}
 });
 document.addEventListener('input',function(e){
@@ -1329,15 +1480,32 @@ document.addEventListener('keydown',function(e){
  if(n==='drop'&&e.dataTransfer&&e.dataTransfer.files.length)sendFiles(Array.from(e.dataTransfer.files));
 }));
 window.addEventListener('storage',function(e){
- if(e.key==='chat.db'){load();refresh()}
+ if(e.key==='chat.db'){
+  const prevCounts={};
+  Object.keys(DB.msgs||{}).forEach(k=>prevCounts[k]=(DB.msgs[k]||[]).length);
+  load();refresh();
+  Object.keys(DB.msgs||{}).forEach(cid=>{
+   const ms=DB.msgs[cid]||[];
+   if(ms.length>(prevCounts[cid]||0)){
+    const last=ms[ms.length-1];
+    const c=chatById(cid);
+    if(last&&last.from&&last.from!==ME&&last.type!=='system'&&c&&!(c.closed&&!ADMIN)&&(c.members.includes('*')||c.members.includes(ME))){
+     const sender=c.type==='group'?chatName(c)+' ('+last.from+')':last.from;
+     notifyUser(sender,pvText(last).replace(/^คุณ:\s*/,''),cid);
+    }
+   }
+  });
+ }
  if(e.key==='chat.reacts'){loadReacts();if(OPEN)renderMsgs(false)}
  if(e.key==='chat.read.'+ME)loadRead();
 });
 
 // ===================== เริ่มต้น =====================
 function init(){
+ setupPWA();
  $('#logoI').innerHTML=I('chat');$('#rbChat').innerHTML=I('chat');$('#rbSearch').innerHTML=I('search');$('#rbNew').innerHTML=I('plus');
- $('#rbAdm').innerHTML=I('shield');$('#rbSet').innerHTML=I('gear');$('#unameC').innerHTML=I('chev');$('#btnNew').innerHTML=I('compose');
+ $('#rbAdm').innerHTML=I('shield');$('#rbApp').innerHTML=I('app');$('#rbSet').innerHTML=I('gear');$('#unameC').innerHTML=I('chev');
+ $('#btnApp').innerHTML=I('app');$('#btnNew').innerHTML=I('compose');
  $('#srI').innerHTML=I('search');$('#emI').innerHTML=I('send');$('#lbX').innerHTML=I('x');
  $('#cMic').innerHTML=I('mic');$('#cSpk').innerHTML=I('speaker');$('#cCam').innerHTML=I('video');$('#cFlip').innerHTML=I('flip');
  $('#cAcc').innerHTML=I('phone');$('#cEnd').innerHTML=I('phone');
