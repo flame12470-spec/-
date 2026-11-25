@@ -45,6 +45,7 @@ img,video{-webkit-user-drag:none;-webkit-touch-callout:none}
 .s-head .sp{flex:1}
 .ib{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:26px;position:relative;flex:none}
 .ib:hover{background:var(--hover)}
+.ib.on{background:var(--sel);color:var(--accent)}
 .searchbox{margin:8px 20px 6px;display:flex;align-items:center;gap:12px;background:#222a36;border-radius:99px;padding:0 18px;height:50px;color:var(--muted)}
 .searchbox input{flex:1;background:none;border:0;outline:0;min-width:0}
 .searchbox input::placeholder{color:var(--muted)}
@@ -80,34 +81,71 @@ img,video{-webkit-user-drag:none;-webkit-touch-callout:none}
 .pbtn.ok{background:var(--ok);color:#06210f}
 
 /* ---------- chat ---------- */
-#chat{display:flex;flex-direction:column;height:100%;min-height:0}
+#chat{display:flex;flex-direction:column;height:100%;min-height:0;position:relative}
 .ch{display:flex;align-items:center;gap:12px;padding:calc(12px + var(--sat)) 18px 12px;border-bottom:1px solid var(--line)}
 .ch .ttl{flex:1;min-width:0}
 .ch .ttl b{display:block;font-size:17px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ch .ttl small{color:var(--muted);font-size:13px}
 .only-m{display:none}
-#msgs{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:3px;-webkit-overflow-scrolling:touch}
+#msgs{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:4px;-webkit-overflow-scrolling:touch}
 .sys{align-self:center;text-align:center;color:var(--muted);font-size:13px;padding:10px 18px;max-width:80%}
 .sys.warn{color:#ffb4bd;background:#2a1a20;border-radius:14px;margin:8px 0}
+.sys.call-log{background:#161d2a;border:1px solid #242e42;color:#cfd8ea;border-radius:99px;padding:6px 16px;margin:6px 0;display:inline-flex;align-items:center;gap:8px}
 .day{align-self:center;color:var(--muted);font-size:12px;margin:12px 0 6px}
-.row{display:flex;align-items:flex-end;gap:8px;max-width:100%}
+.row{display:flex;align-items:flex-end;gap:8px;max-width:100%;position:relative}
 .row.me{flex-direction:row-reverse}
 .av-sp{width:28px;flex:none}
-.col{display:flex;flex-direction:column;min-width:0;max-width:min(72%,520px)}
+.col{display:flex;flex-direction:column;min-width:0;max-width:min(72%,520px);position:relative}
 .row.me .col{align-items:flex-end}
 .nm{color:var(--muted);font-size:12px;margin:6px 0 2px 4px}
-.bub{padding:9px 15px;border-radius:20px;background:var(--other);overflow-wrap:anywhere;white-space:pre-wrap;font-size:15px}
+.bub-wrap{position:relative;display:flex;flex-direction:column;align-items:flex-start;max-width:100%}
+.row.me .bub-wrap{align-items:flex-end}
+.bub{padding:9px 15px;border-radius:20px;background:var(--other);overflow-wrap:anywhere;white-space:pre-wrap;font-size:15px;position:relative}
 .row.me .bub{background:var(--me)}
 .bub.media{padding:0;background:none}
+.bub.sticker{padding:4px;background:none}
 .bub.gone{background:none;border:1px dashed #3a4252;color:var(--muted);font-style:italic}
 .note{font-size:11px;color:var(--warn);margin:2px 6px}
 .note.dim{color:var(--muted)}
 .tm{font-size:11px;color:var(--muted);margin:2px 6px 6px}
 .tm .rd{font-size:inherit;color:inherit;padding:0}.tm .rd.on{color:var(--accent)}
-.more{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--muted);opacity:0;flex:none;margin-bottom:6px}
-.row:hover .more{opacity:1}
-@media(hover:none){.more{opacity:.7}}
-.more:hover{background:var(--hover)}
+.msg-tools{display:flex;align-items:center;gap:2px;opacity:0;flex:none;margin-bottom:6px;transition:opacity .15s}
+.row:hover .msg-tools{opacity:1}
+@media(hover:none){.msg-tools{opacity:.8}}
+.more,.react-btn{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--muted);flex:none}
+.more:hover,.react-btn:hover{background:var(--hover);color:var(--text)}
+
+/* ---------- อิโมจิแสดงความคิดเห็น (Reactions) ---------- */
+.rx-bar{display:flex;flex-wrap:wrap;gap:4px;margin-top:-6px;margin-bottom:2px;z-index:3;padding:0 4px}
+.row.me .rx-bar{justify-content:flex-end}
+.rx-chip{display:inline-flex;align-items:center;gap:4px;background:#19202e;border:1px solid #2b3548;border-radius:99px;padding:2px 8px;font-size:13px;line-height:1.3;color:var(--text);box-shadow:0 2px 6px rgba(0,0,0,.28);transition:transform .12s,background .12s}
+.rx-chip:hover{transform:scale(1.06);background:#222b3d}
+.rx-chip.me{background:#262d52;border-color:var(--accent);color:#fff}
+.rx-chip span.cnt{font-size:11px;font-weight:600;color:#cfd6e6}
+.rx-chip.me span.cnt{color:#fff}
+.rx-pop{position:fixed;z-index:180;background:#171e2b;border:1px solid #2a344a;border-radius:99px;padding:6px 10px;display:none;align-items:center;gap:4px;box-shadow:0 8px 28px rgba(0,0,0,.55);animation:popIn .14s ease-out}
+.rx-pop.on{display:flex}
+@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.rx-pop button{width:36px;height:36px;border-radius:50%;font-size:21px;display:grid;place-items:center;transition:transform .12s,background .12s}
+.rx-pop button:hover{transform:scale(1.25);background:#232c3f}
+.rx-pop button.on{background:#28325a;box-shadow:0 0 0 2px var(--accent)}
+.rx-pop .rx-more{font-size:16px;color:var(--muted);background:#222a38}
+
+/* ---------- สติ๊กเกอร์ (Stickers) ---------- */
+.stk-card{width:136px;height:136px;display:flex;align-items:center;justify-content:center;user-select:none;cursor:pointer;transition:transform .15s}
+.stk-card:hover{transform:scale(1.04)}
+.stk-card svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 4px 10px rgba(0,0,0,.3))}
+#stkTray{display:none;flex-direction:column;margin:0 16px 6px;background:#151b26;border:1px solid #263042;border-radius:20px;height:270px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+#stkTray.on{display:flex}
+.stk-tabs{display:flex;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--line);overflow-x:auto}
+.stk-tab{padding:5px 12px;border-radius:99px;font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap}
+.stk-tab.on{background:var(--accent);color:#fff}
+.stk-grid{flex:1;overflow-y:auto;padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px;align-content:start}
+.stk-item{background:#1c2331;border:1px solid transparent;border-radius:16px;padding:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;aspect-ratio:1;transition:transform .12s,border-color .12s,background .12s}
+.stk-item:hover{transform:translateY(-2px);background:#232c3d;border-color:#364461}
+.stk-item svg{width:62px;height:62px}
+.stk-item span{font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+
 .med{position:relative;border-radius:18px;overflow:hidden;background:#111621;max-width:100%}
 .med img{display:block;max-width:100%;max-height:340px;min-width:140px;min-height:100px;object-fit:cover;cursor:zoom-in;user-select:none;-webkit-user-select:none}
 .med video{display:block;max-width:100%;max-height:340px;min-width:200px;background:#000}
@@ -122,11 +160,11 @@ audio{max-width:100%;height:42px;filter:invert(.9) hue-rotate(180deg)}
 .filebox b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;max-width:240px}
 
 /* composer */
-#comp{display:flex;align-items:flex-end;gap:6px;margin:10px 16px calc(12px + var(--sab));border:1px solid #2b3342;border-radius:26px;padding:6px 8px}
+#comp{display:flex;align-items:flex-end;gap:4px;margin:6px 16px calc(12px + var(--sab));border:1px solid #2b3342;border-radius:26px;padding:6px 8px}
 #comp textarea{flex:1;background:none;border:0;outline:0;resize:none;max-height:140px;min-height:40px;padding:9px 6px;line-height:1.5}
 #comp textarea::placeholder{color:var(--muted)}
-#comp .ib{width:42px;height:42px}
-#comp .send{color:var(--accent);font-weight:700;padding:0 14px;height:42px}
+#comp .ib{width:40px;height:40px;font-size:23px}
+#comp .send{color:var(--accent);font-weight:700;padding:0 14px;height:40px}
 #comp:not(.has) .send{display:none}
 #comp.has .mic{display:none}
 #rec{display:none;align-items:center;gap:12px;margin:10px 16px calc(12px + var(--sab));border:1px solid var(--danger);border-radius:26px;padding:8px 14px}
@@ -178,26 +216,38 @@ body.recording #comp{display:none}
 .sw{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
 .sw input{width:22px;height:22px;accent-color:var(--accent)}
 .help{color:var(--muted);font-size:12px;margin-top:8px}
+.emoji-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}
+.emoji-grid button{font-size:26px;height:48px;border-radius:12px;background:#1e2533;display:grid;place-items:center}
+.emoji-grid button:hover{background:#2a3448;transform:scale(1.08)}
+
 #toast{position:fixed;left:50%;bottom:calc(90px + var(--sab));transform:translate(-50%,16px);background:#e8ecf3;color:#0b0f17;padding:10px 20px;border-radius:99px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:300;max-width:90vw;text-align:center}
 #toast.on{opacity:1;transform:translate(-50%,0)}
-#lb{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:200;display:none; flex-direction:column;align-items:center;justify-content:center;padding:20px}
 #lb.on{display:flex}
-#lb img{max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-select:none}
-#lb button{position:absolute;top:calc(14px + var(--sat));right:14px;font-size:30px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.12);display:grid;place-items:center}
-#call{position:fixed;inset:0;background:#05070b;z-index:250;display:none;flex-direction:column;align-items:center;justify-content:center}
+#lb img{max-width:100%;max-height:82dvh;object-fit:contain;user-select:none;-webkit-user-select:none;border-radius:12px}
+#lb .lb-close{position:absolute;top:calc(14px + var(--sat));right:14px;font-size:30px;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.12);display:grid;place-items:center}
+#lb .lb-rx{margin-top:16px;display:flex;gap:8px;background:rgba(22,28,39,.9);border:1px solid #2c364c;padding:6px 12px;border-radius:99px}
+#lb .lb-rx button{font-size:22px;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;transition:transform .12s}
+#lb .lb-rx button:hover{transform:scale(1.2);background:rgba(255,255,255,.1)}
+#lb .lb-rx button.on{background:var(--accent)}
+
+#call{position:fixed;inset:0;background:radial-gradient(circle at 50% 25%,#1b253b,#05070b 75%);z-index:250;display:none;flex-direction:column;align-items:center;justify-content:center}
 #call.on{display:flex}
 #rv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#05070b}
-#lv{position:absolute;right:16px;top:calc(16px + var(--sat));width:min(30vw,160px);aspect-ratio:3/4;object-fit:cover;border-radius:16px;background:#111;transform:scaleX(-1);z-index:2}
+#lv{position:absolute;right:16px;top:calc(16px + var(--sat));width:min(30vw,160px);aspect-ratio:3/4;object-fit:cover;border-radius:16px;background:#111;transform:scaleX(-1);z-index:2;border:2px solid rgba(255,255,255,.2)}
 .cinfo{position:relative;z-index:2;text-align:center;margin-bottom:auto;margin-top:12vh;text-shadow:0 2px 10px #000}
-.cinfo .av{margin:0 auto 14px}
+.cinfo .av{margin:0 auto 14px;box-shadow:0 0 0 0 rgba(79,91,245,.6);animation:pulseCall 2s infinite}
+@keyframes pulseCall{0%{box-shadow:0 0 0 0 rgba(79,91,245,.55)}70%{box-shadow:0 0 0 22px rgba(79,91,245,0)}100%{box-shadow:0 0 0 0 rgba(79,91,245,0)}}
 .cinfo h3{font-size:26px}
-.cinfo p{color:#cfd6e4}
-.cbtn{position:relative;z-index:2;display:flex;gap:22px;margin-bottom:calc(40px + var(--sab))}
-.cbtn button{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.16);backdrop-filter:blur(8px);display:grid;place-items:center;font-size:28px;position:relative}
+.cinfo p{color:#cfd6e4;margin-top:4px;font-size:15px}
+.cbtn{position:relative;z-index:2;display:flex;gap:18px;margin-bottom:calc(40px + var(--sab));flex-wrap:wrap;justify-content:center;padding:0 16px}
+.cbtn button{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.16);backdrop-filter:blur(8px);display:grid;place-items:center;font-size:26px;position:relative;transition:transform .12s,background .15s}
+.cbtn button:hover{transform:scale(1.06)}
 .cbtn button.off{background:#fff;color:#111}
-.cbtn .end{background:var(--danger)}
+.cbtn .end{background:var(--danger);color:#fff}
 .cbtn .end .ico{transform:rotate(135deg)}
-.cbtn .acc{background:var(--ok)}
+.cbtn .acc{background:var(--ok);color:#fff;animation:ringShake 1.2s infinite}
+@keyframes ringShake{0%,100%{transform:rotate(0)}15%{transform:rotate(-14deg)}30%{transform:rotate(14deg)}45%{transform:rotate(-10deg)}60%{transform:rotate(10deg)}}
 .cbtn .hide{display:none}
 
 /* ---------- responsive ---------- */
@@ -218,7 +268,6 @@ body.recording #comp{display:none}
 </style>
 </head>
 <body>
-
 <div id="app">
   <nav id="rail" aria-label="เมนู">
     <div class="logo" id="logoI"></div>
@@ -229,7 +278,6 @@ body.recording #comp{display:none}
     <div class="sp"></div>
     <button class="rb" data-act="settings" aria-label="ตั้งค่า" id="rbSet"></button>
   </nav>
-
   <section id="side">
     <div class="s-head">
       <button class="uname" data-act="settings"><b id="uname"></b><span id="unameC"></span></button>
@@ -242,43 +290,94 @@ body.recording #comp{display:none}
     <div class="s-sub"><b>ข้อความ</b><button data-act="requests">คำขอ <span class="dotn hide" id="reqN"></span></button></div>
     <div id="clist"></div>
   </section>
-
   <section id="main">
     <div id="empty">
       <div class="circ" id="emI"></div>
       <h2>ข้อความของคุณ</h2>
-      <p>ส่งรูปภาพ วิดีโอ เสียง และข้อความส่วนตัวให้กับเพื่อนหรือกลุ่ม</p>
+      <p>ส่งรูปภาพ วิดีโอ เสียง สติ๊กเกอร์ และโทรพูดคุยกับเพื่อนหรือกลุ่ม</p>
       <button class="pbtn" data-act="newChat">ส่งข้อความ</button>
     </div>
     <div id="chat" class="hide"></div>
   </section>
 </div>
-
 <input type="file" id="fi1" accept="image/*,video/*" multiple hidden>
 <input type="file" id="fi2" multiple hidden>
-
+<div id="rxPop" class="rx-pop" role="toolbar" aria-label="แสดงความรู้สึก"></div>
 <div id="sbg" data-act="closeSheet"></div><div id="sheet" role="dialog" aria-modal="true"></div>
-<div id="lb"><button data-act="closeLb" aria-label="ปิด" id="lbX"></button><img id="lbImg" alt="" draggable="false"></div>
+<div id="lb">
+  <button class="lb-close" data-act="closeLb" aria-label="ปิด" id="lbX"></button>
+  <img id="lbImg" alt="" draggable="false">
+  <div class="lb-rx" id="lbRx"></div>
+</div>
 <div id="call">
   <video id="rv" autoplay playsinline></video>
   <video id="lv" autoplay playsinline muted></video>
   <div class="cinfo"><div id="cav"></div><h3 id="cn"></h3><p id="cst"></p></div>
   <div class="cbtn">
-    <button id="cMic" data-act="callMic" aria-label="ไมค์"></button>
-    <button id="cCam" data-act="callCam" aria-label="กล้อง"></button>
-    <button class="acc hide" id="cAcc" data-act="callAcc" aria-label="รับสาย"></button>
-    <button class="end" id="cEnd" data-act="callEnd" aria-label="วางสาย"></button>
+    <button id="cMic" data-act="callMic" aria-label="ไมค์" title="เปิด/ปิดไมค์"></button>
+    <button id="cSpk" data-act="callSpk" aria-label="ลำโพง" title="เปิด/ปิดเสียง"></button>
+    <button id="cCam" data-act="callCam" aria-label="กล้อง" title="เปิด/ปิดกล้อง"></button>
+    <button id="cFlip" data-act="callFlip" aria-label="สลับกล้อง" title="สลับกล้องหน้า/หลัง"></button>
+    <button class="acc hide" id="cAcc" data-act="callAcc" aria-label="รับสาย" title="รับสาย"></button>
+    <button class="end" id="cEnd" data-act="callEnd" aria-label="วางสาย" title="วางสาย"></button>
   </div>
 </div>
 <div id="toast" role="status"></div>
-
 <script>
 (function(){
 'use strict';
+
 // ===================== ตั้งค่า =====================
-const ADMIN_PIN='123456';           // รหัสแอดมิน (หมายเหตุ: อยู่ในโค้ดฝั่งผู้ใช้ ใครเปิดดูซอร์สก็เห็น ถ้าจะใช้จริงต้องย้ายไปตรวจที่เซิร์ฟเวอร์)
+const ADMIN_PIN='123456';           // รหัสแอดมิน
 const MAX_FILE=100*1024*1024;       // ขนาดไฟล์สูงสุด 100MB
 const ICE=[{urls:'stun:stun.l.google.com:19302'}];
+const QUICK_EMOJIS=['❤️','😆','😮','😢','😡','👍'];
+const ALL_EMOJIS=['❤️','😆','😮','😢','😡','👍','🔥','🎉','👏','🙏','🥰','😎','🤔','😭','🥳','💯','✨','🫶'];
+
+// ชุดสติ๊กเกอร์ SVG คมชัดในตัว (ไม่ต้องพึ่งไฟล์ภายนอก)
+const STICKER_PACKS=[
+  {
+    id:'bear', name:'หมีปุย',
+    items:[
+      {id:'bear-hi', label:'สวัสดี!', bg:'#3b82f6', face:'😊', txt:'สวัสดีครับ!'},
+      {id:'bear-love', label:'รักเลย', bg:'#ec4899', face:'🥰', txt:'รักนะจุ๊บๆ'},
+      {id:'bear-ok', label:'โอเค!', bg:'#10b981', face:'👌', txt:'จัดไป ओक!'},
+      {id:'bear-lol', label:'ฮ่าๆ', bg:'#f59e0b', face:'🤣', txt:'55555+'},
+      {id:'bear-cry', label:'แงๆ', bg:'#6366f1', face:'😭', txt:'แงงงง~'},
+      {id:'bear-shock', label:'หาา!', bg:'#8b5cf6', face:'😱', txt:'จริงดิ?!'},
+      {id:'bear-fight', label:'สู้ๆ', bg:'#ef4444', face:'🔥', txt:'สู้ๆ นะ!'},
+      {id:'bear-sleep', label:'ง่วงนอน', bg:'#14b8a6', face:'😴', txt:'ฝันดีนะ Zzz'}
+    ]
+  },
+  {
+    id:'cat', name:'เหมียวซ่า',
+    items:[
+      {id:'cat-thx', label:'ขอบคุณ', bg:'#f43f5e', face:'🙏', txt:'ขอบคุณค้าบ'},
+      {id:'cat-hungry', label:'หิวแล้ว', bg:'#fb923c', face:'🤤', txt:'หิวข้าวมาก!'},
+      {id:'cat-angry', label:'งอนแล้ว', bg:'#dc2626', face:'😾', txt:'งอนแล้วนะ!'},
+      {id:'cat-cool', label:'สุดจัด', bg:'#0ea5e9', face:'😎', txt:'ตึงจัดครับ'},
+      {id:'cat-work', label:'ปั่นงาน', bg:'#a855f7', face:'💻', txt:'กำลังปั่นงาน'},
+      {id:'cat-party', label:'ฉลอง!', bg:'#eab308', face:'🥳', txt:'เย้! ฉลองงง'},
+      {id:'cat-wait', label:'รอแป๊บ', bg:'#06b6d4', face:'⏳', txt:'รอแป๊บนึงนะ'},
+      {id:'cat-heart', label:'ส่งใจ', bg:'#ec4899', face:'🫶', txt:'ส่งใจรัวๆ'}
+    ]
+  }
+];
+const STICKER_MAP={};
+STICKER_PACKS.forEach(p=>p.items.forEach(s=>{STICKER_MAP[s.id]=s}));
+
+function stickerSvg(id){
+  const s=STICKER_MAP[id]||{bg:'#4f46e5',face:'😊',txt:'สติ๊กเกอร์'};
+  return '<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">'+
+    '<defs><linearGradient id="g-'+s.id+'" x1="0" y1="0" x2="1" y2="1">'+
+    '<stop offset="0%" stop-color="'+s.bg+'"/><stop offset="100%" stop-color="#1e293b"/></linearGradient></defs>'+
+    '<rect x="10" y="10" width="120" height="120" rx="34" fill="url(#g-'+s.id+')" stroke="rgba(255,255,255,.22)" stroke-width="4"/>'+
+    '<circle cx="36" cy="30" r="14" fill="rgba(255,255,255,.12)"/>'+
+    '<text x="70" y="72" text-anchor="middle" dominant-baseline="central" font-size="52">'+s.face+'</text>'+
+    '<rect x="16" y="98" width="108" height="26" rx="13" fill="rgba(11,15,23,.82)"/>'+
+    '<text x="70" y="112" text-anchor="middle" dominant-baseline="central" fill="#ffffff" font-size="13" font-weight="700" font-family="Prompt, sans-serif">'+s.txt+'</text>'+
+  '</svg>';
+}
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -289,9 +388,8 @@ const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:
 const SS={get:k=>{try{return sessionStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{sessionStorage.setItem(k,v)}catch(e){}},del:k=>{try{sessionStorage.removeItem(k)}catch(e){}}};
 
 // ===================== โหมดคลาวด์ (Supabase) =====================
-// ใส่ค่าจากโปรเจกต์ Supabase ใหม่ของระบบแชท (รัน chat-schema.sql ก่อน) ถ้าเว้นว่าง = ทำงานในเครื่องเหมือนเดิม
-const SB_URL='https://iejmwihipfvtkbvjtude.supabase.co'||LS.get('chat.sb.url')||'';   // วาง URL ตรงนี้ หรือกรอกที่ ตั้งค่า > เชื่อมต่อฐานข้อมูล
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imllam13aWhpcGZ2dGtidmp0dWRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NzQ0MzksImV4cCI6MjEwNjI1MDQzOX0.jR6txR7ztk_iKiF6-oxjkilpVllajLN3koIPNA5uBUY'||LS.get('chat.sb.key')||'';   // anon public key เท่านั้น (ห้ามใช้ service_role)
+const SB_URL='https://iejmwihipfvtkbvjtude.supabase.co'||LS.get('chat.sb.url')||'';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imllam13aWhpcGZ2dGtidmp0dWRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2NzQ0MzksImV4cCI6MjEwNjI1MDQzOX0.jR6txR7ztk_iKiF6-oxjkilpVllajLN3koIPNA5uBUY'||LS.get('chat.sb.key')||'';
 const CLOUD=!!(SB_URL&&SB_KEY&&window.supabase&&window.supabase.createClient);
 let ATOKEN=SS.get('chat.atoken')||'';
 const sb=CLOUD?window.supabase.createClient(SB_URL,SB_KEY,{
@@ -301,8 +399,19 @@ const sb=CLOUD?window.supabase.createClient(SB_URL,SB_KEY,{
 let RLCH=null;               // ช่อง realtime
 const CHATP={};              // รอสร้างแชทเสร็จก่อนส่งข้อความแรก
 const rowToChat=r=>({id:r.id,type:r.type,name:r.name||'',members:r.members||[],closed:!!r.closed,silent:!!r.silent,closedBy:r.closed_by||'',closedNote:r.closed_note||'',closedAt:r.closed_at?new Date(r.closed_at).getTime():0,delReq:r.del_req||'',delBy:r.del_by||''});
-const rowToMsg=r=>({id:r.id,t:new Date(r.created_at).getTime(),type:r.type,text:r.body||'',from:r.from_user||undefined,mid:r.media_path||undefined,mime:r.mime||'',name:r.file_name||'',size:r.size||0,locked:!!r.locked,unsend:r.unsend||undefined,warn:r.warn?1:undefined});
-const msgToRow=(cid,m)=>({id:m.id,chat_id:cid,type:m.type,from_user:m.from||null,body:m.text||null,media_path:m.mid||null,mime:m.mime||null,file_name:m.name||null,size:m.size||null,warn:!!m.warn});
+
+function rowToMsg(r){
+ const body=r.body||'';
+ const stkMatch=/^\[\[sticker:([a-z0-9-]+)\]\]$/.exec(body);
+ if(stkMatch){
+  return {id:r.id,t:new Date(r.created_at).getTime(),type:'sticker',sid:stkMatch[1],text:'',from:r.from_user||undefined,locked:!!r.locked,unsend:r.unsend||undefined};
+ }
+ return {id:r.id,t:new Date(r.created_at).getTime(),type:r.type,text:body,from:r.from_user||undefined,mid:r.media_path||undefined,mime:r.mime||'',name:r.file_name||'',size:r.size||0,locked:!!r.locked,unsend:r.unsend||undefined,warn:r.warn?1:undefined};
+}
+function msgToRow(cid,m){
+ const isStk=m.type==='sticker';
+ return {id:m.id,chat_id:cid,type:isStk?'text':m.type,from_user:m.from||null,body:isStk?'[[sticker:'+m.sid+']]':(m.text||null),media_path:m.mid||null,mime:m.mime||null,file_name:m.name||null,size:m.size||null,warn:!!m.warn};
+}
 
 // ===================== ไอคอน =====================
 const IC={
@@ -332,21 +441,29 @@ const IC={
  gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',
  send:'<path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/>',
  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/>',
- camera:'<rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/>'
+ camera:'<rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/>',
+ smile:'<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5s1.5 2 3.5 2 3.5-2 3.5-2"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/>',
+ sticker:'<path d="M4 7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7a6 6 0 0 1-6 6H7a3 3 0 0 1-3-3z"/><path d="M14 20v-4a2 2 0 0 1 2-2h4"/><circle cx="9.5" cy="10" r="1" fill="currentColor"/><circle cx="14.5" cy="10" r="1" fill="currentColor"/><path d="M9.5 14a3.5 3.5 0 0 0 5 0"/>',
+ speaker:'<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>',
+ flip:'<path d="M20 10c0-4.4-3.6-8-8-8-3.4 0-6.3 2.1-7.4 5M4 4v3h3"/><path d="M4 14c0 4.4 3.6 8 8 8 3.4 0 6.3-2.1 7.4-5M20 20v-3h-3"/>'
 };
 const I=n=>'<svg class="ico" viewBox="0 0 24 24">'+(IC[n]||'')+'</svg>';
 
 // ===================== state =====================
 let DB={chats:[],msgs:{}},ME=LS.get('chat.me')||'',ADMIN=SS.get('chat.admin')==='1',OPEN=null,FRAME='',FILTER='';
 let BLUR=LS.get('chat.blur')!=='0',PINNEXT=null;
-let READ={};
+let READ={},REACTS={};
+let STK_OPEN=false,STK_PACK=STICKER_PACKS[0].id,RX_TARGET=null,LB_MSG_ID=null;
+
 function loadRead(){try{READ=JSON.parse(LS.get('chat.read.'+ME)||'{}')}catch(e){READ={}}}
 function saveRead(){LS.set('chat.read.'+ME,JSON.stringify(READ))}
+function loadReacts(){try{REACTS=JSON.parse(LS.get('chat.reacts')||'{}')}catch(e){REACTS={}}}
+function saveReacts(){LS.set('chat.reacts',JSON.stringify(REACTS))}
+
 function load(){
  if(CLOUD)return;
  try{const d=JSON.parse(LS.get('chat.db')||'null');if(d&&d.chats)DB=d}catch(e){}
  if(!DB.msgs)DB.msgs={};
- // ย้ายข้อมูลเก่า: เปลี่ยนชื่อห้องตั้งต้นที่เคยใช้ชื่อ ม.4/4 ให้เป็นชื่อกลาง
  const oldRoom=DB.chats.find(c=>c.id==='room-44');
  if(oldRoom){
   if(/ม\.4\/4/.test(oldRoom.name))oldRoom.name='ห้องแชทรวม';
@@ -362,6 +479,7 @@ function load(){
 function save(){if(CLOUD)return;if(LS.set('chat.db',JSON.stringify(DB))===false)toast('พื้นที่จัดเก็บเต็ม')}
 const chatById=id=>DB.chats.find(c=>c.id===id);
 const msgsOf=id=>DB.msgs[id]||(DB.msgs[id]=[]);
+
 function addMsg(cid,m){
  const x=Object.assign({id:uid(),t:Date.now()},m);
  msgsOf(cid).push(x);
@@ -398,6 +516,7 @@ function cloudInit(){
   .on('postgres_changes',{event:'*',schema:'public',table:'chat_messages'},p=>onMsgRow(p.new))
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_reads'},p=>onReadRow(p.new))
   .on('broadcast',{event:'typing'},e=>{const d=e.payload||{};if(d.chat&&d.from)typingSet(d.chat,d.from,!!d.on)})
+  .on('broadcast',{event:'react'},e=>{onReactPayload(e.payload)})
   .on('broadcast',{event:'sig'},e=>onSigMsg(e.payload))
   .subscribe(async st=>{
    if(st==='SUBSCRIBED'){try{await loadCloud();rt('on')}catch(e){rt('err',e.message);toast('เชื่อมต่อฐานข้อมูลไม่ได้: '+(e.message||e))}}
@@ -410,7 +529,79 @@ function cloudSheet(){if(!ADMIN)return;
 }
 function saveCloud(){if(!ADMIN)return;const u=($('#sbu').value||'').trim().replace(/\/+$/,''),k=($('#sbk').value||'').trim();if(!/^https:\/\/\S+$/.test(u)||k.length<20)return toast('URL หรือ key ไม่ถูกต้อง');LS.set('chat.sb.url',u);LS.set('chat.sb.key',k);location.reload()}
 function cloudOff(){if(!ADMIN)return;try{localStorage.removeItem('chat.sb.url');localStorage.removeItem('chat.sb.key')}catch(e){}location.reload()}
-const RCPT={};   // ใบอ่านในโหมดคลาวด์: RCPT[msgId][user]=เวลาที่อ่าน
+
+// ===================== อิโมจิแสดงความคิดเห็น (Reactions) =====================
+const RXC=('BroadcastChannel' in window)?new BroadcastChannel('chat-react'):null;
+if(RXC)RXC.onmessage=e=>onReactPayload(e.data);
+
+function reactsOf(mid){
+ return REACTS[mid]||{};
+}
+function toggleReact(mid,emoji){
+ if(!mid||!emoji||!ME)return;
+ const c=chatById(OPEN);if(!c||(c.closed&&!ADMIN))return;
+ const map=REACTS[mid]||(REACTS[mid]={});
+ const cur=map[ME];
+ if(cur===emoji)delete map[ME];
+ else map[ME]=emoji;
+ saveReacts();
+ const payload={mid:mid,user:ME,emoji:map[ME]||null,chat:OPEN};
+ if(CLOUD&&RLCH)RLCH.send({type:'broadcast',event:'react',payload:payload});
+ if(RXC)RXC.postMessage(payload);
+ closeRxPop();
+ if(LB_MSG_ID===mid)renderLbRx(mid);
+ renderMsgs(false);
+}
+function onReactPayload(d){
+ if(!d||!d.mid||!d.user)return;
+ const map=REACTS[d.mid]||(REACTS[d.mid]={});
+ if(d.emoji)map[d.user]=d.emoji;
+ else delete map[d.user];
+ saveReacts();
+ if(LB_MSG_ID===d.mid)renderLbRx(d.mid);
+ if(d.chat===OPEN||!d.chat)renderMsgs(false);
+}
+function rxHtml(m){
+ if(!m||m.type==='system'||m.unsend==='done')return '';
+ const map=reactsOf(m.id);
+ const users=Object.keys(map);
+ if(!users.length)return '';
+ const groups={};
+ users.forEach(u=>{const em=map[u];if(!em)return;(groups[em]=groups[em]||[]).push(u)});
+ const chips=Object.keys(groups).map(em=>{
+  const us=groups[em],mine=us.includes(ME);
+  return '<button class="rx-chip'+(mine?' me':'')+'" data-act="quickReact" data-id="'+esc(m.id)+'" data-em="'+esc(em)+'" title="'+esc(us.join(', '))+'"><span>'+esc(em)+'</span>'+(us.length>1?'<span class="cnt">'+us.length+'</span>':'')+'</button>';
+ }).join('');
+ return '<div class="rx-bar">'+chips+'</div>';
+}
+function openRxPop(btn,mid){
+ const pop=$('#rxPop');if(!pop)return;
+ RX_TARGET=mid;
+ const myEm=(reactsOf(mid))[ME]||'';
+ pop.innerHTML=QUICK_EMOJIS.map(em=>'<button class="'+(myEm===em?'on':'')+'" data-act="pickReact" data-em="'+esc(em)+'">'+em+'</button>').join('')+
+  '<button class="rx-more" data-act="moreReact" title="อิโมจิเพิ่มเติม">+</button>';
+ pop.classList.add('on');
+ const r=btn.getBoundingClientRect();
+ const pw=280,ph=48;
+ let left=Math.max(12,Math.min(window.innerWidth-pw-12,r.left-pw/2+r.width/2));
+ let top=r.top-ph-8;
+ if(top<12)top=r.bottom+8;
+ pop.style.left=left+'px';
+ pop.style.top=top+'px';
+}
+function closeRxPop(){
+ const pop=$('#rxPop');if(pop)pop.classList.remove('on');
+}
+function moreReactSheet(){
+ const mid=RX_TARGET;closeRxPop();if(!mid)return;
+ const map=reactsOf(mid),myEm=map[ME]||'',us=Object.keys(map);
+ openSheet('<h3>แสดงความรู้สึก</h3><p class="help">เลือกอิโมจิสำหรับข้อความหรือรูปภาพนี้</p>'+
+  '<div class="emoji-grid">'+ALL_EMOJIS.map(em=>'<button class="'+(myEm===em?'on':'')+'" data-act="sheetReact" data-id="'+esc(mid)+'" data-em="'+esc(em)+'">'+em+'</button>').join('')+'</div>'+
+  (us.length?'<div class="hr"></div><p class="help">ผู้ที่แสดงความรู้สึก ('+us.length+')</p>'+us.map(u=>'<div class="reqc" style="display:flex;gap:12px;align-items:center">'+av(u,30)+'<b style="flex:1">'+esc(u)+'</b><span style="font-size:20px">'+esc(map[u])+'</span></div>').join(''):''));
+}
+
+// ===================== ใบอ่าน (Read Receipts) =====================
+const RCPT={};
 const readsOf=m=>CLOUD?(RCPT[m.id]||{}):(m.reads||{});
 const ft=t=>{const d=new Date(t);return dayKey(t)===dayKey(Date.now())?hm(t):d.getDate()+' '+TH[d.getMonth()]+' '+hm(t)};
 function rcptStat(m,mine){
@@ -421,10 +612,10 @@ function rcptStat(m,mine){
  else{const n=Object.keys(r).filter(u=>u!==m.from).length;on=n>0;txt=n?'อ่านแล้ว '+n+' คน':'ส่งแล้ว'}
  return ' · <button class="rd'+(on?' on':'')+'" data-act="readInfo" data-id="'+esc(m.id)+'">'+txt+'</button>';
 }
-function markRead(){ // บันทึกว่าฉันอ่านข้อความของคนอื่นในแชทที่เปิดอยู่แล้ว
+function markRead(){
  const c=chatById(OPEN);
  if(!c||!ME||document.hidden||(c.closed&&!ADMIN))return;
- if(!(c.members.includes('*')||c.members.includes(ME)))return;   // แอดมินที่แอบดูแชทคนอื่นไม่นับว่าอ่าน
+ if(!(c.members.includes('*')||c.members.includes(ME)))return;
  const un=msgsOf(c.id).filter(m=>m.from&&m.from!==ME&&m.type!=='system'&&!readsOf(m)[ME]);
  if(!un.length)return;
  const now=Date.now();
@@ -444,12 +635,14 @@ function readInfo(t){
  openSheet('<h3>รายละเอียดข้อความ</h3><div class="hr"></div><div class="reqc"><small>ส่งเมื่อ</small><div>'+ft(m.t)+'</div></div><p class="help">อ่านแล้ว '+us.length+' คน</p>'+
   (us.length?us.map(u=>'<div class="reqc" style="display:flex;gap:12px;align-items:center">'+av(u,32)+'<b style="flex:1">'+esc(u)+'</b><small>'+ft(r[u])+'</small></div>').join(''):'<div class="reqc"><small>ยังไม่มีใครอ่าน</small></div>'));
 }
+
 const peerOf=c=>c.members.find(x=>x!==ME)||ME;
 const chatName=c=>c.type==='dm'?peerOf(c):c.name;
 const hm=t=>{const d=new Date(t);return pad(d.getHours())+':'+pad(d.getMinutes())};
 const dayKey=t=>{const d=new Date(t);return d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()};
 const dayLbl=t=>{const d=new Date(t);return dayKey(t)===dayKey(Date.now())?'วันนี้':d.getDate()+' '+TH[d.getMonth()]};
 const fmtSize=n=>n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
+
 function visible(){
  const L=DB.chats.filter(c=>ADMIN||c.members.includes('*')||c.members.includes(ME));
  const lt=c=>{const m=msgsOf(c.id);return m.length?m[m.length-1].t:0};
@@ -485,6 +678,7 @@ function pvText(m){
  const mine=m.from===ME?'คุณ: ':'';
  if(m.type==='system')return m.text;
  if(m.type==='text')return mine+m.text;
+ if(m.type==='sticker')return mine+'ส่งสติ๊กเกอร์';
  if(m.type==='image')return mine+'ส่งรูปภาพ';
  if(m.type==='video')return mine+'ส่งวิดีโอ';
  if(m.type==='audio')return mine+'ส่งข้อความเสียง';
@@ -513,12 +707,24 @@ function pendingReqs(){
 // ===================== หน้าแชท =====================
 const frameKey=()=>{const c=chatById(OPEN);return c?[c.id,c.closed,c.silent,ADMIN,c.type,c.delReq].join('|'):''};
 function openChat(id){
- OPEN=id;READ[id]=Date.now();saveRead();
+ OPEN=id;STK_OPEN=false;closeRxPop();READ[id]=Date.now();saveRead();
  document.body.classList.add('chat-open');
  renderChat();renderList();markRead();
 }
 function closeChatView(){
- OPEN=null;FRAME='';document.body.classList.remove('chat-open');renderChat();renderList();
+ OPEN=null;STK_OPEN=false;closeRxPop();FRAME='';document.body.classList.remove('chat-open');renderChat();renderList();
+}
+function renderStickerTray(){
+ const tray=$('#stkTray');if(!tray)return;
+ tray.classList.toggle('on',STK_OPEN);
+ const btn=$('#btnStk');if(btn)btn.classList.toggle('on',STK_OPEN);
+ if(!STK_OPEN)return;
+ const pack=STICKER_PACKS.find(p=>p.id===STK_PACK)||STICKER_PACKS[0];
+ tray.innerHTML='<div class="stk-tabs">'+
+  STICKER_PACKS.map(p=>'<button class="stk-tab'+(p.id===pack.id?' on':'')+'" data-act="stkPack" data-id="'+esc(p.id)+'">'+esc(p.name)+'</button>').join('')+
+  '</div><div class="stk-grid">'+
+  pack.items.map(s=>'<button class="stk-item" data-act="sendSticker" data-id="'+esc(s.id)+'" title="'+esc(s.label)+'">'+stickerSvg(s.id)+'<span>'+esc(s.label)+'</span></button>').join('')+
+  '</div>';
 }
 function renderChat(){
  const c=chatById(OPEN),box=$('#chat');
@@ -530,10 +736,10 @@ function renderChat(){
   box.innerHTML='<div class="blankbar"><button class="ib only-m" data-act="back" aria-label="กลับ">'+I('back')+'</button></div><div class="blank"></div>';
   return;
  }
- const dm=c.type==='dm';
+ const canCall=!locked&&!c.closed;
  const head='<header class="ch"><button class="ib only-m" data-act="back" aria-label="กลับ">'+I('back')+'</button>'+av(chatName(c),44,c.type==='group')+
   '<div class="ttl"><b>'+esc(chatName(c))+'</b><small id="chSub">'+subText(c)+'</small></div>'+
-  (dm&&!locked&&!c.closed?'<button class="ib" data-act="call" aria-label="โทรด้วยเสียง">'+I('phone')+'</button><button class="ib" data-act="vcall" aria-label="วิดีโอคอล">'+I('video')+'</button>':'')+
+  (canCall?'<button class="ib" data-act="call" aria-label="โทรด้วยเสียง" title="โทรด้วยเสียง">'+I('phone')+'</button><button class="ib" data-act="vcall" aria-label="วิดีโอคอล" title="วิดีโอคอล">'+I('video')+'</button>':'')+
   (ADMIN?'<button class="ib" data-act="chatAdmin" aria-label="แอดมิน">'+I('shield')+'</button>':'')+
   '<button class="ib" data-act="info" aria-label="ข้อมูล">'+I('info')+'</button></header>';
  if(locked){
@@ -542,8 +748,10 @@ function renderChat(){
  }
  box.innerHTML=head+(c.delReq?'<div class="banner"><span>'+(ADMIN?esc(c.delBy)+' ขอลบแชทนี้':'ส่งคำขอลบแชทนี้แล้ว รอแอดมินอนุมัติ')+'</span>'+(ADMIN?'<button class="pbtn" data-act="approveDel" data-id="'+esc(c.id)+'">อนุมัติลบ</button>':'')+'</div>':'')+(c.closed?'<div class="banner"><span>แชทนี้ปิดอยู่ (เห็นได้เฉพาะแอดมิน)</span><button class="pbtn" data-act="adminOpen">เปิดแชท</button></div>':'')+
   '<div id="msgs"></div>'+
+  '<div id="stkTray"></div>'+
   '<div id="rec"><i></i><span id="recT">0:00</span><button class="pbtn ghost" data-act="recCancel">ยกเลิก</button><button class="pbtn" data-act="recSend">ส่ง</button></div>'+
-  '<div id="comp"><button class="ib" data-act="pickImg" aria-label="รูป/วิดีโอ">'+I('image')+'</button><button class="ib" data-act="pickFile" aria-label="แนบไฟล์">'+I('clip')+'</button><textarea id="inp" rows="1" placeholder="ส่งข้อความ..."></textarea><button class="ib mic" data-act="recStart" aria-label="บันทึกเสียง">'+I('mic')+'</button><button class="send" data-act="sendText">ส่ง</button></div>';
+  '<div id="comp"><button class="ib" data-act="pickImg" aria-label="รูป/วิดีโอ" title="ส่งรูปภาพหรือวิดีโอ">'+I('image')+'</button><button class="ib" data-act="pickFile" aria-label="แนบไฟล์" title="แนบไฟล์">'+I('clip')+'</button><button class="ib" id="btnStk" data-act="toggleStk" aria-label="สติ๊กเกอร์" title="ส่งสติ๊กเกอร์">'+I('sticker')+'</button><textarea id="inp" rows="1" placeholder="ส่งข้อความ..."></textarea><button class="ib mic" data-act="recStart" aria-label="บันทึกเสียง" title="ส่งข้อความเสียง">'+I('mic')+'</button><button class="send" data-act="sendText">ส่ง</button></div>';
+ renderStickerTray();
  renderMsgs(true);
 }
 function mediaHtml(m){
@@ -552,27 +760,37 @@ function mediaHtml(m){
   if(hid)return '<div class="lockmed">'+I('eyeoff')+'<span>'+(m.type==='image'?'ภาพ':'วิดีโอ')+'นี้ถูกล็อกโดยแอดมิน</span></div>';
   const badge=m.locked?'<span class="lk">'+I('lock')+' ล็อกอยู่</span>':'';
   return m.type==='image'
-   ?'<div class="med"><img data-mid="'+esc(m.mid)+'" data-act="viewImg" alt="" draggable="false">'+badge+'</div>'
+   ?'<div class="med"><img data-mid="'+esc(m.mid)+'" data-act="viewImg" data-id="'+esc(m.id)+'" alt="" draggable="false">'+badge+'</div>'
    :'<div class="med"><video data-mid="'+esc(m.mid)+'" controls playsinline preload="metadata" controlslist="nodownload noplaybackrate" disablepictureinpicture></video>'+badge+'</div>';
  }
  if(m.type==='audio')return '<audio data-mid="'+esc(m.mid)+'" controls controlslist="nodownload"></audio>';
  return '<button class="filebox" data-act="dlFile" data-id="'+esc(m.id)+'">'+I('file')+'<span><b>'+esc(m.name||'ไฟล์')+'</b><small>'+fmtSize(m.size||0)+'</small></span>'+I('download')+'</button>';
 }
 function msgHtml(m,prev,next,grp){
- if(m.type==='system')return '<div class="sys'+(m.warn?' warn':'')+'">'+esc(m.text)+'</div>';
+ if(m.type==='system'){
+  const isCall=/การโทร|สาย|วิดีโอคอล/.test(m.text||'');
+  return '<div class="sys'+(m.warn?' warn':isCall?' call-log':'')+'">'+(isCall?I('phone')+' ':'')+esc(m.text)+'</div>';
+ }
  const mine=m.from===ME,lastOfG=!next||next.type==='system'||next.from!==m.from,firstOfG=!prev||prev.type==='system'||prev.from!==m.from;
  const gone=m.unsend==='done';
  let body;
  if(gone&&!ADMIN)body='<div class="bub gone">ข้อความถูกยกเลิก</div>';
- else if(m.type==='text')body='<div class="bub">'+esc(m.text)+'</div>';
- else body='<div class="bub media">'+mediaHtml(m)+'</div>';
+ else if(m.type==='text')body='<div class="bub" data-dbl="'+esc(m.id)+'">'+esc(m.text)+'</div>';
+ else if(m.type==='sticker')body='<div class="bub sticker" data-dbl="'+esc(m.id)+'"><div class="stk-card">'+stickerSvg(m.sid)+'</div></div>';
+ else body='<div class="bub media" data-dbl="'+esc(m.id)+'">'+mediaHtml(m)+'</div>';
  let note='';
  if(m.unsend==='pending'&&(mine||ADMIN))note='<div class="note">ขอยกเลิก รอแอดมินอนุมัติ</div>';
  if(gone&&ADMIN)note='<div class="note dim">ข้อความนี้ถูกยกเลิกแล้ว (เห็นเฉพาะแอดมิน)</div>';
+ const rx=(!gone||ADMIN)?rxHtml(m):'';
  return '<div class="row '+(mine?'me':'ot')+'" data-id="'+esc(m.id)+'">'+
   (!mine?(lastOfG?av(m.from,28):'<span class="av-sp"></span>'):'')+
-  '<div class="col">'+(!mine&&grp&&firstOfG?'<span class="nm">'+esc(m.from)+'</span>':'')+body+note+'<span class="tm">'+hm(m.t)+rcptStat(m,mine)+'</span>'+'</div>'+
-  '<button class="more" data-act="msgMenu" data-id="'+esc(m.id)+'" aria-label="ตัวเลือก">'+I('more')+'</button></div>';
+  '<div class="col">'+(!mine&&grp&&firstOfG?'<span class="nm">'+esc(m.from)+'</span>':'')+
+  '<div class="bub-wrap">'+body+rx+'</div>'+
+  note+'<span class="tm">'+hm(m.t)+rcptStat(m,mine)+'</span></div>'+
+  '<div class="msg-tools">'+
+   (!gone?'<button class="react-btn" data-act="reactPop" data-id="'+esc(m.id)+'" aria-label="แสดงความรู้สึก" title="แสดงความรู้สึก">'+I('smile')+'</button>':'')+
+   '<button class="more" data-act="msgMenu" data-id="'+esc(m.id)+'" aria-label="ตัวเลือก">'+I('more')+'</button>'+
+  '</div></div>';
 }
 function renderMsgs(forceBottom){
  const el=$('#msgs'),c=chatById(OPEN);if(!el||!c)return;
@@ -582,12 +800,12 @@ function renderMsgs(forceBottom){
   const dk=dayKey(m.t);if(dk!==pd){h+='<div class="day">'+dayLbl(m.t)+'</div>';pd=dk}
   h+=msgHtml(m,ms[i-1],ms[i+1],grp);
  });
- el.innerHTML=(h||'<div class="sys">ยังไม่มีข้อความ ลองส่งข้อความแรกเลย</div>')+'<div id="typ"></div>';
+ el.innerHTML=(h||'<div class="sys">ยังไม่มีข้อความ ลองส่งข้อความหรือสติ๊กเกอร์แรกเลย</div>')+'<div id="typ"></div>';
  updateTypingBubble(false);
  hydrate(el);
  if(near)el.scrollTop=el.scrollHeight;
 }
-function refresh(){ // เรียกหลังข้อมูลเปลี่ยน
+function refresh(){
  renderList();
  if(!OPEN)return;
  if(!chatById(OPEN)||frameKey()!==FRAME)renderChat();else{renderMsgs(false);READ[OPEN]=Date.now();saveRead()}
@@ -595,8 +813,7 @@ function refresh(){ // เรียกหลังข้อมูลเปลี
 }
 
 // ===================== สถานะกำลังพิมพ์ =====================
-// ใช้ BroadcastChannel (ข้ามแท็บบนเครื่องเดียวกัน) ถ้าต่อหลังบ้านให้ส่งเหตุการณ์ typing ผ่าน Realtime แทน
-const TYPING={};                       // TYPING[chatId][user] = เวลาหมดอายุ (ms)
+const TYPING={};
 const TYPC=('BroadcastChannel' in window)?new BroadcastChannel('chat-typing'):null;
 let TLAST=0,TOFF=null;const TCLR={};
 function typers(cid){const o=TYPING[cid]||{},n=Date.now();return Object.keys(o).filter(u=>u!==ME&&o[u]>n)}
@@ -633,7 +850,7 @@ function typingInput(hasText){
 }
 if(TYPC)TYPC.onmessage=e=>{const d=e.data||{};if(d.chat&&d.from)typingSet(d.chat,d.from,!!d.on)};
 
-// ===================== ส่งข้อความ / ไฟล์ =====================
+// ===================== ส่งข้อความ / สติ๊กเกอร์ / ไฟล์ =====================
 function canSend(){const c=chatById(OPEN);if(!c)return false;if(c.closed&&!ADMIN){toast('แชทถูกปิด ส่งไม่ได้');return false}return true}
 function sendText(){
  const t=$('#inp');if(!t||!canSend())return;
@@ -641,6 +858,12 @@ function sendText(){
  addMsg(OPEN,{from:ME,type:'text',text:v});
  t.value='';t.style.height='';$('#comp').classList.remove('has');typingInput(false);
  refresh();t.focus();
+}
+function sendSticker(sid){
+ if(!canSend()||!STICKER_MAP[sid])return;
+ addMsg(OPEN,{from:ME,type:'sticker',sid:sid,text:''});
+ STK_OPEN=false;renderStickerTray();
+ refresh();
 }
 async function sendFile(file){
  if(!canSend())return;
@@ -691,10 +914,9 @@ document.addEventListener('keydown',e=>{
 });
 document.addEventListener('keyup',e=>{if(e.key==='PrintScreen'){try{navigator.clipboard.writeText(' ')}catch(_){}onCapture('printscreen')}});
 window.addEventListener('beforeprint',()=>onCapture('print'));
-// จุดเชื่อมสำหรับแอปมือถือ (iOS/Android) ที่ตรวจจับการแคปได้จริง: เรียก window.onNativeScreenshot()
 window.onNativeScreenshot=()=>onCapture('native');
 window.addEventListener('native-screenshot',()=>onCapture('native'));
-// เบลอเนื้อหาเมื่อสลับแอป/แท็บ (ลดการแอบแคปด้วยเครื่องมือภายนอก)
+
 function shield(on){if(!BLUR||ADMIN||!OPEN)on=false;$('#app').classList.toggle('shield',on)}
 window.addEventListener('blur',()=>shield(true));
 window.addEventListener('focus',()=>shield(false));
@@ -738,7 +960,6 @@ function decide(id,ok){
 function reqDelChat(){
  const c=chatById(OPEN);if(!c)return;
  if(c.members.includes('*')){closeSheet();return toast('ห้องรวมขอลบไม่ได้')}
- if(!confirm('ส่งคำขอลบแชทนี้ให้แอดมินอนุมัติ?'))return;
  c.delReq='pending';c.delBy=ME;save();if(CLOUD)cloudUpd('chat_rooms',c.id,{del_req:'pending',del_by:ME});
  closeSheet();refresh();toast('ส่งคำขอลบแชทให้แอดมินแล้ว');
 }
@@ -764,7 +985,6 @@ async function removeChat(id){
 }
 function approveDel(t){closeSheet();return removeChat(t.dataset.id)}
 function delChatNow(){
- if(!confirm('ลบแชทนี้ถาวร? ข้อความและไฟล์ทั้งหมดจะหาย กู้คืนไม่ได้'))return;
  const id=OPEN;closeSheet();return removeChat(id);
 }
 function chatAdminSheet(){
@@ -786,7 +1006,14 @@ function requestsSheet(){
 function msgMenu(id){
  const c=chatById(OPEN);if(!c)return;
  const m=msgsOf(c.id).find(x=>x.id===id);if(!m||m.type==='system')return;
- const mine=m.from===ME;let h='<h3>ตัวเลือกข้อความ</h3><div class="hr"></div>';
+ const mine=m.from===ME,myEm=(reactsOf(id))[ME]||'';
+ let h='<h3>ตัวเลือกข้อความ</h3>';
+ if(m.unsend!=='done'){
+  h+='<p class="help">แสดงความรู้สึกด้วยอิโมจิ</p><div class="emoji-grid" style="margin-bottom:8px">'+
+   ALL_EMOJIS.slice(0,12).map(em=>'<button class="'+(myEm===em?'on':'')+'" data-act="sheetReact" data-id="'+esc(id)+'" data-em="'+esc(em)+'">'+em+'</button>').join('')+
+  '</div>';
+ }
+ h+='<div class="hr"></div>';
  if(m.unsend==='done'&&!ADMIN)h+='<p class="help">ข้อความนี้ถูกยกเลิกแล้ว</p>';
  if(mine&&!m.unsend)h+='<button class="opt danger" data-act="reqUnsend" data-id="'+esc(id)+'">'+I('trash')+'<span>ขอยกเลิกข้อความ<small>ต้องรอแอดมินอนุมัติ</small></span></button>';
  if(mine&&m.unsend==='pending')h+='<p class="help">ส่งคำขอยกเลิกแล้ว รอแอดมินอนุมัติ</p>';
@@ -794,7 +1021,7 @@ function msgMenu(id){
   if(m.unsend==='pending')h+='<button class="opt" data-act="approve" data-id="'+esc(id)+'">'+I('check')+'<span>อนุมัติการยกเลิก</span></button><button class="opt" data-act="reject" data-id="'+esc(id)+'">'+I('x')+'<span>ปฏิเสธคำขอ</span></button>';
   else if(m.unsend!=='done')h+='<button class="opt danger" data-act="approve" data-id="'+esc(id)+'">'+I('trash')+'<span>ยกเลิกข้อความนี้ (แอดมิน)</span></button>';
   if(m.type==='image'||m.type==='video')h+='<button class="opt" data-act="toggleLock" data-id="'+esc(id)+'">'+I(m.locked?'unlock':'eyeoff')+'<span>'+(m.locked?'ปลดล็อก':'ล็อก')+(m.type==='image'?'ภาพ':'วิดีโอ')+'<small>'+(m.locked?'ให้ทุกคนดูได้อีกครั้ง':'ซ่อนจากทุกคน เห็นเฉพาะแอดมิน')+'</small></span></button>';
- }else if(!mine&&!(m.unsend==='done'))h+='<p class="help">ไม่มีตัวเลือกสำหรับข้อความนี้</p>';
+ }
  openSheet(h);
 }
 
@@ -837,7 +1064,6 @@ function startGroup(){
  const bad=ms.find(s=>!/^[a-z0-9._]{2,20}$/.test(s));if(bad)return toast('ชื่อสมาชิกไม่ถูกต้อง: '+bad);
  const id='g-'+uid();
  DB.chats.push({id:id,type:'group',name:n,members:Array.from(new Set([ME].concat(ms))),closed:false,silent:false});
-
  if(CLOUD)cloudChat(chatById(id));
  addMsg(id,{type:'system',text:ME+' สร้างกลุ่ม “'+n+'”'});
  closeSheet();openChat(id);
@@ -850,9 +1076,17 @@ function infoSheet(){
 }
 
 // ===================== รูป / ดาวน์โหลด =====================
-async function viewImg(mid){
+function renderLbRx(mid){
+ const box=$('#lbRx');if(!box)return;
+ if(!mid){box.innerHTML='';return}
+ const myEm=(reactsOf(mid))[ME]||'';
+ box.innerHTML=QUICK_EMOJIS.map(em=>'<button class="'+(myEm===em?'on':'')+'" data-act="lbReact" data-id="'+esc(mid)+'" data-em="'+esc(em)+'">'+em+'</button>').join('');
+}
+async function viewImg(mid,msgId){
  const u=await urlFor(mid);if(!u)return;
+ LB_MSG_ID=msgId||null;
  $('#lbImg').src=u;$('#lb').classList.add('on');
+ renderLbRx(LB_MSG_ID);
 }
 async function dlFile(id){
  const c=chatById(OPEN);const m=c&&msgsOf(c.id).find(x=>x.id===id);if(!m)return;
@@ -860,84 +1094,145 @@ async function dlFile(id){
  const a=document.createElement('a');a.href=u;a.download=m.name||'file';document.body.appendChild(a);a.click();a.remove();
 }
 
-// ===================== โทร (WebRTC) =====================
-// สัญญาณใช้ BroadcastChannel จึงโทรได้ระหว่างแท็บ/หน้าต่างบนเบราว์เซอร์เดียวกัน
-// ถ้าจะโทรข้ามเครื่อง ต้องเปลี่ยน sig() ไปใช้เซิร์ฟเวอร์สัญญาณ (เช่น Supabase Realtime / WebSocket)
+// ===================== โทร & เสียงเรียกเข้า (WebRTC + Web Audio) =====================
 const SIG=('BroadcastChannel' in window)?new BroadcastChannel('chat-sig'):null;
-let PC=null,LOC=null,CALL=null,PEND=[],CT=null,CT0=0,RING=null;
-function sig(o){const p=Object.assign({from:ME},o);if(CLOUD&&RLCH)RLCH.send({type:'broadcast',event:'sig',payload:p});else if(SIG)SIG.postMessage(p)}
+let PC=null,LOC=null,CALL=null,PEND=[],CT=null,CT0=0,RING=null,FACING='user';
+let ACTX=null,TONE_T=null;
+
+function playTone(mode){
+ stopTone();
+ try{
+  const Ctx=window.AudioContext||window.webkitAudioContext;
+  if(!Ctx)return;
+  if(!ACTX)ACTX=new Ctx();
+  const beep=()=>{
+   if(!CALL||CALL.connected)return;
+   const o=ACTX.createOscillator(),g=ACTX.createGain();
+   o.type='sine';
+   o.frequency.setValueAtTime(mode==='in'?523.25:440,ACTX.currentTime);
+   if(mode==='in')o.frequency.setValueAtTime(659.25,ACTX.currentTime+0.18);
+   g.gain.setValueAtTime(0.08,ACTX.currentTime);
+   g.gain.exponentialRampToValueAtTime(0.001,ACTX.currentTime+0.45);
+   o.connect(g);g.connect(ACTX.destination);
+   o.start();o.stop(ACTX.currentTime+0.46);
+  };
+  beep();
+  TONE_T=setInterval(beep,mode==='in'?1400:2200);
+ }catch(e){}
+}
+function stopTone(){if(TONE_T){clearInterval(TONE_T);TONE_T=null}}
+
+function sig(o){
+ const p=Object.assign({from:ME},o);
+ if(CLOUD&&RLCH)RLCH.send({type:'broadcast',event:'sig',payload:p});
+ if(SIG)SIG.postMessage(p);
+}
 function callUI(state,name,video){
  $('#call').classList.add('on');
  $('#cav').innerHTML=av(name,96);$('#cn').textContent=name;
- $('#cst').textContent=state==='in'?(video?'วิดีโอคอลเรียกเข้า':'สายเรียกเข้า'):state==='out'?'กำลังโทร...':'';
+ $('#cst').textContent=state==='in'?(video?'วิดีโอคอลเรียกเข้า...':'สายเรียกเข้า...'):state==='out'?(video?'กำลังโทรวิดีโอ...':'กำลังโทรด้วยเสียง...'):'';
  $('#cAcc').classList.toggle('hide',state!=='in');
- $('#cMic').classList.toggle('hide',state==='in');$('#cCam').classList.toggle('hide',state==='in'||!video);
- $('#cMic').classList.remove('off');$('#cCam').classList.remove('off');
+ $('#cMic').classList.toggle('hide',state==='in');
+ $('#cSpk').classList.toggle('hide',state==='in');
+ $('#cCam').classList.toggle('hide',state==='in'||!video);
+ $('#cFlip').classList.toggle('hide',state==='in'||!video);
+ $('#cMic').classList.remove('off');$('#cSpk').classList.remove('off');$('#cCam').classList.remove('off');
 }
 async function mkPC(video){
  if(!navigator.mediaDevices||!window.RTCPeerConnection)throw Error('อุปกรณ์ไม่รองรับการโทร');
- LOC=await navigator.mediaDevices.getUserMedia({audio:true,video:video?{facingMode:'user'}:false});
+ LOC=await navigator.mediaDevices.getUserMedia({audio:true,video:video?{facingMode:FACING}:false});
  $('#lv').srcObject=LOC;$('#lv').style.display=video?'block':'none';
  PC=new RTCPeerConnection({iceServers:ICE});
  LOC.getTracks().forEach(t=>PC.addTrack(t,LOC));
- PC.ontrack=e=>{$('#rv').srcObject=e.streams[0]};
- PC.onicecandidate=e=>{if(e.candidate&&CALL)sig({t:'ice',to:CALL.peer,c:e.candidate})};
+ PC.ontrack=e=>{$('#rv').srcObject=e.streams[0];$('#rv').muted=false};
+ PC.onicecandidate=e=>{if(e.candidate&&CALL)sig({t:'ice',to:CALL.peer,chat:CALL.chat,c:e.candidate})};
  PC.onconnectionstatechange=()=>{if(!PC)return;if(['failed','closed'].includes(PC.connectionState))endCall(false)};
 }
 async function startCall(video){
- const c=chatById(OPEN);if(!c||c.type!=='dm')return;
+ const c=chatById(OPEN);if(!c)return;
  if(c.closed&&!ADMIN)return toast('แชทถูกปิด โทรไม่ได้');
  if(CALL)return;
  if(!SIG&&!CLOUD)return toast('เบราว์เซอร์ไม่รองรับการโทรในโหมดนี้');
- CALL={chat:c.id,peer:peerOf(c),video:video,out:true,connected:false};PEND=[];
- callUI('out',CALL.peer,video);
+ const target=c.type==='dm'?peerOf(c):'*';
+ const title=chatName(c);
+ FACING='user';
+ CALL={chat:c.id,peer:target,title:title,video:video,out:true,connected:false};PEND=[];
+ callUI('out',title,video);
+ playTone('out');
  try{
   await mkPC(video);
   const off=await PC.createOffer();await PC.setLocalDescription(off);
-  sig({t:'offer',to:CALL.peer,chat:c.id,video:video,sdp:PC.localDescription});
-  RING=setTimeout(()=>{if(CALL&&!CALL.connected){addMsg(CALL.chat,{type:'system',text:'การโทรไม่มีผู้รับสาย'});endCall(true);refresh()}},40000);
- }catch(e){toast(e.message||'เริ่มการโทรไม่สำเร็จ (ต้องใช้ https และอนุญาตกล้อง/ไมค์)');endCall(false)}
+  sig({t:'offer',to:target,chat:c.id,title:c.type==='group'?c.name:ME,video:video,sdp:PC.localDescription});
+  RING=setTimeout(()=>{if(CALL&&!CALL.connected){addMsg(CALL.chat,{type:'system',text:(video?'วิดีโอคอล':'การโทร')+'ไม่มีผู้รับสาย'});endCall(true);refresh()}},40000);
+ }catch(e){toast(e.message||'เริ่มการโทรไม่สำเร็จ (ต้องอนุญาตไมค์/กล้อง)');endCall(false)}
 }
 async function acceptCall(){
  if(!CALL||CALL.out)return;
+ stopTone();
  try{
   await mkPC(CALL.video);
   await PC.setRemoteDescription(CALL.offer);
   for(const c of PEND)try{await PC.addIceCandidate(c)}catch(e){}PEND=[];
   const ans=await PC.createAnswer();await PC.setLocalDescription(ans);
-  sig({t:'answer',to:CALL.peer,sdp:PC.localDescription});
+  sig({t:'answer',to:CALL.peer,chat:CALL.chat,sdp:PC.localDescription});
   connected();
  }catch(e){toast(e.message||'รับสายไม่สำเร็จ');endCall(true)}
 }
 function connected(){
+ stopTone();
  CALL.connected=true;clearTimeout(RING);CT0=Date.now();
- $('#cAcc').classList.add('hide');$('#cMic').classList.remove('hide');if(CALL.video)$('#cCam').classList.remove('hide');
+ $('#cAcc').classList.add('hide');
+ $('#cMic').classList.remove('hide');$('#cSpk').classList.remove('hide');
+ if(CALL.video){$('#cCam').classList.remove('hide');$('#cFlip').classList.remove('hide')}
  clearInterval(CT);CT=setInterval(()=>{const s=Math.floor((Date.now()-CT0)/1000);$('#cst').textContent=pad(Math.floor(s/60))+':'+pad(s%60)},500);
  $('#cst').textContent='00:00';
 }
+async function flipCam(){
+ if(!CALL||!CALL.video||!LOC)return;
+ FACING=FACING==='user'?'environment':'user';
+ try{
+  const ns=await navigator.mediaDevices.getUserMedia({video:{facingMode:FACING}});
+  const nt=ns.getVideoTracks()[0];
+  const old=LOC.getVideoTracks()[0];
+  if(old){LOC.removeTrack(old);old.stop()}
+  LOC.addTrack(nt);
+  $('#lv').srcObject=LOC;
+  $('#lv').style.transform=FACING==='user'?'scaleX(-1)':'none';
+  if(PC){const sender=PC.getSenders().find(s=>s.track&&s.track.kind==='video');if(sender)await sender.replaceTrack(nt)}
+ }catch(e){toast('สลับกล้องไม่ได้บนอุปกรณ์นี้')}
+}
 function endCall(send){
- if(send&&CALL)sig({t:'end',to:CALL.peer});
+ stopTone();
+ if(send&&CALL)sig({t:'end',to:CALL.peer,chat:CALL.chat});
  clearTimeout(RING);clearInterval(CT);
  const was=CALL;
  if(LOC)LOC.getTracks().forEach(t=>t.stop());LOC=null;
  if(PC){try{PC.close()}catch(e){}}PC=null;
  $('#rv').srcObject=null;$('#lv').srcObject=null;$('#call').classList.remove('on');
- if(was&&was.connected&&was.out){const s=Math.floor((Date.now()-CT0)/1000);addMsg(was.chat,{type:'system',text:'การโทรสิ้นสุด '+pad(Math.floor(s/60))+':'+pad(s%60)});refresh()}
+ if(was&&was.connected&&was.out){
+  const s=Math.floor((Date.now()-CT0)/1000);
+  addMsg(was.chat,{type:'system',text:(was.video?'วิดีโอคอล':'การโทรด้วยเสียง')+'สิ้นสุด ('+pad(Math.floor(s/60))+':'+pad(s%60)+')'});
+  refresh();
+ }
  CALL=null;PEND=[];
 }
 const onSigMsg=async d=>{
- d=d||{};if(d.to!==ME)return;
+ d=d||{};if(!ME||d.from===ME)return;
+ const c=d.chat?chatById(d.chat):null;
+ const isForMe=d.to===ME||(d.to==='*'&&c&&(c.members.includes('*')||c.members.includes(ME)));
+ if(!isForMe)return;
  if(d.t==='offer'){
-  const c=chatById(d.chat);
-  if(CALL||!c||(c.closed&&!ADMIN)){sig({t:'end',to:d.from});return}
-  CALL={chat:d.chat,peer:d.from,video:d.video,offer:d.sdp,out:false,connected:false};PEND=[];
-  callUI('in',d.from,d.video);
+  if(CALL||!c||(c.closed&&!ADMIN)){if(d.to===ME)sig({t:'end',to:d.from,chat:d.chat});return}
+  CALL={chat:d.chat,peer:d.from,title:d.title||d.from,video:d.video,offer:d.sdp,out:false,connected:false};PEND=[];
+  callUI('in',CALL.title,d.video);
+  playTone('in');
  }else if(d.t==='answer'&&PC&&CALL&&CALL.out){
+  CALL.peer=d.from;
   try{await PC.setRemoteDescription(d.sdp);for(const c of PEND)try{await PC.addIceCandidate(c)}catch(e){}PEND=[];connected()}catch(e){}
- }else if(d.t==='ice'){
+ }else if(d.t==='ice'&&CALL&&(d.from===CALL.peer||CALL.peer==='*')){
   if(PC&&PC.remoteDescription){try{await PC.addIceCandidate(d.c)}catch(e){}}else PEND.push(d.c);
- }else if(d.t==='end'){
-  if(CALL){const w=CALL;toast(w.connected?'อีกฝ่ายวางสาย':w.out?'อีกฝ่ายไม่รับสาย':'ผู้โทรยกเลิก');endCall(false)}
+ }else if(d.t==='end'&&CALL){
+  const w=CALL;toast(w.connected?'อีกฝ่ายวางสาย':w.out?'อีกฝ่ายไม่รับสาย':'สายเรียกเข้าถูกยกเลิก');endCall(false);
  }
 };
 if(SIG)SIG.onmessage=ev=>onSigMsg(ev.data);
@@ -945,7 +1240,7 @@ if(SIG)SIG.onmessage=ev=>onSigMsg(ev.data);
 // ===================== events =====================
 const A={
  closeSheet:closeSheet,
- closeLb(){$('#lb').classList.remove('on');$('#lbImg').removeAttribute('src')},
+ closeLb(){$('#lb').classList.remove('on');$('#lbImg').removeAttribute('src');LB_MSG_ID=null},
  open(t){openChat(t.dataset.id)},
  back(){closeChatView()},
  home(){closeChatView()},
@@ -974,8 +1269,17 @@ const A={
   if(m&&ADMIN){m.locked=!m.locked;save();if(CLOUD)cloudUpd('chat_messages',m.id,{locked:m.locked});refresh();toast(m.locked?'ล็อกแล้ว':'ปลดล็อกแล้ว')}
   closeSheet();
  },
- msgMenu(t){msgMenu(t.dataset.id)},
- viewImg(t){viewImg(t.dataset.mid)},
+ msgMenu(t){closeRxPop();msgMenu(t.dataset.id)},
+ reactPop(t){openRxPop(t,t.dataset.id)},
+ pickReact(t){if(RX_TARGET)toggleReact(RX_TARGET,t.dataset.em)},
+ quickReact(t){toggleReact(t.dataset.id,t.dataset.em)},
+ sheetReact(t){toggleReact(t.dataset.id,t.dataset.em);closeSheet()},
+ lbReact(t){toggleReact(t.dataset.id,t.dataset.em)},
+ moreReact:moreReactSheet,
+ toggleStk(){STK_OPEN=!STK_OPEN;renderStickerTray()},
+ stkPack(t){STK_PACK=t.dataset.id;renderStickerTray()},
+ sendSticker(t){sendSticker(t.dataset.id)},
+ viewImg(t){viewImg(t.dataset.mid,t.dataset.id)},
  dlFile(t){dlFile(t.dataset.id)},
  sendText:sendText,
  pickImg(){$('#fi1').click()},pickFile(){$('#fi2').click()},
@@ -983,18 +1287,25 @@ const A={
  call(){startCall(false)},vcall(){startCall(true)},
  callAcc:acceptCall,callEnd(){endCall(true)},
  callMic(t){if(LOC){const a=LOC.getAudioTracks()[0];if(a){a.enabled=!a.enabled;t.classList.toggle('off',!a.enabled)}}},
+ callSpk(t){const rv=$('#rv');if(rv){rv.muted=!rv.muted;t.classList.toggle('off',rv.muted)}},
  callCam(t){if(LOC){const v=LOC.getVideoTracks()[0];if(v){v.enabled=!v.enabled;t.classList.toggle('off',!v.enabled)}}},
+ callFlip:flipCam,
  toggleBlur(t){BLUR=t.checked;LS.set('chat.blur',BLUR?'1':'0')},
  resetAll(){
-  if(!confirm('ล้างข้อความและข้อมูลทั้งหมดในเครื่องนี้?'))return;
-  try{localStorage.removeItem('chat.db')}catch(e){}
+  try{localStorage.removeItem('chat.db');localStorage.removeItem('chat.reacts')}catch(e){}
   try{indexedDB.deleteDatabase('chat-media')}catch(e){}
   location.reload();
  }
 };
+
 document.addEventListener('click',function(e){
+ if(!e.target.closest('#rxPop,[data-act="reactPop"]'))closeRxPop();
  const t=e.target.closest('[data-act]');if(!t||t.type==='checkbox'||!t.dataset.act)return;
  const f=A[t.dataset.act];if(f){e.preventDefault();try{const r=f(t,e);if(r&&r.catch)r.catch(x=>toast(x.message||String(x)))}catch(x){toast(x.message||String(x))}}
+});
+document.addEventListener('dblclick',function(e){
+ const b=e.target.closest('[data-dbl]');
+ if(b&&b.dataset.dbl)toggleReact(b.dataset.dbl,'❤️');
 });
 document.addEventListener('change',function(e){
  const t=e.target;
@@ -1011,16 +1322,15 @@ document.addEventListener('keydown',function(e){
  if(e.key==='Enter'&&e.target.id==='pin'){e.preventDefault();pinOk()}
  if(e.key==='Enter'&&e.target.id==='nm'){e.preventDefault();saveName()}
  if(e.key==='Enter'&&e.target.id==='np'){e.preventDefault();startDM()}
- if(e.key==='Escape'){closeSheet();A.closeLb()}
+ if(e.key==='Escape'){closeRxPop();closeSheet();A.closeLb()}
 });
-// ลากไฟล์มาวางในแชท
 ['dragover','drop'].forEach(n=>$('#main').addEventListener(n,function(e){
  if(!OPEN)return;e.preventDefault();
  if(n==='drop'&&e.dataTransfer&&e.dataTransfer.files.length)sendFiles(Array.from(e.dataTransfer.files));
 }));
-// ซิงก์ข้อมูลข้ามแท็บ
 window.addEventListener('storage',function(e){
  if(e.key==='chat.db'){load();refresh()}
+ if(e.key==='chat.reacts'){loadReacts();if(OPEN)renderMsgs(false)}
  if(e.key==='chat.read.'+ME)loadRead();
 });
 
@@ -1029,8 +1339,9 @@ function init(){
  $('#logoI').innerHTML=I('chat');$('#rbChat').innerHTML=I('chat');$('#rbSearch').innerHTML=I('search');$('#rbNew').innerHTML=I('plus');
  $('#rbAdm').innerHTML=I('shield');$('#rbSet').innerHTML=I('gear');$('#unameC').innerHTML=I('chev');$('#btnNew').innerHTML=I('compose');
  $('#srI').innerHTML=I('search');$('#emI').innerHTML=I('send');$('#lbX').innerHTML=I('x');
- $('#cMic').innerHTML=I('mic');$('#cCam').innerHTML=I('video');$('#cAcc').innerHTML=I('phone');$('#cEnd').innerHTML=I('phone');
- load();loadRead();
+ $('#cMic').innerHTML=I('mic');$('#cSpk').innerHTML=I('speaker');$('#cCam').innerHTML=I('video');$('#cFlip').innerHTML=I('flip');
+ $('#cAcc').innerHTML=I('phone');$('#cEnd').innerHTML=I('phone');
+ load();loadRead();loadReacts();
  $('#admTag').classList.toggle('hide',!ADMIN);
  $('#uname').textContent=ME||'ผู้ใช้';
  renderList();renderChat();
