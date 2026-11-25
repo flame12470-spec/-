@@ -226,6 +226,47 @@ body.recording #comp{display:none}
 .emoji-grid button{font-size:26px;height:48px;border-radius:12px;background:#1e2533;display:grid;place-items:center}
 .emoji-grid button:hover{background:#2a3448;transform:scale(1.08)}
 
+/* ---------- ป๊อปอัปแจ้งเตือนด้านบนสำหรับมือถือ/ไอแพด (Heads-up Notification Popup) ---------- */
+#pushPop{position:fixed;top:calc(10px + var(--sat));left:50%;transform:translate(-50%,-150%);width:min(440px,94vw);background:rgba(20,26,38,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid #33415c;border-radius:20px;padding:12px 14px;display:flex;align-items:center;gap:12px;z-index:350;box-shadow:0 14px 36px rgba(0,0,0,.65);opacity:0;pointer-events:none;transition:transform .28s cubic-bezier(.2,.9,.3,1),opacity .22s}
+#pushPop.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+#pushPop .pp-body{flex:1;min-width:0;cursor:pointer}
+#pushPop .pp-top{display:flex;align-items:center;gap:6px;font-size:12px;color:#93c5fd;font-weight:600}
+#pushPop .pp-title{font-size:15px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pushPop .pp-txt{font-size:13px;color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#pushPop .pp-acts{display:flex;gap:6px;flex:none}
+#pushPop .pp-btn{padding:7px 12px;border-radius:10px;font-size:12px;font-weight:600;background:var(--accent);color:#fff}
+#pushPop .pp-btn.ok{background:var(--ok);color:#052e16}
+#pushPop .pp-btn.red{background:var(--danger);color:#fff}
+#pushPop .pp-x{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:var(--muted);font-size:18px}
+
+/* ---------- หน้าเข้าสู่ระบบ / สร้างผู้ใช้งานก่อนเริ่มแชท ---------- */
+#authGate{position:fixed;inset:0;background:radial-gradient(circle at 50% 0%,#1e293b,#0b0f17 70%);z-index:280;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+#authGate.on{display:flex}
+.auth-card{width:min(430px,94vw);background:#151c28;border:1px solid #263147;border-radius:24px;padding:26px 22px;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.auth-head{text-align:center;margin-bottom:18px}
+.auth-head img{width:64px;height:64px;border-radius:18px;margin-bottom:10px;box-shadow:0 8px 20px rgba(79,70,229,.35)}
+.auth-head h2{font-size:22px;font-weight:700}
+.auth-head p{font-size:13px;color:var(--muted);margin-top:4px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;background:#0f141e;padding:4px;border-radius:14px;margin-bottom:16px;border:1px solid #222b3a}
+.auth-tab{padding:9px;border-radius:10px;font-size:14px;font-weight:600;color:var(--muted);text-align:center}
+.auth-tab.on{background:var(--accent);color:#fff}
+.auth-card label{display:block;color:var(--muted);font-size:13px;margin:12px 0 5px}
+.auth-card input{width:100%;background:#202836;border:2px solid transparent;border-radius:14px;padding:12px 14px;outline:0;color:var(--text)}
+.auth-card input:focus{border-color:var(--accent)}
+.auth-card .pbtn{width:100%;margin-top:18px;padding:13px;font-size:15px}
+
+/* ---------- เมนูสมาชิกทั้งหมด (แอดมิน) ---------- */
+.mem-card{background:#1b2230;border:1px solid #283246;border-radius:16px;padding:12px 14px;margin-top:10px;display:flex;align-items:center;gap:12px}
+.mem-info{flex:1;min-width:0}
+.mem-info b{display:flex;align-items:center;gap:6px;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mem-info small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.mem-acts{display:flex;gap:6px;flex:none}
+.mem-acts button{width:36px;height:36px;border-radius:10px;background:#252f42;display:grid;place-items:center;font-size:18px;color:var(--text)}
+.mem-acts button:hover{background:var(--accent);color:#fff}
+.mem-acts button.danger:hover{background:var(--danger);color:#fff}
+.notif-bar{margin:6px 20px;padding:9px 14px;background:#1c2539;border:1px solid #2e3d5c;border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#cbd5e1}
+.notif-bar button{background:var(--accent);color:#fff;padding:5px 11px;border-radius:8px;font-weight:600;white-space:nowrap;font-size:12px}
+
 #toast{position:fixed;left:50%;bottom:calc(90px + var(--sab));transform:translate(-50%,16px);background:#e8ecf3;color:#0b0f17;padding:10px 20px;border-radius:99px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:300;max-width:90vw;text-align:center}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 #lb{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:200;display:none; flex-direction:column;align-items:center;justify-content:center;padding:20px}
@@ -280,6 +321,7 @@ body.recording #comp{display:none}
     <button class="rb on" data-act="home" aria-label="แชท" id="rbChat"></button>
     <button class="rb" data-act="focusSearch" aria-label="ค้นหา" id="rbSearch"></button>
     <button class="rb" data-act="newChat" aria-label="แชทใหม่" id="rbNew"></button>
+    <button class="rb" data-act="membersSheet" aria-label="สมาชิกทั้งหมด (แอดมิน)" title="สมาชิกทั้งหมด (แอดมิน)" id="rbMem"></button>
     <button class="rb" data-act="requests" aria-label="คำขอและแอดมิน" id="rbAdm"></button>
     <button class="rb" data-act="pwaSheet" aria-label="เพิ่มลงหน้าจอหลักและแจ้งเตือน" title="เพิ่มลงหน้าจอหลัก / แจ้งเตือน" id="rbApp"></button>
     <div class="sp"></div>
@@ -291,11 +333,16 @@ body.recording #comp{display:none}
       <span class="adm hide" id="admTag">แอดมิน</span>
       <button class="rt hide" id="rtDot" data-act="cloudSheet" aria-label="สถานะการเชื่อมต่อ"></button>
       <span class="sp"></span>
+      <button class="ib hide" data-act="membersSheet" aria-label="สมาชิกทั้งหมด" title="สมาชิกทั้งหมด (แอดมิน)" id="btnMem"></button>
       <button class="ib" data-act="pwaSheet" aria-label="เพิ่มลงหน้าจอหลักและแจ้งเตือน" title="เพิ่มเป็นแอป / แจ้งเตือน" id="btnApp"></button>
       <button class="ib" data-act="newChat" aria-label="แชทใหม่" id="btnNew"></button>
     </div>
+    <div id="notifBar" class="notif-bar hide">
+      <span>🔔 เปิดแจ้งเตือนป๊อปอัปเมื่อมีข้อความ/สายเข้า</span>
+      <button data-act="reqNotifPerm">เปิดแจ้งเตือน</button>
+    </div>
     <div class="searchbox"><span id="srI"></span><input id="cs" placeholder="ค้นหา" autocomplete="off"></div>
-    <div class="s-sub"><b>ข้อความ</b><button data-act="requests">คำขอ <span class="dotn hide" id="reqN"></span></button></div>
+    <div class="s-sub"><b>ข้อความ</b><div style="display:flex;gap:12px;align-items:center"><button data-act="membersSheet" id="subMemBtn" class="hide">สมาชิก <span class="dotn" id="memN" style="background:var(--accent)">0</span></button><button data-act="requests">คำขอ <span class="dotn hide" id="reqN"></span></button></div></div>
     <div id="clist"></div>
   </section>
   <section id="main">
@@ -319,6 +366,7 @@ body.recording #comp{display:none}
 </div>
 <div id="call">
   <video id="rv" autoplay playsinline></video>
+  <audio id="ra" autoplay playsinline></audio>
   <video id="lv" autoplay playsinline muted></video>
   <div class="cinfo"><div id="cav"></div><h3 id="cn"></h3><p id="cst"></p></div>
   <div class="cbtn">
@@ -330,6 +378,8 @@ body.recording #comp{display:none}
     <button class="end" id="cEnd" data-act="callEnd" aria-label="วางสาย" title="วางสาย"></button>
   </div>
 </div>
+<div id="pushPop" role="alert" aria-live="assertive"></div>
+<div id="authGate"></div>
 <div id="toast" role="status"></div>
 <script>
 (function(){
@@ -338,7 +388,12 @@ body.recording #comp{display:none}
 // ===================== ตั้งค่า =====================
 const ADMIN_PIN='123456';           // รหัสแอดมิน
 const MAX_FILE=100*1024*1024;       // ขนาดไฟล์สูงสุด 100MB
-const ICE=[{urls:'stun:stun.l.google.com:19302'}];
+const ICE=[
+  {urls:'stun:stun.l.google.com:19302'},
+  {urls:'stun:stun1.l.google.com:19302'},
+  {urls:'stun:stun2.l.google.com:19302'},
+  {urls:'stun:stun.cloudflare.com:3478'}
+];
 const QUICK_EMOJIS=['❤️','😆','😮','😢','😡','👍'];
 const ALL_EMOJIS=['❤️','😆','😮','😢','😡','👍','🔥','🎉','👏','🙏','🥰','😎','🤔','😭','🥳','💯','✨','🫶'];
 
@@ -460,12 +515,79 @@ const IC={
 const I=n=>'<svg class="ico" viewBox="0 0 24 24">'+(IC[n]||'')+'</svg>';
 
 // ===================== state =====================
-let DB={chats:[],msgs:{}},ME=LS.get('chat.me')||'',ADMIN=SS.get('chat.admin')==='1',OPEN=null,FRAME='',FILTER='';
+let DB={chats:[],msgs:{}},ME=LS.get('chat.me')||'',AUTH_OK=LS.get('chat.auth')==='1',ADMIN=SS.get('chat.admin')==='1',OPEN=null,FRAME='',FILTER='';
 let BLUR=LS.get('chat.blur')!=='0',NOTIF=LS.get('chat.notif')!=='0',NSOUND=LS.get('chat.nsound')!=='0',PINNEXT=null;
-let READ={},REACTS={},DEFERRED_PROMPT=null;
-let STK_OPEN=false,STK_PACK=STICKER_PACKS[0].id,RX_TARGET=null,LB_MSG_ID=null;
+let READ={},REACTS={},USERS={},DEFERRED_PROMPT=null,SW_REG=null,POP_T=null;
+let STK_OPEN=false,STK_PACK=STICKER_PACKS[0].id,RX_TARGET=null,LB_MSG_ID=null,AUTH_MODE='login',MEM_Q='';
 
-// ===================== PWA & การแจ้งเตือน (Home Screen App + Notifications) =====================
+// ===================== ระบบบัญชีผู้ใช้และฐานข้อมูลสมาชิก =====================
+const USRC=('BroadcastChannel' in window)?new BroadcastChannel('chat-users'):null;
+if(USRC)USRC.onmessage=e=>{if(e.data&&e.data.users){mergeUsers(e.data.users);if($('#sheet.on')&&$('#memSearch'))membersSheet()}};
+
+function loadUsers(){
+ try{USERS=JSON.parse(LS.get('chat.users')||'{}')}catch(e){USERS={}}
+}
+function saveUsers(){
+ LS.set('chat.users',JSON.stringify(USERS));
+}
+function mergeUsers(map){
+ if(!map||typeof map!=='object')return;
+ Object.keys(map).forEach(u=>{
+  if(!u||u==='*')return;
+  if(!USERS[u]||((map[u].t||0)>=(USERS[u].t||0)))USERS[u]=map[u];
+ });
+ saveUsers();
+ updateMemberCount();
+}
+function encodeUsersArr(){
+ return Object.keys(USERS).map(u=>{
+  const x=USERS[u]||{};
+  return [u,x.pass||'',x.t||Date.now(),x.role||'member'].join('|');
+ });
+}
+function decodeUsersArr(arr){
+ if(!Array.isArray(arr))return;
+ const map={};
+ arr.forEach(s=>{
+  const p=String(s||'').split('|');
+  if(p[0]&&p[0]!=='*')map[p[0]]={pass:p[1]||'',t:Number(p[2])||Date.now(),role:p[3]||'member'};
+ });
+ mergeUsers(map);
+}
+function syncUsersCloud(){
+ saveUsers();
+ if(USRC)USRC.postMessage({users:USERS});
+ if(CLOUD&&RLCH){
+  RLCH.send({type:'broadcast',event:'users-sync',payload:{users:USERS}});
+  sb.from('chat_rooms').upsert({id:'sys:users',type:'group',name:'__SYS_USERS__',members:encodeUsersArr()},{onConflict:'id'}).then(()=>{});
+ }
+ updateMemberCount();
+}
+function allMembersList(){
+ const map=Object.assign({},USERS);
+ DB.chats.forEach(c=>{
+  if(c.id==='sys:users')return;
+  (c.members||[]).forEach(u=>{if(u&&u!=='*'&&!map[u])map[u]={pass:'',t:0,role:'member'}});
+ });
+ Object.keys(DB.msgs||{}).forEach(cid=>{
+  (DB.msgs[cid]||[]).forEach(m=>{if(m.from&&m.from!=='*'&&!map[m.from])map[m.from]={pass:'',t:m.t||0,role:'member'}});
+ });
+ if(ME&&!map[ME])map[ME]={pass:'',t:Date.now(),role:ADMIN?'admin':'member'};
+ return Object.keys(map).sort().map(u=>{
+  let msgCnt=0;
+  Object.keys(DB.msgs||{}).forEach(cid=>{(DB.msgs[cid]||[]).forEach(m=>{if(m.from===u)msgCnt++})});
+  return {u:u,pass:map[u].pass||'',t:map[u].t||0,role:(u===ME&&ADMIN)||map[u].role==='admin'?'admin':'member',msgs:msgCnt};
+ });
+}
+function updateMemberCount(){
+ const n=allMembersList().length;
+ const el=$('#memN');if(el)el.textContent=n;
+ const sbBtn=$('#subMemBtn');if(sbBtn)sbBtn.classList.toggle('hide',!ADMIN);
+ const bMem=$('#btnMem');if(bMem)bMem.classList.toggle('hide',!ADMIN);
+ const rMem=$('#rbMem');if(rMem)rMem.classList.toggle('hide',!ADMIN);
+}
+
+// ===================== PWA & การแจ้งเตือนป๊อปอัป (Mobile / iPad / Desktop) =====================
 const APP_ICON_SVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#0b0f17"/></linearGradient></defs><rect width="512" height="512" rx="115" fill="url(#bg)"/><path d="M112 136h288a24 24 0 0 1 24 24v176a24 24 0 0 1-24 24H212l-76 64v-64h-24a24 24 0 0 1-24-24V160a24 24 0 0 1 24-24z" fill="none" stroke="#ffffff" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/><circle cx="196" cy="248" r="18" fill="#ffffff"/><circle cx="256" cy="248" r="18" fill="#ffffff"/><circle cx="316" cy="248" r="18" fill="#ffffff"/></svg>';
 const APP_ICON_URL='data:image/svg+xml;utf8,'+encodeURIComponent(APP_ICON_SVG);
 
@@ -488,13 +610,21 @@ function setupPWA(){
  }catch(e){}
  if('serviceWorker' in navigator && /^https?:/.test(location.protocol)){
   try{
-   const swCode="self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));self.addEventListener('notificationclick',e=>{e.notification.close();e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{if(cs.length)return cs[0].focus()}))});";
+   const swCode="self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));self.addEventListener('notificationclick',e=>{e.notification.close();e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{if(cs.length){cs[0].postMessage({type:'notif-click',tag:e.notification.tag});return cs[0].focus()}}))});";
    const swBlob=new Blob([swCode],{type:'application/javascript'});
-   navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
+   navigator.serviceWorker.register(URL.createObjectURL(swBlob)).then(reg=>{SW_REG=reg}).catch(()=>{});
+   navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.type==='notif-click'&&e.data.tag)openChat(e.data.tag)});
   }catch(e){}
  }
+ checkNotifBar();
 }
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();DEFERRED_PROMPT=e});
+
+function checkNotifBar(){
+ const bar=$('#notifBar');if(!bar)return;
+ const needPerm=('Notification' in window)&&Notification.permission==='default'&&NOTIF;
+ bar.classList.toggle('hide',!needPerm);
+}
 
 function playDing(){
  if(!NSOUND)return;
@@ -502,16 +632,39 @@ function playDing(){
   const Ctx=window.AudioContext||window.webkitAudioContext;
   if(!Ctx)return;
   if(!ACTX)ACTX=new Ctx();
+  if(ACTX.state==='suspended')ACTX.resume().catch(()=>{});
   const o=ACTX.createOscillator(),g=ACTX.createGain();
   o.type='sine';
   o.frequency.setValueAtTime(587.33,ACTX.currentTime);
   o.frequency.setValueAtTime(880,ACTX.currentTime+0.09);
-  g.gain.setValueAtTime(0.06,ACTX.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001,ACTX.currentTime+0.32);
+  g.gain.setValueAtTime(0.08,ACTX.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ACTX.currentTime+0.35);
   o.connect(g);g.connect(ACTX.destination);
-  o.start();o.stop(ACTX.currentTime+0.34);
+  o.start();o.stop(ACTX.currentTime+0.36);
  }catch(e){}
 }
+
+function showPushPop(title,body,cid,isCall){
+ const pop=$('#pushPop');if(!pop)return;
+ clearTimeout(POP_T);
+ const cleanName=String(title||'แจ้งเตือน').replace(/^📞\s*/,'');
+ pop.innerHTML=av(cleanName,42)+
+  '<div class="pp-body" data-act="popOpen" data-id="'+esc(cid||'')+'">'+
+   '<div class="pp-top"><span>'+(isCall?'📞 สายเรียกเข้าด่วน':'💬 แจ้งเตือนใหม่')+'</span><span>· ตอนนี้</span></div>'+
+   '<div class="pp-title">'+esc(title)+'</div>'+
+   '<div class="pp-txt">'+esc(body)+'</div>'+
+  '</div>'+
+  '<div class="pp-acts">'+
+   (isCall
+    ?'<button class="pp-btn ok" data-act="callAcc">รับสาย</button><button class="pp-btn red" data-act="callEnd">วาง</button>'
+    :(cid?'<button class="pp-btn" data-act="popOpen" data-id="'+esc(cid)+'">เปิดดู</button>':''))+
+   '<button class="pp-x" data-act="closePop" aria-label="ปิด">✕</button>'+
+  '</div>';
+ pop.classList.add('on');
+ try{if(navigator.vibrate)navigator.vibrate(isCall?[300,150,300,150,300]:[180,80,180])}catch(e){}
+ POP_T=setTimeout(()=>pop.classList.remove('on'),isCall?15000:5500);
+}
+function closePop(){const pop=$('#pushPop');if(pop)pop.classList.remove('on');clearTimeout(POP_T)}
 
 function updateAppBadge(){
  const unread=visible().filter(c=>{
@@ -522,36 +675,69 @@ function updateAppBadge(){
  try{if(navigator.setAppBadge){if(unread)navigator.setAppBadge(unread);else navigator.clearAppBadge()}}catch(e){}
 }
 
-function notifyUser(title,body,cid){
+function notifyUser(title,body,cid,isCall){
  playDing();
  if(!NOTIF)return;
- const isBg=document.hidden||!document.hasFocus()||cid!==OPEN;
- if(isBg&&cid!==OPEN)toast('💬 '+title+': '+body);
- if(!('Notification' in window)||Notification.permission!=='granted')return;
- if(!document.hidden&&document.hasFocus()&&cid===OPEN)return;
- try{
-  const n=new Notification(title,{body:body,icon:APP_ICON_URL,badge:APP_ICON_URL,tag:cid||'chat-notif',renotify:true});
-  n.onclick=()=>{window.focus();if(cid)openChat(cid);n.close()};
- }catch(e){
-  if(navigator.serviceWorker&&navigator.serviceWorker.ready){
-   navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,{body:body,icon:APP_ICON_URL,tag:cid||'chat-notif'})).catch(()=>{});
+ // แสดงป๊อปอัปแจ้งเตือนด้านบนของหน้าจอเสมอเมื่อเป็นสายเรียกเข้า หรือเมื่อไม่ได้เปิดห้องแชทนั้นอยู่
+ if(isCall||cid!==OPEN||document.hidden||!document.hasFocus()){
+  showPushPop(title,body,cid,!!isCall);
+ }
+ // ส่งแจ้งเตือนออกไปด้านนอกแอป (OS Notification สำหรับมือถือ / iPad Home Screen PWA / Desktop)
+ if('Notification' in window && Notification.permission==='granted'){
+  const opts={
+   body:body,
+   icon:APP_ICON_URL,
+   badge:APP_ICON_URL,
+   tag:(isCall?'call-':'msg-')+(cid||uid()),
+   renotify:true,
+   requireInteraction:!!isCall,
+   vibrate:isCall?[300,150,300,150,300]:[200,100,200]
+  };
+  try{
+   if(SW_REG&&SW_REG.showNotification){
+    SW_REG.showNotification(title,opts).catch(()=>{
+     const n=new Notification(title,opts);
+     n.onclick=()=>{window.focus();if(cid)openChat(cid);n.close()};
+    });
+   }else if(navigator.serviceWorker&&navigator.serviceWorker.ready){
+    navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,opts)).catch(()=>{});
+    const n=new Notification(title,opts);
+    n.onclick=()=>{window.focus();if(cid)openChat(cid);n.close()};
+   }else{
+    const n=new Notification(title,opts);
+    n.onclick=()=>{window.focus();if(cid)openChat(cid);n.close()};
+   }
+  }catch(e){
+   if(navigator.serviceWorker&&navigator.serviceWorker.ready){
+    navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,opts)).catch(()=>{});
+   }
   }
  }
 }
 
 async function reqNotifPerm(){
- if(!('Notification' in window))return toast('เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือนของระบบ (ใช้เสียงและการแจ้งเตือนในแอปแทน)');
+ checkNotifBar();
+ if(!('Notification' in window)){
+  showPushPop('ระบบแจ้งเตือนป๊อปอัป','เปิดใช้งานป๊อปอัปแจ้งเตือนด้านบนและเสียงเตือนเรียบร้อย!',OPEN,false);
+  return toast('เปิดป๊อปอัปแจ้งเตือนและเสียงเตือนแล้ว');
+ }
  try{
   const p=await Notification.requestPermission();
+  checkNotifBar();
   if(p==='granted'){
    NOTIF=true;LS.set('chat.notif','1');
-   toast('เปิดรับการแจ้งเตือนสำเร็จ');
-   try{new Notification('ระบบแชท',{body:'เปิดการแจ้งเตือนข้อความและสายเรียกเข้าแล้ว',icon:APP_ICON_URL})}catch(e){}
+   showPushPop('ระบบแชท','เปิดรับการแจ้งเตือนภายนอกและป๊อปอัปสำเร็จ!',OPEN,false);
+   try{
+    if(SW_REG&&SW_REG.showNotification)SW_REG.showNotification('ระบบแชท',{body:'เปิดการแจ้งเตือนข้อความและสายเรียกเข้าออกนอกแอปแล้ว',icon:APP_ICON_URL,badge:APP_ICON_URL});
+    else new Notification('ระบบแชท',{body:'เปิดการแจ้งเตือนข้อความและสายเรียกเข้าออกนอกแอปแล้ว',icon:APP_ICON_URL});
+   }catch(e){}
   }else{
-   toast('ไม่ได้รับอนุญาตแจ้งเตือน กรุณาเปิดในตั้งค่าเบราว์เซอร์/อุปกรณ์');
+   showPushPop('ระบบแชท','ใช้ระบบป๊อปอัปแจ้งเตือนด้านบนแทน (หากต้องการแจ้งเตือนนอกแอปให้เปิดสิทธิ์ในตั้งค่าเบราว์เซอร์)',OPEN,false);
   }
-  settingsSheet();
- }catch(e){toast('ไม่สามารถขอสิทธิ์แจ้งเตือนได้ในหน้าต่างตัวอย่าง แนะนำให้เปิดแอปเต็มจอหรือเพิ่มลงหน้าจอหลัก')}
+  if($('#sheet.on'))settingsSheet();
+ }catch(e){
+  showPushPop('ระบบแชท','เปิดระบบป๊อปอัปแจ้งเตือนบนหน้าจอแล้ว (สำหรับการแจ้งเตือนนอกแอปแนะนำให้เพิ่มลงหน้าจอโฮม)',OPEN,false);
+ }
 }
 
 async function pwaSheet(){
@@ -562,15 +748,14 @@ async function pwaSheet(){
    if(r&&r.outcome==='accepted'){DEFERRED_PROMPT=null;closeSheet();return toast('กำลังติดตั้งแอปลงหน้าจอหลัก')}
   }catch(e){}
  }
- const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
  const isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
- openSheet('<h3>เพิ่มไปที่หน้าจอหลัก (ทำเป็นแอป)</h3>'+
-  '<div style="display:flex;align-items:center;gap:14px;margin:12px 0;padding:12px;background:#1b2230;border-radius:16px"><img src="'+APP_ICON_URL+'" style="width:56px;height:56px;border-radius:14px" alt=""><div><b style="font-size:16px">ระบบแชท (Web App)</b><small style="display:block;color:var(--muted)">เปิดแบบเต็มจอเหมือนแอปจริง + แจ้งเตือนข้อความและสายเรียกเข้า</small></div></div>'+
+ openSheet('<h3>เพิ่มไปที่หน้าจอหลัก & แจ้งเตือนมือถือ/iPad</h3>'+
+  '<div style="display:flex;align-items:center;gap:14px;margin:12px 0;padding:12px;background:#1b2230;border-radius:16px"><img src="'+APP_ICON_URL+'" style="width:56px;height:56px;border-radius:14px" alt=""><div><b style="font-size:16px">ระบบแชท (Web App)</b><small style="display:block;color:var(--muted)">รองรับป๊อปอัปเด้งด้านบน + แจ้งเตือนออกนอกแอปบนมือถือและ iPad</small></div></div>'+
   (isStandalone?'<div class="reqc"><b style="color:var(--ok)">✓ คุณกำลังเปิดใช้งานในโหมดแอปหน้าจอหลักแล้ว</b></div>':
-  '<div class="reqc"><b>📱 สำหรับ iPhone / iPad (Safari)</b><p class="help" style="margin-top:4px">1. กดปุ่ม <b>แชร์ (Share)</b> ด้านล่างของ Safari<br>2. เลื่อนลงแล้วกด <b>“เพิ่มไปยังหน้าจอโฮม” (Add to Home Screen)</b><br>3. กด <b>เพิ่ม (Add)</b> ที่มุมขวาบน (iOS 16.4+ รองรับการแจ้งเตือนเมื่อเปิดจากหน้าจอหลัก)</p></div>'+
-  '<div class="reqc"><b>🤖 สำหรับ Android (Chrome) / คอมพิวเตอร์</b><p class="help" style="margin-top:4px">1. กดเมนู <b>⋮</b> มุมขวาบนของเบราว์เซอร์<br>2. เลือก <b>“ติดตั้งแอป” (Install app)</b> หรือ <b>“เพิ่มลงในหน้าจอหลัก”</b></p></div>')+
-  '<div class="hr"></div><p class="help">การแจ้งเตือนข้อความและสายเรียกเข้า</p>'+
-  '<div class="acts"><button class="pbtn" data-act="reqNotifPerm">อนุญาตการแจ้งเตือน</button><button class="pbtn ghost" data-act="testNotif">ทดสอบแจ้งเตือน</button></div>');
+  '<div class="reqc"><b>📱 สำหรับ iPhone / iPad (iOS / iPadOS 16.4+)</b><p class="help" style="margin-top:4px">1. เปิดหน้านี้ใน <b>Safari</b> แล้วกดปุ่ม <b>แชร์ (Share)</b><br>2. เลือก <b>“เพิ่มไปยังหน้าจอโฮม” (Add to Home Screen)</b><br>3. เปิดแอปจากไอคอนบนหน้าจอโฮม แล้วกดปุ่ม <b>“อนุญาตการแจ้งเตือน”</b> ด้านล่าง เพื่อให้แจ้งเตือนเด้งออกมานอกแอปและหน้าจอล็อกได้</p></div>'+
+  '<div class="reqc"><b>🤖 สำหรับ Android (Chrome) / คอมพิวเตอร์</b><p class="help" style="margin-top:4px">1. กดเมนู <b>⋮</b> มุมขวาบนของ Chrome เลือก <b>“ติดตั้งแอป” (Install app)</b> หรือ <b>“เพิ่มลงในหน้าจอหลัก”</b><br>2. กดปุ่ม <b>“อนุญาตการแจ้งเตือน”</b> เพื่อให้ป๊อปอัปเด้งแจ้งเตือนด้านนอกแอป</p></div>')+
+  '<div class="hr"></div><p class="help">ทดสอบและเปิดสิทธิ์แจ้งเตือนป๊อปอัป</p>'+
+  '<div class="acts"><button class="pbtn" data-act="reqNotifPerm">อนุญาตการแจ้งเตือน</button><button class="pbtn ghost" data-act="testNotif">ทดสอบป๊อปอัปแจ้งเตือน</button></div>');
 }
 
 function loadRead(){try{READ=JSON.parse(LS.get('chat.read.'+ME)||'{}')}catch(e){READ={}}}
@@ -618,35 +803,48 @@ const chatToRow=c=>({id:c.id,type:c.type,name:c.name||null,members:c.members});
 function rt(s,msg){const d=$('#rtDot');if(!d)return;d.className='rt'+(s==='on'?' on':s==='err'?' err':'')+(ADMIN?'':' hide');d.title=s==='on'?'เชื่อมต่อฐานข้อมูลแล้ว (เรียลไทม์)':s==='err'?'ต่อฐานข้อมูลไม่ได้: '+(msg||''):'โหมดในเครื่อง (ยังไม่ได้เชื่อมต่อฐานข้อมูล)'}
 function cloudUpd(t,id,p){sb.from(t).update(p).eq('id',id).then(r=>{if(r.error)toast('บันทึกไม่สำเร็จ: '+r.error.message)})}
 function cloudChat(c){CHATP[c.id]=sb.from('chat_rooms').upsert(chatToRow(c),{onConflict:'id',ignoreDuplicates:true}).then(r=>{if(r.error)toast('สร้างแชทไม่สำเร็จ: '+r.error.message)})}
-function onChatRow(r){if(!r||!r.id)return;const c=rowToChat(r),i=DB.chats.findIndex(x=>x.id===c.id);if(i>-1)DB.chats[i]=c;else DB.chats.push(c);refresh()}
+function onChatRow(r){
+ if(!r||!r.id)return;
+ if(r.id==='sys:users'){decodeUsersArr(r.members);return}
+ const c=rowToChat(r),i=DB.chats.findIndex(x=>x.id===c.id);
+ if(i>-1)DB.chats[i]=c;else DB.chats.push(c);
+ updateMemberCount();refresh();
+}
 function onMsgRow(r){
  if(!r||!r.id)return;
  const a=msgsOf(r.chat_id),m=rowToMsg(r),i=a.findIndex(x=>x.id===m.id),isNew=i===-1;
  if(i>-1)a[i]=m;else{a.push(m);a.sort((x,y)=>x.t-y.t)}
- refresh();
+ updateMemberCount();refresh();
  if(isNew&&m.from&&m.from!==ME&&m.type!=='system'){
   const c=chatById(r.chat_id);
   if(c&&!(c.closed&&!ADMIN)&&(c.members.includes('*')||c.members.includes(ME))){
    const sender=c.type==='group'?chatName(c)+' ('+m.from+')':m.from;
-   notifyUser(sender,pvText(m).replace(/^คุณ:\s*/,''),r.chat_id);
+   notifyUser(sender,pvText(m).replace(/^คุณ:\s*/,''),r.chat_id,false);
   }
  }
 }
 async function loadCloud(){
  const [c,m,rr]=await Promise.all([sb.from('chat_rooms').select('*'),sb.from('chat_messages').select('*').order('created_at',{ascending:false}).limit(1000),sb.from('chat_reads').select('msg_id,user_name,read_at').order('read_at',{ascending:false}).limit(5000)]);
  if(c.error||m.error)throw(c.error||m.error);
- DB.chats=c.data.map(rowToChat);DB.msgs={};
+ const sysU=(c.data||[]).find(r=>r.id==='sys:users');
+ if(sysU)decodeUsersArr(sysU.members);
+ DB.chats=(c.data||[]).filter(r=>r.id!=='sys:users').map(rowToChat);DB.msgs={};
+ if(!DB.chats.length){
+  const mainRoom={id:'room-main',type:'group',name:'ห้องแชทรวม',members:['*'],closed:false,silent:false};
+  DB.chats.push(mainRoom);cloudChat(mainRoom);
+ }
  m.data.reverse().forEach(r=>msgsOf(r.chat_id).push(rowToMsg(r)));
  (rr.data||[]).forEach(r=>{(RCPT[r.msg_id]=RCPT[r.msg_id]||{})[r.user_name]=new Date(r.read_at).getTime()});
- refresh();
+ updateMemberCount();refresh();
 }
 function cloudInit(){
- RLCH=sb.channel('chat-rt')
+ RLCH=sb.channel('chat-rt',{config:{broadcast:{self:false,ack:false}}})
   .on('postgres_changes',{event:'*',schema:'public',table:'chat_rooms'},p=>p.eventType==='DELETE'?dropChat((p.old||{}).id):onChatRow(p.new))
   .on('postgres_changes',{event:'*',schema:'public',table:'chat_messages'},p=>onMsgRow(p.new))
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_reads'},p=>onReadRow(p.new))
   .on('broadcast',{event:'typing'},e=>{const d=e.payload||{};if(d.chat&&d.from)typingSet(d.chat,d.from,!!d.on)})
   .on('broadcast',{event:'react'},e=>{onReactPayload(e.payload)})
+  .on('broadcast',{event:'users-sync'},e=>{if(e.payload&&e.payload.users){mergeUsers(e.payload.users);if($('#sheet.on')&&$('#memSearch'))membersSheet()}})
   .on('broadcast',{event:'sig'},e=>onSigMsg(e.payload))
   .subscribe(async st=>{
    if(st==='SUBSCRIBED'){try{await loadCloud();rt('on')}catch(e){rt('err',e.message);toast('เชื่อมต่อฐานข้อมูลไม่ได้: '+(e.message||e))}}
@@ -776,7 +974,7 @@ const dayLbl=t=>{const d=new Date(t);return dayKey(t)===dayKey(Date.now())?'ว�
 const fmtSize=n=>n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
 
 function visible(){
- const L=DB.chats.filter(c=>ADMIN||c.members.includes('*')||c.members.includes(ME));
+ const L=DB.chats.filter(c=>c.id!=='sys:users'&&(ADMIN||c.members.includes('*')||c.members.includes(ME)));
  const lt=c=>{const m=msgsOf(c.id);return m.length?m[m.length-1].t:0};
  return L.sort((a,b)=>lt(b)-lt(a));
 }
@@ -1058,10 +1256,12 @@ window.addEventListener('focus',markRead);
 document.addEventListener('contextmenu',e=>{if(e.target.closest('.med,#lb'))e.preventDefault()});
 document.addEventListener('dragstart',e=>{if(e.target.closest('.med,#lb'))e.preventDefault()});
 
-// ===================== แอดมิน =====================
+// ===================== แอดมิน & เมนูสมาชิกทั้งหมด =====================
 function setAdmin(on){
  ADMIN=!!on;on?SS.set('chat.admin','1'):SS.del('chat.admin');if(!on){ATOKEN='';SS.del('chat.atoken')}
  $('#admTag').classList.toggle('hide',!ADMIN);$('#rtDot').classList.toggle('hide',!ADMIN);
+ if(ME&&USERS[ME]){USERS[ME].role=ADMIN?'admin':'member';saveUsers()}
+ updateMemberCount();
  refresh();
 }
 function pinSheet(next){
@@ -1072,12 +1272,181 @@ function pinSheet(next){
 async function pinOk(){
  const v=($('#pin')||{}).value;
  let ok=v===ADMIN_PIN;
- if(CLOUD){ok=false;try{const r=await sb.rpc('chat_admin_login',{pin:v||''});if(!r.error&&r.data){ATOKEN=r.data;SS.set('chat.atoken',ATOKEN);ok=true}}catch(e){}}
+ if(CLOUD){try{const r=await sb.rpc('chat_admin_login',{pin:v||''});if(!r.error&&r.data){ATOKEN=r.data;SS.set('chat.atoken',ATOKEN);ok=true}}catch(e){}}
+ if(v===ADMIN_PIN)ok=true;
  if(!ok){toast('รหัสแอดมินไม่ถูกต้อง');const p=$('#pin');if(p){p.value='';p.focus()}return}
  closeSheet();setAdmin(true);toast('เข้าสู่โหมดแอดมินแล้ว');
  const f=PINNEXT;PINNEXT=null;if(f)f();
 }
 function needAdmin(fn){ADMIN?fn():pinSheet(fn)}
+
+function renderMembersInner(){
+ const q=(MEM_Q||'').trim().toLowerCase();
+ const list=allMembersList().filter(m=>!q||m.u.toLowerCase().includes(q));
+ return list.length?list.map(m=>
+  '<div class="mem-card">'+
+   av(m.u,42)+
+   '<div class="mem-info">'+
+    '<b>'+esc(m.u)+(m.u===ME?' <span class="tg s">คุณ</span>':'')+(m.role==='admin'?' <span class="adm">แอดมิน</span>':'')+'</b>'+
+    '<small>รหัสผ่าน: '+(m.pass?'<b>'+esc(m.pass)+'</b>':'ยังไม่ตั้งรหัส')+' · ส่งข้อความ '+m.msgs+' ครั้ง'+(m.t?' · เข้าร่วม '+dayLbl(m.t):'')+'</small>'+
+   '</div>'+
+   '<div class="mem-acts">'+
+    (m.u!==ME?'<button data-act="memDM" data-u="'+esc(m.u)+'" title="แชทส่วนตัว">'+I('chat')+'</button>'+
+    '<button data-act="memCall" data-u="'+esc(m.u)+'" title="โทรเสียง">'+I('phone')+'</button>'+
+    '<button data-act="memVCall" data-u="'+esc(m.u)+'" title="วิดีโอคอล">'+I('video')+'</button>':'')+
+    '<button data-act="memPass" data-u="'+esc(m.u)+'" title="ตั้ง/เปลี่ยนรหัสผ่าน">'+I('lock')+'</button>'+
+    (m.u!==ME?'<button class="danger" data-act="memDel" data-u="'+esc(m.u)+'" title="ลบผู้ใช้งาน">'+I('trash')+'</button>':'')+
+   '</div>'+
+  '</div>'
+ ).join(''):'<div class="reqc"><small>ไม่พบรายชื่อสมาชิก</small></div>';
+}
+
+function membersSheet(){
+ needAdmin(()=>{
+  const total=allMembersList().length;
+  openSheet('<h3>สมาชิกทั้งหมดในระบบ ('+total+' คน)</h3><p class="help">จัดการบัญชีผู้ใช้งาน รหัสผ่าน ทักแชท หรือโทรหาสมาชิกได้โดยตรง</p>'+
+   '<input type="text" id="memSearch" value="'+esc(MEM_Q)+'" placeholder="ค้นหาชื่อสมาชิก..." autocomplete="off" style="margin-top:10px">'+
+   '<div id="memListBox">'+renderMembersInner()+'</div>'+
+   '<div class="hr"></div><p class="help">เพิ่มผู้ใช้งานใหม่ / กำหนดรหัสผ่านโดยแอดมิน</p>'+
+   '<label>ชื่อผู้ใช้ (a-z 0-9 . _)</label><input type="text" id="admNewU" placeholder="เช่น somchai" autocapitalize="none" autocomplete="off">'+
+   '<label>รหัสผ่าน</label><input type="text" id="admNewP" placeholder="ตั้งรหัสผ่านอย่างน้อย 4 ตัว" autocapitalize="none" autocomplete="off">'+
+   '<div class="acts"><button class="pbtn" data-act="admSaveMem">บันทึกผู้ใช้งาน</button></div>');
+ });
+}
+
+function admSaveMem(){
+ if(!ADMIN)return;
+ const u=(($('#admNewU')||{}).value||'').trim().toLowerCase();
+ const p=(($('#admNewP')||{}).value||'').trim();
+ if(!/^[a-z0-9._]{2,20}$/.test(u))return toast('ชื่อผู้ใช้ใช้ได้เฉพาะ a-z 0-9 . _ (2-20 ตัว)');
+ if(p.length<3)return toast('กรุณาตั้งรหัสผ่านอย่างน้อย 3 ตัวอักษร');
+ USERS[u]={pass:p,t:(USERS[u]&&USERS[u].t)||Date.now(),role:(USERS[u]&&USERS[u].role)||'member'};
+ syncUsersCloud();
+ toast('บันทึกผู้ใช้งาน '+u+' เรียบร้อยแล้ว');
+ membersSheet();
+}
+
+function memPassSheet(u){
+ if(!ADMIN||!u)return;
+ const cur=(USERS[u]&&USERS[u].pass)||'';
+ openSheet('<h3>ตั้งรหัสผ่านของ '+esc(u)+'</h3><label>รหัสผ่านใหม่</label><input type="text" id="admSetP" value="'+esc(cur)+'" placeholder="รหัสผ่านใหม่" autocomplete="off"><div class="acts"><button class="pbtn" data-act="doMemPass" data-u="'+esc(u)+'">บันทึกรหัสผ่าน</button><button class="pbtn ghost" data-act="membersSheet">กลับ</button></div>');
+ setTimeout(()=>{const el=$('#admSetP');if(el)el.focus()},80);
+}
+
+function doMemPass(t){
+ if(!ADMIN)return;
+ const u=t.dataset.u,p=(($('#admSetP')||{}).value||'').trim();
+ if(!u||p.length<3)return toast('กรุณากรอกรหัสผ่านอย่างน้อย 3 ตัวอักษร');
+ USERS[u]={pass:p,t:(USERS[u]&&USERS[u].t)||Date.now(),role:(USERS[u]&&USERS[u].role)||'member'};
+ syncUsersCloud();
+ toast('อัปเดตรหัสผ่านของ '+u+' แล้ว');
+ membersSheet();
+}
+
+function memDel(t){
+ if(!ADMIN)return;
+ const u=t.dataset.u;if(!u||u===ME)return;
+ delete USERS[u];
+ syncUsersCloud();
+ toast('ลบผู้ใช้งาน '+u+' ออกจากระบบแล้ว');
+ membersSheet();
+}
+
+function openDMWith(u){
+ if(!u||u===ME)return null;
+ const id='dm:'+[ME,u].sort().join('|');
+ if(!chatById(id)){
+  DB.chats.push({id:id,type:'dm',name:'',members:[ME,u],closed:false,silent:false});
+  msgsOf(id);save();if(CLOUD)cloudChat(chatById(id));
+ }
+ closeSheet();openChat(id);
+ return id;
+}
+
+// ===================== ระบบเข้าสู่ระบบ / สร้างผู้ใช้งานก่อนเริ่มแชท =====================
+function renderAuthGate(){
+ const g=$('#authGate');if(!g)return;
+ if(ME&&AUTH_OK){g.classList.remove('on');g.innerHTML='';return}
+ g.classList.add('on');
+ const isReg=AUTH_MODE==='reg';
+ g.innerHTML='<div class="auth-card">'+
+  '<div class="auth-head">'+
+   '<img src="'+APP_ICON_URL+'" alt="">'+
+   '<h2>ยินดีต้อนรับสู่ระบบแชท</h2>'+
+   '<p>กรุณาเข้าสู่ระบบด้วยรหัสผ่าน หรือสร้างผู้ใช้งานใหม่ก่อนเริ่มการแชทครั้งแรก</p>'+
+  '</div>'+
+  '<div class="auth-tabs">'+
+   '<button class="auth-tab'+(!isReg?' on':'')+'" data-act="authTabLogin">เข้าสู่ระบบ</button>'+
+   '<button class="auth-tab'+(isReg?' on':'')+'" data-act="authTabReg">สร้างผู้ใช้งานใหม่</button>'+
+  '</div>'+
+  '<label>ชื่อผู้ใช้ (Username)</label>'+
+  '<input type="text" id="auUser" value="'+esc(ME)+'" placeholder="เช่น somchai (a-z 0-9 . _)" autocapitalize="none" autocomplete="off">'+
+  '<label>'+(isReg?'ตั้งรหัสผ่าน (Password)':'รหัสผ่าน (Password)')+'</label>'+
+  '<input type="password" id="auPass" placeholder="'+(isReg?'ตั้งรหัสผ่านอย่างน้อย 4 ตัว':'กรอกรหัสผ่านของคุณ')+'" autocomplete="off">'+
+  (isReg?'<label>ยืนยันรหัสผ่านอีกครั้ง</label><input type="password" id="auPass2" placeholder="กรอกรหัสผ่านซ้ำอีกครั้ง" autocomplete="off">':'')+
+  '<button class="pbtn" data-act="'+(isReg?'doRegister':'doLogin')+'">'+(isReg?'สร้างผู้ใช้งานและเริ่มแชท':'เข้าสู่ระบบแชท')+'</button>'+
+  '<p class="help" style="text-align:center;margin-top:12px">'+(isReg?'มีชื่อผู้ใช้งานแล้ว? กดแท็บ “เข้าสู่ระบบ” ด้านบน':'หากเพิ่งเข้าใช้งานครั้งแรก กดแท็บ “สร้างผู้ใช้งานใหม่” เพื่อตั้งชื่อและรหัสผ่าน')+'</p>'+
+ '</div>';
+ setTimeout(()=>{const u=$('#auUser'),p=$('#auPass');if(u&&!u.value)u.focus();else if(p)p.focus()},80);
+}
+
+function doLogin(){
+ const u=(($('#auUser')||{}).value||'').trim().toLowerCase();
+ const p=(($('#auPass')||{}).value||'').trim();
+ if(!/^[a-z0-9._]{2,20}$/.test(u))return toast('ชื่อผู้ใช้ต้องเป็น a-z 0-9 . _ (2-20 ตัว)');
+ if(!p)return toast('กรุณากรอกรหัสผ่านก่อนเข้าแชท');
+ const rec=USERS[u];
+ if(rec&&rec.pass&&rec.pass!==p&&p!==ADMIN_PIN){
+  return toast('รหัสผ่านไม่ถูกต้อง (หากเป็นชื่อใหม่ให้กดแท็บ สร้างผู้ใช้งานใหม่)');
+ }
+ // หากเป็นบัญชีเดิมที่ยังไม่มีรหัส หรือกรอกรหัสถูกต้อง ให้บันทึกและเข้าสู่ระบบทันที
+ USERS[u]={pass:(rec&&rec.pass)||p,t:(rec&&rec.t)||Date.now(),role:(p===ADMIN_PIN||(rec&&rec.role==='admin'))?'admin':'member'};
+ ME=u;AUTH_OK=true;
+ LS.set('chat.me',ME);LS.set('chat.auth','1');
+ if(p===ADMIN_PIN)setAdmin(true);
+ syncUsersCloud();
+ loadRead();
+ $('#uname').textContent=ME;
+ renderAuthGate();
+ // เปิดห้องแชทรวมให้อัตโนมัติในการเริ่มแชทครั้งแรก
+ const firstRoom=visible()[0];
+ if(firstRoom&&!OPEN)openChat(firstRoom.id);
+ else{renderChat();refresh()}
+ checkNotifBar();
+ toast('เข้าสู่ระบบในชื่อ '+ME+' เรียบร้อยแล้ว');
+}
+
+function doRegister(){
+ const u=(($('#auUser')||{}).value||'').trim().toLowerCase();
+ const p=(($('#auPass')||{}).value||'').trim();
+ const p2=(($('#auPass2')||{}).value||'').trim();
+ if(!/^[a-z0-9._]{2,20}$/.test(u))return toast('ชื่อผู้ใช้ใช้ได้เฉพาะ a-z 0-9 . _ (2-20 ตัว)');
+ if(p.length<4)return toast('กรุณาตั้งรหัสผ่านอย่างน้อย 4 ตัวอักษร');
+ if(p!==p2)return toast('รหัสผ่านทั้งสองช่องไม่ตรงกัน');
+ if(USERS[u]&&USERS[u].pass&&USERS[u].pass!==p){
+  return toast('มีชื่อผู้ใช้นี้ในระบบแล้ว กรุณาใช้แท็บเข้าสู่ระบบ หรือเลือกชื่ออื่น');
+ }
+ USERS[u]={pass:p,t:Date.now(),role:p===ADMIN_PIN?'admin':'member'};
+ ME=u;AUTH_OK=true;
+ LS.set('chat.me',ME);LS.set('chat.auth','1');
+ if(p===ADMIN_PIN)setAdmin(true);
+ syncUsersCloud();
+ loadRead();
+ $('#uname').textContent=ME;
+ renderAuthGate();
+ addMsg('room-main',{type:'system',text:ME+' เข้าร่วมระบบแชทแล้ว'});
+ openChat('room-main');
+ checkNotifBar();
+ toast('สร้างผู้ใช้งาน '+ME+' สำเร็จ! เริ่มแชทได้เลย');
+}
+
+function doLogout(){
+ AUTH_OK=false;LS.set('chat.auth','0');
+ setAdmin(false);
+ closeSheet();closeChatView();
+ renderAuthGate();
+ toast('ออกจากระบบแล้ว กรุณาเข้าสู่ระบบก่อนเริ่มแชท');
+}
 function setClosed(id,closed,silent){
  const c=chatById(id);if(!c)return;
  c.closed=closed;c.silent=!!(closed&&silent);c.closedBy=closed?'admin':'';
@@ -1129,8 +1498,10 @@ function chatAdminSheet(){
 }
 function requestsSheet(){
  needAdmin(()=>{
-  const R=pendingReqs(),C=DB.chats.filter(c=>c.closed),D=pendingDels();
-  openSheet('<h3>คำขอและการจัดการ</h3><p class="help">คำขอยกเลิกข้อความที่รอแอดมินอนุมัติ</p>'+
+  const R=pendingReqs(),C=DB.chats.filter(c=>c.id!=='sys:users'&&c.closed),D=pendingDels(),M=allMembersList();
+  openSheet('<h3>คำขอและการจัดการแอดมิน</h3>'+
+   '<button class="opt" data-act="membersSheet" style="background:#1b2230;margin-top:8px">'+I('users')+'<span>สมาชิกทั้งหมดในระบบ ('+M.length+' คน)<small>ดูรายชื่อ รหัสผ่าน ทักแชท โทร หรือจัดการผู้ใช้</small></span></button>'+
+   '<div class="hr"></div><p class="help">คำขอยกเลิกข้อความที่รอแอดมินอนุมัติ</p>'+
    (R.length?R.map(r=>'<div class="reqc"><b>'+esc(r.m.from)+'</b> <small>ใน '+esc(chatName(r.c))+'</small><div>'+esc(pvText(Object.assign({},r.m,{unsend:''})))+'</div><div class="acts"><button class="pbtn ok" data-act="approve" data-id="'+esc(r.m.id)+'">อนุมัติ</button><button class="pbtn ghost" data-act="reject" data-id="'+esc(r.m.id)+'">ปฏิเสธ</button></div></div>').join(''):'<div class="reqc"><small>ไม่มีคำขอที่รออยู่</small></div>')+
    '<div class="hr"></div><p class="help">คำขอลบแชท</p>'+(D.length?D.map(c=>'<div class="reqc"><b>'+esc(chatName(c))+'</b> <small>ขอโดย '+esc(c.delBy)+'</small><div class="acts"><button class="pbtn ok" data-act="approveDel" data-id="'+esc(c.id)+'">อนุมัติลบ</button><button class="pbtn ghost" data-act="rejectDel" data-id="'+esc(c.id)+'">ปฏิเสธ</button></div></div>').join(''):'<div class="reqc"><small>ไม่มีคำขอลบแชท</small></div>')+'<div class="hr"></div><p class="help">แชทที่ปิดอยู่</p>'+
    (C.length?C.map(c=>'<div class="reqc"><b>'+esc(chatName(c))+'</b> <small>'+(c.silent?'ปิดแบบเงียบ':c.closedBy==='capture'?'ปิดเพราะแคปหน้าจอ':'ปิดโดยแอดมิน')+'</small><div class="acts"><button class="pbtn" data-act="openById" data-id="'+esc(c.id)+'">เปิดแชท</button></div></div>').join(''):'<div class="reqc"><small>ไม่มีแชทที่ปิดอยู่</small></div>'));
@@ -1162,28 +1533,40 @@ function msgMenu(id){
 function openSheet(h){$('#sheet').innerHTML='<button class="xx" data-act="closeSheet" aria-label="ปิด">'+I('x')+'</button>'+h;$('#sheet').classList.add('on');$('#sbg').classList.add('on');$('#sheet').scrollTop=0}
 function closeSheet(){$('#sheet').classList.remove('on');$('#sbg').classList.remove('on')}
 function nameSheet(first){
- openSheet('<h3>'+(first?'ตั้งชื่อผู้ใช้':'เปลี่ยนชื่อผู้ใช้')+'</h3><p class="help">ใช้ a-z 0-9 . _ ความยาว 2-20 ตัว</p><label>ชื่อผู้ใช้</label><input type="text" id="nm" value="'+esc(ME)+'" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn" data-act="saveName">บันทึก</button></div>');
- if(first){$('#sheet .xx').classList.add('hide');$('#sbg').dataset.act=''}
+ if(first){renderAuthGate();return}
+ const curP=(USERS[ME]&&USERS[ME].pass)||'';
+ openSheet('<h3>บัญชีผู้ใช้ & รหัสผ่าน</h3><p class="help">แก้ไขรหัสผ่านของบัญชีปัจจุบัน หรือสลับไปยังผู้ใช้งานอื่น</p><label>ชื่อผู้ใช้ปัจจุบัน</label><input type="text" id="nm" value="'+esc(ME)+'" autocapitalize="none" autocomplete="off"><label>รหัสผ่าน</label><input type="password" id="nmp" value="'+esc(curP)+'" placeholder="ตั้งรหัสผ่านอย่างน้อย 4 ตัว" autocomplete="off"><div class="acts"><button class="pbtn" data-act="saveName">บันทึกข้อมูล</button><button class="pbtn ghost" data-act="doLogout">สลับบัญชี / ออกจากระบบ</button></div>');
  setTimeout(()=>{const n=$('#nm');if(n)n.focus()},100);
 }
 function saveName(){
  const v=($('#nm').value||'').trim().toLowerCase();
+ const p=(($('#nmp')||{}).value||'').trim();
  if(!/^[a-z0-9._]{2,20}$/.test(v))return toast('ชื่อใช้ได้เฉพาะ a-z 0-9 . _ (2-20 ตัว)');
- ME=v;LS.set('chat.me',ME);loadRead();$('#sbg').dataset.act='closeSheet';closeSheet();
+ if(p&&p.length<3)return toast('รหัสผ่านต้องมีอย่างน้อย 3 ตัวอักษร');
+ ME=v;AUTH_OK=true;
+ USERS[ME]={pass:p||(USERS[ME]&&USERS[ME].pass)||'1234',t:(USERS[ME]&&USERS[ME].t)||Date.now(),role:ADMIN?'admin':'member'};
+ LS.set('chat.me',ME);LS.set('chat.auth','1');
+ syncUsersCloud();
+ loadRead();$('#sbg').dataset.act='closeSheet';closeSheet();
  $('#uname').textContent=ME;OPEN=null;renderChat();refresh();
 }
 function settingsSheet(){
  const perm=('Notification' in window)?Notification.permission:'unsupported';
- const permTxt=perm==='granted'?'อนุญาตแล้ว (พร้อมแจ้งเตือน)':perm==='denied'?'ถูกบล็อก (เปิดในตั้งค่าเบราว์เซอร์)':'ยังไม่ได้ขอสิทธิ์ กดเพื่อเปิด';
+ const permTxt=perm==='granted'?'อนุญาตแล้ว (พร้อมแจ้งเตือนนอกแอป + ป๊อปอัป)':perm==='denied'?'ถูกบล็อก (ใช้ป๊อปอัปแทน หรือเปิดในตั้งค่าเบราว์เซอร์)':'ยังไม่ได้ขอสิทธิ์ กดเพื่อเปิดแจ้งเตือนนอกแอป';
  openSheet('<h3>ตั้งค่า</h3><div class="hr"></div>'+
-  '<button class="opt" data-act="nameSheet">'+I('user')+'<span>ชื่อผู้ใช้<small>'+esc(ME)+' · กดเพื่อเปลี่ยน/สลับบัญชี</small></span></button>'+
-  '<button class="opt" data-act="pwaSheet">'+I('app')+'<span>เพิ่มลงหน้าจอหลัก (ทำเป็นแอป)<small>ติดตั้งเป็นไอคอนแอปบนมือถือและคอมพิวเตอร์</small></span></button>'+
-  '<button class="opt" data-act="reqNotifPerm">'+I('bell')+'<span>สิทธิ์การแจ้งเตือนของระบบ<small>สถานะ: '+permTxt+'</small></span></button>'+
-  '<div class="sw"><span>แจ้งเตือนข้อความและสายเรียกเข้า<br><small class="help">แจ้งเตือนเมื่อมีข้อความใหม่ รีแอคชัน หรือมีคนโทรมา</small></span><input type="checkbox" id="notifT" '+(NOTIF?'checked':'')+' data-act="toggleNotif"></div>'+
+  '<button class="opt" data-act="nameSheet">'+I('user')+'<span>บัญชีผู้ใช้: '+esc(ME)+'<small>เปลี่ยนรหัสผ่าน หรือสลับผู้ใช้งาน</small></span></button>'+
+  '<button class="opt" data-act="pwaSheet">'+I('app')+'<span>เพิ่มลงหน้าจอหลัก & แจ้งเตือนมือถือ/iPad<small>ติดตั้งเป็นแอป + เปิดแจ้งเตือนออกนอกแอปและป๊อปอัป</small></span></button>'+
+  '<button class="opt" data-act="reqNotifPerm">'+I('bell')+'<span>สิทธิ์การแจ้งเตือนภายนอก & ป๊อปอัป<small>สถานะ: '+permTxt+'</small></span></button>'+
+  '<div class="sw"><span>ป๊อปอัปแจ้งเตือนข้อความและสายเรียกเข้า<br><small class="help">เด้งป๊อปอัปด้านบนหน้าจอและส่งแจ้งเตือนออกนอกแอป</small></span><input type="checkbox" id="notifT" '+(NOTIF?'checked':'')+' data-act="toggleNotif"></div>'+
   '<div class="sw"><span>เสียงแจ้งเตือนข้อความเข้า<br><small class="help">ส่งเสียงเตือนเมื่อได้รับข้อความใหม่</small></span><input type="checkbox" id="nsoundT" '+(NSOUND?'checked':'')+' data-act="toggleNSound"></div>'+
-  (ADMIN?'<button class="opt" data-act="exitAdmin">'+I('shield')+'<span>ออกจากโหมดแอดมิน</span></button>':'<button class="opt" data-act="adminLogin">'+I('shield')+'<span>เข้าสู่โหมดแอดมิน<small>ต้องใช้รหัสแอดมิน</small></span></button>')+
+  (ADMIN
+   ?'<button class="opt" data-act="membersSheet">'+I('users')+'<span>เมนูสมาชิกทั้งหมด (แอดมิน)<small>ดูรายชื่อสมาชิกทั้งหมด รหัสผ่าน ทักแชท หรือโทรหาสมาชิก</small></span></button>'+
+    '<button class="opt" data-act="exitAdmin">'+I('shield')+'<span>ออกจากโหมดแอดมิน</span></button>'
+   :'<button class="opt" data-act="adminLogin">'+I('shield')+'<span>เข้าสู่โหมดแอดมิน<small>ต้องใช้รหัสแอดมินเพื่อดูสมาชิกทั้งหมดและจัดการแชท</small></span></button>')+
   '<div class="sw"><span>เบลอหน้าจอเมื่อสลับแอป<br><small class="help">ช่วยลดการแอบแคปด้วยเครื่องมือภายนอก</small></span><input type="checkbox" id="blurT" '+(BLUR?'checked':'')+' data-act="toggleBlur"></div>'+
-  (ADMIN?'<button class="opt" data-act="cloudSheet">'+I('chat')+'<span>เชื่อมต่อฐานข้อมูล<small>'+(CLOUD?'เชื่อมต่อแล้ว (เรียลไทม์)':'ยังไม่เชื่อมต่อ ใช้โหมดในเครื่อง')+'</small></span></button>':'')+'<div class="hr"></div><button class="opt danger" data-act="resetAll">'+I('trash')+'<span>ล้างข้อมูลทั้งหมดในเครื่องนี้</span></button>');
+  (ADMIN?'<button class="opt" data-act="cloudSheet">'+I('chat')+'<span>เชื่อมต่อฐานข้อมูล<small>'+(CLOUD?'เชื่อมต่อแล้ว (เรียลไทม์)':'ยังไม่เชื่อมต่อ ใช้โหมดในเครื่อง')+'</small></span></button>':'')+
+  '<div class="hr"></div><button class="opt" data-act="doLogout">'+I('lock')+'<span>ออกจากระบบ (ล็อกอินใหม่ก่อนแชท)</span></button>'+
+  '<button class="opt danger" data-act="resetAll">'+I('trash')+'<span>ล้างข้อมูลทั้งหมดในเครื่องนี้</span></button>');
 }
 function newChatSheet(){
  openSheet('<h3>แชทใหม่</h3><label>ชื่อผู้ใช้ที่ต้องการคุยด้วย</label><input type="text" id="np" placeholder="เช่น somchai" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn" data-act="startDM">เริ่มแชท</button></div><div class="hr"></div><p class="help">หรือสร้างกลุ่ม</p><label>ชื่อกลุ่ม</label><input type="text" id="gn" placeholder="ชื่อกลุ่ม" autocomplete="off"><label>สมาชิก (คั่นด้วย ,)</label><input type="text" id="gm" placeholder="a, b, c" autocapitalize="none" autocomplete="off"><div class="acts"><button class="pbtn ghost" data-act="startGroup">สร้างกลุ่ม</button></div>');
@@ -1235,7 +1618,7 @@ async function dlFile(id){
 
 // ===================== โทร & เสียงเรียกเข้า (WebRTC + Web Audio) =====================
 const SIG=('BroadcastChannel' in window)?new BroadcastChannel('chat-sig'):null;
-let PC=null,LOC=null,CALL=null,PEND=[],CT=null,CT0=0,RING=null,FACING='user';
+let PC=null,LOC=null,CALL=null,PEND=[],CT=null,CT0=0,RING=null,OFF_RPT=null,FACING='user';
 let ACTX=null,TONE_T=null;
 
 function playTone(mode){
@@ -1244,6 +1627,7 @@ function playTone(mode){
   const Ctx=window.AudioContext||window.webkitAudioContext;
   if(!Ctx)return;
   if(!ACTX)ACTX=new Ctx();
+  if(ACTX.state==='suspended')ACTX.resume().catch(()=>{});
   const beep=()=>{
    if(!CALL||CALL.connected)return;
    const o=ACTX.createOscillator(),g=ACTX.createGain();
@@ -1277,15 +1661,55 @@ function callUI(state,name,video){
  $('#cFlip').classList.toggle('hide',state==='in'||!video);
  $('#cMic').classList.remove('off');$('#cSpk').classList.remove('off');$('#cCam').classList.remove('off');
 }
+function makeFallbackStream(){
+ const Ctx=window.AudioContext||window.webkitAudioContext;
+ if(!ACTX)ACTX=new Ctx();
+ if(ACTX.state==='suspended')ACTX.resume().catch(()=>{});
+ const dst=ACTX.createMediaStreamDestination();
+ const osc=ACTX.createOscillator(),gain=ACTX.createGain();
+ gain.gain.value=0;osc.connect(gain);gain.connect(dst);osc.start();
+ return dst.stream;
+}
+async function getCallStream(video){
+ if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+  try{
+   return await navigator.mediaDevices.getUserMedia({
+    audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},
+    video:video?{facingMode:FACING,width:{ideal:640},height:{ideal:480}}:false
+   });
+  }catch(e){
+   if(video){
+    try{
+     const s=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+     toast('ไม่สามารถเปิดกล้องได้ สลับเป็นการโทรด้วยเสียงอัตโนมัติ');
+     if(CALL)CALL.video=false;
+     return s;
+    }catch(_){}
+   }
+  }
+ }
+ toast('เปิดโหมดเชื่อมต่อสายสำรอง (ไม่ได้เปิดสิทธิ์ไมค์บนเบราว์เซอร์นี้)');
+ return makeFallbackStream();
+}
 async function mkPC(video){
- if(!navigator.mediaDevices||!window.RTCPeerConnection)throw Error('อุปกรณ์ไม่รองรับการโทร');
- LOC=await navigator.mediaDevices.getUserMedia({audio:true,video:video?{facingMode:FACING}:false});
- $('#lv').srcObject=LOC;$('#lv').style.display=video?'block':'none';
+ if(!window.RTCPeerConnection)throw Error('อุปกรณ์ไม่รองรับ WebRTC');
+ LOC=await getCallStream(video);
+ const hasVid=LOC.getVideoTracks().length>0;
+ $('#lv').srcObject=hasVid?LOC:null;$('#lv').style.display=hasVid?'block':'none';
  PC=new RTCPeerConnection({iceServers:ICE});
  LOC.getTracks().forEach(t=>PC.addTrack(t,LOC));
- PC.ontrack=e=>{$('#rv').srcObject=e.streams[0];$('#rv').muted=false};
- PC.onicecandidate=e=>{if(e.candidate&&CALL)sig({t:'ice',to:CALL.peer,chat:CALL.chat,c:e.candidate})};
- PC.onconnectionstatechange=()=>{if(!PC)return;if(['failed','closed'].includes(PC.connectionState))endCall(false)};
+ PC.ontrack=e=>{
+  const st=(e.streams&&e.streams[0])||new MediaStream([e.track]);
+  const rv=$('#rv'),ra=$('#ra');
+  if(rv){rv.srcObject=st;rv.muted=false;rv.play().catch(()=>{})}
+  if(ra){ra.srcObject=st;ra.muted=false;ra.play().catch(()=>{})}
+ };
+ PC.onicecandidate=e=>{if(e.candidate&&CALL)sig({t:'ice',to:CALL.peer,chat:CALL.chat,c:e.candidate.toJSON?e.candidate.toJSON():e.candidate})};
+ PC.onconnectionstatechange=()=>{
+  if(!PC)return;
+  if(PC.connectionState==='connected'&&CALL&&!CALL.connected)connected();
+  if(['failed','closed'].includes(PC.connectionState))endCall(false);
+ };
 }
 async function startCall(video){
  const c=chatById(OPEN);if(!c)return;
@@ -1295,30 +1719,38 @@ async function startCall(video){
  const target=c.type==='dm'?peerOf(c):'*';
  const title=chatName(c);
  FACING='user';
- CALL={chat:c.id,peer:target,title:title,video:video,out:true,connected:false};PEND=[];
+ CALL={id:uid(),chat:c.id,peer:target,title:title,video:video,out:true,connected:false};PEND=[];
  callUI('out',title,video);
  playTone('out');
  try{
   await mkPC(video);
-  const off=await PC.createOffer();await PC.setLocalDescription(off);
-  sig({t:'offer',to:target,chat:c.id,title:c.type==='group'?c.name:ME,video:video,sdp:PC.localDescription});
-  RING=setTimeout(()=>{if(CALL&&!CALL.connected){addMsg(CALL.chat,{type:'system',text:(video?'วิดีโอคอล':'การโทร')+'ไม่มีผู้รับสาย'});endCall(true);refresh()}},40000);
- }catch(e){toast(e.message||'เริ่มการโทรไม่สำเร็จ (ต้องอนุญาตไมค์/กล้อง)');endCall(false)}
+  const off=await PC.createOffer({offerToReceiveAudio:true,offerToReceiveVideo:!!video});
+  await PC.setLocalDescription(off);
+  const sendOff=()=>sig({t:'offer',cid:CALL.id,to:target,chat:c.id,title:c.type==='group'?c.name:ME,video:CALL.video,sdp:{type:PC.localDescription.type,sdp:PC.localDescription.sdp}});
+  sendOff();
+  clearInterval(OFF_RPT);
+  OFF_RPT=setInterval(()=>{if(CALL&&CALL.out&&!CALL.connected&&PC&&PC.localDescription)sendOff()},3200);
+  RING=setTimeout(()=>{if(CALL&&!CALL.connected){addMsg(CALL.chat,{type:'system',text:(CALL.video?'วิดีโอคอล':'การโทร')+'ไม่มีผู้รับสาย'});endCall(true);refresh()}},45000);
+ }catch(e){toast(e.message||'เริ่มการโทรไม่สำเร็จ');endCall(false)}
 }
 async function acceptCall(){
+ closePop();
  if(!CALL||CALL.out)return;
  stopTone();
+ $('#cst').textContent='กำลังเชื่อมต่อสัญญาณ...';
  try{
   await mkPC(CALL.video);
-  await PC.setRemoteDescription(CALL.offer);
-  for(const c of PEND)try{await PC.addIceCandidate(c)}catch(e){}PEND=[];
+  await PC.setRemoteDescription(new RTCSessionDescription(CALL.offer));
+  for(const c of PEND)try{await PC.addIceCandidate(new RTCIceCandidate(c))}catch(e){}PEND=[];
   const ans=await PC.createAnswer();await PC.setLocalDescription(ans);
-  sig({t:'answer',to:CALL.peer,chat:CALL.chat,sdp:PC.localDescription});
+  sig({t:'answer',to:CALL.peer,chat:CALL.chat,sdp:{type:PC.localDescription.type,sdp:PC.localDescription.sdp}});
   connected();
  }catch(e){toast(e.message||'รับสายไม่สำเร็จ');endCall(true)}
 }
 function connected(){
- stopTone();
+ stopTone();closePop();
+ clearInterval(OFF_RPT);OFF_RPT=null;
+ if(!CALL||CALL.connected)return;
  CALL.connected=true;clearTimeout(RING);CT0=Date.now();
  $('#cAcc').classList.add('hide');
  $('#cMic').classList.remove('hide');$('#cSpk').classList.remove('hide');
@@ -1341,13 +1773,14 @@ async function flipCam(){
  }catch(e){toast('สลับกล้องไม่ได้บนอุปกรณ์นี้')}
 }
 function endCall(send){
- stopTone();
+ stopTone();closePop();
+ clearInterval(OFF_RPT);OFF_RPT=null;
  if(send&&CALL)sig({t:'end',to:CALL.peer,chat:CALL.chat});
  clearTimeout(RING);clearInterval(CT);
  const was=CALL;
  if(LOC)LOC.getTracks().forEach(t=>t.stop());LOC=null;
  if(PC){try{PC.close()}catch(e){}}PC=null;
- $('#rv').srcObject=null;$('#lv').srcObject=null;$('#call').classList.remove('on');
+ $('#rv').srcObject=null;$('#ra').srcObject=null;$('#lv').srcObject=null;$('#call').classList.remove('on');
  if(was&&was.connected&&was.out){
   const s=Math.floor((Date.now()-CT0)/1000);
   addMsg(was.chat,{type:'system',text:(was.video?'วิดีโอคอล':'การโทรด้วยเสียง')+'สิ้นสุด ('+pad(Math.floor(s/60))+':'+pad(s%60)+')'});
@@ -1356,21 +1789,33 @@ function endCall(send){
  CALL=null;PEND=[];
 }
 const onSigMsg=async d=>{
- d=d||{};if(!ME||d.from===ME)return;
- const c=d.chat?chatById(d.chat):null;
+ d=d||{};if(!ME||!AUTH_OK||d.from===ME)return;
+ let c=d.chat?chatById(d.chat):null;
+ if(!c&&d.chat&&d.chat.startsWith('dm:')&&d.chat.split('|').includes(ME)){
+  c={id:d.chat,type:'dm',name:'',members:[ME,d.from],closed:false,silent:false};
+  DB.chats.push(c);msgsOf(c.id);save();renderList();
+ }
  const isForMe=d.to===ME||(d.to==='*'&&c&&(c.members.includes('*')||c.members.includes(ME)));
  if(!isForMe)return;
  if(d.t==='offer'){
+  if(CALL&&CALL.cid===d.cid)return; // ข้าม offer ซ้ำจากสายเดิม
   if(CALL||!c||(c.closed&&!ADMIN)){if(d.to===ME)sig({t:'end',to:d.from,chat:d.chat});return}
-  CALL={chat:d.chat,peer:d.from,title:d.title||d.from,video:d.video,offer:d.sdp,out:false,connected:false};PEND=[];
+  CALL={cid:d.cid||uid(),chat:d.chat,peer:d.from,title:d.title||d.from,video:d.video,offer:d.sdp,out:false,connected:false};PEND=[];
   callUI('in',CALL.title,d.video);
   playTone('in');
-  notifyUser('📞 '+CALL.title,d.video?'มีวิดีโอคอลเรียกเข้า...':'มีสายเรียกเข้า...',d.chat);
+  sig({t:'ringing',to:d.from,chat:d.chat});
+  notifyUser('📞 '+CALL.title,d.video?'มีวิดีโอคอลเรียกเข้า... กดเพื่อรับสาย':'มีสายเรียกเข้า... กดเพื่อรับสาย',d.chat,true);
+ }else if(d.t==='ringing'&&CALL&&CALL.out&&!CALL.connected){
+  $('#cst').textContent=CALL.video?'กำลังเรียกสายวิดีโอ (ปลายทางกำลังดัง)...':'กำลังเรียกสาย (ปลายทางกำลังดัง)...';
  }else if(d.t==='answer'&&PC&&CALL&&CALL.out){
   CALL.peer=d.from;
-  try{await PC.setRemoteDescription(d.sdp);for(const c of PEND)try{await PC.addIceCandidate(c)}catch(e){}PEND=[];connected()}catch(e){}
+  try{
+   await PC.setRemoteDescription(new RTCSessionDescription(d.sdp));
+   for(const c of PEND)try{await PC.addIceCandidate(new RTCIceCandidate(c))}catch(e){}
+   PEND=[];connected();
+  }catch(e){}
  }else if(d.t==='ice'&&CALL&&(d.from===CALL.peer||CALL.peer==='*')){
-  if(PC&&PC.remoteDescription){try{await PC.addIceCandidate(d.c)}catch(e){}}else PEND.push(d.c);
+  if(PC&&PC.remoteDescription&&PC.remoteDescription.type){try{await PC.addIceCandidate(new RTCIceCandidate(d.c))}catch(e){}}else PEND.push(d.c);
  }else if(d.t==='end'&&CALL){
   const w=CALL;toast(w.connected?'อีกฝ่ายวางสาย':w.out?'อีกฝ่ายไม่รับสาย':'สายเรียกเข้าถูกยกเลิก');endCall(false);
  }
@@ -1427,23 +1872,41 @@ const A={
  call(){startCall(false)},vcall(){startCall(true)},
  callAcc:acceptCall,callEnd(){endCall(true)},
  callMic(t){if(LOC){const a=LOC.getAudioTracks()[0];if(a){a.enabled=!a.enabled;t.classList.toggle('off',!a.enabled)}}},
- callSpk(t){const rv=$('#rv');if(rv){rv.muted=!rv.muted;t.classList.toggle('off',rv.muted)}},
+ callSpk(t){const rv=$('#rv'),ra=$('#ra');const m=!(rv&&rv.muted);if(rv)rv.muted=m;if(ra)ra.muted=m;t.classList.toggle('off',m)},
  callCam(t){if(LOC){const v=LOC.getVideoTracks()[0];if(v){v.enabled=!v.enabled;t.classList.toggle('off',!v.enabled)}}},
  callFlip:flipCam,
  pwaSheet:pwaSheet,
  reqNotifPerm:reqNotifPerm,
+ closePop:closePop,
+ popOpen(t){closePop();if(t.dataset.id)openChat(t.dataset.id)},
+ authTabLogin(){AUTH_MODE='login';renderAuthGate()},
+ authTabReg(){AUTH_MODE='reg';renderAuthGate()},
+ doLogin:doLogin,
+ doRegister:doRegister,
+ doLogout:doLogout,
+ membersSheet(){MEM_Q='';membersSheet()},
+ admSaveMem:admSaveMem,
+ memDM(t){openDMWith(t.dataset.u)},
+ memCall(t){if(openDMWith(t.dataset.u))startCall(false)},
+ memVCall(t){if(openDMWith(t.dataset.u))startCall(true)},
+ memPass(t){memPassSheet(t.dataset.u)},
+ doMemPass:doMemPass,
+ memDel:memDel,
  testNotif(){
   playDing();
+  showPushPop('ระบบแชท (ทดสอบป๊อปอัป)','แจ้งเตือนป๊อปอัปด้านบนและเสียงเตือนทำงานสมบูรณ์!',OPEN||'room-main',false);
   if('Notification' in window && Notification.permission==='granted'){
-   try{new Notification('ระบบแชท (ทดสอบ)',{body:'การแจ้งเตือนและเสียงเตือนพร้อมใช้งานแล้ว!',icon:APP_ICON_URL})}catch(e){}
+   try{
+    if(SW_REG&&SW_REG.showNotification)SW_REG.showNotification('ระบบแชท (ทดสอบ)',{body:'การแจ้งเตือนออกนอกแอปบนมือถือ/iPad พร้อมใช้งานแล้ว!',icon:APP_ICON_URL,badge:APP_ICON_URL});
+    else new Notification('ระบบแชท (ทดสอบ)',{body:'การแจ้งเตือนออกนอกแอปบนมือถือ/iPad พร้อมใช้งานแล้ว!',icon:APP_ICON_URL});
+   }catch(e){}
   }
-  toast('🔔 ทดสอบการแจ้งเตือนและเสียงเตือนเรียบร้อย!');
  },
- toggleNotif(t){NOTIF=t.checked;LS.set('chat.notif',NOTIF?'1':'0');if(NOTIF&&'Notification' in window&&Notification.permission==='default')reqNotifPerm()},
+ toggleNotif(t){NOTIF=t.checked;LS.set('chat.notif',NOTIF?'1':'0');checkNotifBar();if(NOTIF&&'Notification' in window&&Notification.permission==='default')reqNotifPerm()},
  toggleNSound(t){NSOUND=t.checked;LS.set('chat.nsound',NSOUND?'1':'0');if(NSOUND)playDing()},
  toggleBlur(t){BLUR=t.checked;LS.set('chat.blur',BLUR?'1':'0')},
  resetAll(){
-  try{localStorage.removeItem('chat.db');localStorage.removeItem('chat.reacts')}catch(e){}
+  try{localStorage.removeItem('chat.db');localStorage.removeItem('chat.reacts');localStorage.removeItem('chat.users');localStorage.removeItem('chat.auth')}catch(e){}
   try{indexedDB.deleteDatabase('chat-media')}catch(e){}
   location.reload();
  }
@@ -1466,13 +1929,15 @@ document.addEventListener('change',function(e){
 document.addEventListener('input',function(e){
  const t=e.target;
  if(t.id==='cs'){FILTER=t.value;renderList()}
+ if(t.id==='memSearch'){MEM_Q=t.value;const b=$('#memListBox');if(b)b.innerHTML=renderMembersInner()}
  if(t.id==='inp'){t.style.height='auto';t.style.height=Math.min(t.scrollHeight,140)+'px';$('#comp').classList.toggle('has',!!t.value.trim());typingInput(!!t.value.trim())}
 });
 document.addEventListener('keydown',function(e){
  if(e.key==='Enter'&&!e.shiftKey&&e.target.id==='inp'&&!e.isComposing){e.preventDefault();sendText()}
  if(e.key==='Enter'&&e.target.id==='pin'){e.preventDefault();pinOk()}
- if(e.key==='Enter'&&e.target.id==='nm'){e.preventDefault();saveName()}
+ if(e.key==='Enter'&&(e.target.id==='nm'||e.target.id==='nmp')){e.preventDefault();saveName()}
  if(e.key==='Enter'&&e.target.id==='np'){e.preventDefault();startDM()}
+ if(e.key==='Enter'&&(e.target.id==='auUser'||e.target.id==='auPass'||e.target.id==='auPass2')){e.preventDefault();AUTH_MODE==='reg'?doRegister():doLogin()}
  if(e.key==='Escape'){closeRxPop();closeSheet();A.closeLb()}
 });
 ['dragover','drop'].forEach(n=>$('#main').addEventListener(n,function(e){
@@ -1491,11 +1956,12 @@ window.addEventListener('storage',function(e){
     const c=chatById(cid);
     if(last&&last.from&&last.from!==ME&&last.type!=='system'&&c&&!(c.closed&&!ADMIN)&&(c.members.includes('*')||c.members.includes(ME))){
      const sender=c.type==='group'?chatName(c)+' ('+last.from+')':last.from;
-     notifyUser(sender,pvText(last).replace(/^คุณ:\s*/,''),cid);
+     notifyUser(sender,pvText(last).replace(/^คุณ:\s*/,''),cid,false);
     }
    }
   });
  }
+ if(e.key==='chat.users'){loadUsers();updateMemberCount();if($('#sheet.on')&&$('#memSearch'))membersSheet()}
  if(e.key==='chat.reacts'){loadReacts();if(OPEN)renderMsgs(false)}
  if(e.key==='chat.read.'+ME)loadRead();
 });
@@ -1504,17 +1970,18 @@ window.addEventListener('storage',function(e){
 function init(){
  setupPWA();
  $('#logoI').innerHTML=I('chat');$('#rbChat').innerHTML=I('chat');$('#rbSearch').innerHTML=I('search');$('#rbNew').innerHTML=I('plus');
- $('#rbAdm').innerHTML=I('shield');$('#rbApp').innerHTML=I('app');$('#rbSet').innerHTML=I('gear');$('#unameC').innerHTML=I('chev');
- $('#btnApp').innerHTML=I('app');$('#btnNew').innerHTML=I('compose');
+ $('#rbMem').innerHTML=I('users');$('#rbAdm').innerHTML=I('shield');$('#rbApp').innerHTML=I('app');$('#rbSet').innerHTML=I('gear');$('#unameC').innerHTML=I('chev');
+ $('#btnMem').innerHTML=I('users');$('#btnApp').innerHTML=I('app');$('#btnNew').innerHTML=I('compose');
  $('#srI').innerHTML=I('search');$('#emI').innerHTML=I('send');$('#lbX').innerHTML=I('x');
  $('#cMic').innerHTML=I('mic');$('#cSpk').innerHTML=I('speaker');$('#cCam').innerHTML=I('video');$('#cFlip').innerHTML=I('flip');
  $('#cAcc').innerHTML=I('phone');$('#cEnd').innerHTML=I('phone');
- load();loadRead();loadReacts();
+ loadUsers();load();loadRead();loadReacts();
  $('#admTag').classList.toggle('hide',!ADMIN);
  $('#uname').textContent=ME||'ผู้ใช้';
+ updateMemberCount();
  renderList();renderChat();
  if(CLOUD)cloudInit();else rt('off');
- if(!ME)nameSheet(true);
+ renderAuthGate();
 }
 init();
 })();
